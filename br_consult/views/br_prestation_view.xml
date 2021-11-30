@@ -1,0 +1,107 @@
+<odoo>
+    <data>
+        <record id="view_br_prestation_list" model="ir.ui.view">
+            <field name="name">br.prestation.list</field>
+            <field name="model">br.prestation</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_br_prestation_kanban" model="ir.ui.view">
+            <field name="name">br.prestation.kanban</field>
+            <field name="model">br.prestation</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" sample="1">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_global_click">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <strong><t t-esc="record.name.value"/></strong>
+                                    </div>
+                                </div>
+                                
+                                <t t-if="record.partner_id.name.value">
+                                    <hr class="mt8 mb8"/>
+                                    <t t-esc="record.partner_id.name.value"/>
+                                </t>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        
+        <record id="view_br_prestation_form" model="ir.ui.view">
+            <field name="name">br.prestation.form</field>
+            <field name="model">br.prestation</field>
+            <field name="arch" type="xml">
+                <form string="Prestation">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="phase1,phase2,phase3,phase4"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="inspection_type" required="1"/>
+                                
+                            </group>
+                            <group>
+                                <field name="installation_type" attrs="{'invisible': [('inspection_type', '!=', 'levage')], 'required': [('inspection_type', '=', 'levage')]}"/>
+                                <field name="verification_type" required='1'/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name='fiche' string="Fiche" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                                <group>
+                                    <group>
+                                        <field name="name"/>
+                                        <field name="partner_id" required="1" domain="[('is_company', '=', True)]" options="{'no_create': True}"/>
+                                        <field name="partner_contact"/>
+                                        
+                                    </group>
+                                    <group>
+                                        <field name="date"/>
+                                        <field name="verification_date"/>
+                                        <field name="user_id"/>
+                                        
+                                    </group>
+                                    
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+    <record id="action_br_prestation" model="ir.actions.act_window">
+        <field name="name">Prestation</field>
+        <field name="res_model">br.prestation</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <!-- Top menu item -->
+
+    <menuitem id="br_consult_menu_root"
+            name="Prestation"
+            web_icon="br_consult,static/description/icon.png"
+            sequence="40"/>
+
+    <!-- menu categories -->
+
+    <menuitem name="Prestation" 
+              id="br_consult_menu_prestation" 
+              parent="br_consult_menu_root"
+              action="action_br_prestation"/>
+
+
+  </data>
+</odoo>

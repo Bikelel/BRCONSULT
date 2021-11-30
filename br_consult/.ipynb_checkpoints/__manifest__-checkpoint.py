@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Br consult",
+    'name': "BR Consult",
 
     'summary': """
         Nouveau module pour BR Consult
@@ -22,10 +22,12 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
-#         'views/views.xml',
+        'security/ir.model.access.csv',
+        'data/ir_sequence_data.xml',
+        'views/br_prestation_view.xml',
 #         'views/templates.xml',
     ],
     'installable': True,
     'auto_install': False,
+    'license': 'LGPL-3',
 }
