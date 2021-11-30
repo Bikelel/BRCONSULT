@@ -23,10 +23,16 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+#         'views/br_consult.xml',
         'data/ir_sequence_data.xml',
         'views/br_prestation_view.xml',
     ],
     'installable': True,
     'auto_install': False,
     'license': 'LGPL-3',
+    "assets": {
+        "web.assets_backend": [
+            "br_consult/static/src/css/backend.less"
+        ]
+    }
 }

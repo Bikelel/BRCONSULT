@@ -47,6 +47,9 @@
                         <field name="state" widget="statusbar" statusbar_visible="phase1,phase2,phase3,phase4"/>
                     </header>
                     <sheet>
+                        <div class="prestation_sheet_header">
+                            <div class="prestation_sheet_header_fiche">Fiche d'intervention</div>
+                        </div>
                         <group>
                             <group>
                                 <field name="inspection_type" required="1"/>
