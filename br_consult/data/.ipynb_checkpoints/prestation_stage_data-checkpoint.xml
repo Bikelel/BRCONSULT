@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.stage" id="prestation_stage1">
+        <field name="name">Phase I - Création</field>
+        <field name="sequence">1</field>
+        <field name="state">phase1</field>
+    </record>
+    <record model="prestation.stage" id="prestation_stage2">
+        <field name="name">Phase II - Validation</field>
+        <field name="sequence">2</field>
+        <field name="state">phase2</field>
+    </record>
+    <record model="prestation.stage" id="prestation_stage3">
+        <field name="name">Phase III - Exploitation</field>
+        <field name="sequence">3</field>
+        <field name="state">phase3</field>
+    </record>
+    <record model="prestation.stage" id="prestation_stage4">
+        <field name="name">Phase IV - Envoi</field>
+        <field name="sequence">4</field>
+        <field name="state">phase4</field>
+    </record>
+</odoo>

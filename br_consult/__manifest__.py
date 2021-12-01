@@ -7,7 +7,6 @@
         
         """,
 
-
     'author': "BR Consult",
     'website': "http://www.brconsult.com",
 
@@ -23,9 +22,11 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-#         'views/br_consult.xml',
         'data/ir_sequence_data.xml',
-        'views/br_prestation_view.xml',
+        'views/menu_item_views.xml',
+        'views/prestation_stage_views.xml',
+        'views/br_prestation_views.xml',
+        'data/prestation_stage_data.xml',
     ],
     'installable': True,
     'auto_install': False,

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+    <!-- Top menu item -->
+    <menuitem id="br_consult_menu_root"
+            name="Prestation"
+            web_icon="br_consult,static/description/icon.png"
+            sequence="40"/>
+    
+    <menuitem
+        id="br_consult_settings_menu"
+        name="Settings"
+        parent="br_consult_menu_root"
+        sequence="50"/>
+
+    </data>
+</odoo>

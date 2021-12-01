@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_br_prestation_admin,br.prestation,model_br_prestation,base.group_user,1,1,1,1
+access_prestation_stage_admin,prestation.stage,model_prestation_stage,base.group_user,1,1,1,1

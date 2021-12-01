@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api, _
+from odoo import models, fields, api, _, SUPERUSER_ID
 
 
 class Prestation(models.Model):
@@ -29,16 +29,19 @@ class Prestation(models.Model):
         ('RS', 'Remise en service'),
         ('VP', 'Vérification périodique'),
     ], copy=False, string="Type de vérification")
+    date = fields.Date('Date', default=fields.Date.today())
+    verification_date = fields.Datetime('Date de vérification', default=fields.Datetime.now)
+    partner_contact = fields.Char("Représentée par")
+    user_id = fields.Many2one('res.users', 'Vérificateur', default=lambda self: self.env.user)
+    stage_id = fields.Many2one(
+        'prestation.stage', string='Etape', index=True, tracking=True, readonly=False, store=True,
+        copy=False, group_expand='_read_group_stage_ids', ondelete='restrict')
     state = fields.Selection([
         ('phase1', 'Phase I - Création'),
         ('phase2', 'Phase II - Validation'),
         ('phase3', 'Phase III - Exploitation'),
         ('phase4', 'Phase IV - Envoi'),
-        ], string='Status', readonly=True, copy=False, index=True, default='phase1')
-    date = fields.Date('Date', default=fields.Date.today())
-    verification_date = fields.Datetime('Date de vérification', default=fields.Datetime.now)
-    partner_contact = fields.Char("Représentée par")
-    user_id = fields.Many2one('res.users', 'Vérificateur')
+        ], string='Status', readonly=True, copy=False, index=True, default='phase1', related='stage_id.state')
 
     @api.model
     def create(self, vals):
@@ -68,4 +71,12 @@ class Prestation(models.Model):
         
         result = super(Prestation, self).create(vals)
         return result
+    
+    @api.model
+    def _read_group_stage_ids(self, stages, domain, order):
+        stages = self.env['prestation.stage'].search([])
+        search_domain = [('id', 'in', stages.ids)]
+        # perform search
+        stage_ids = stages._search(search_domain, order=order, access_rights_uid=SUPERUSER_ID)
+        return stages.browse(stage_ids)
 
