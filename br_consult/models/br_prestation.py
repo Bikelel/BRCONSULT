@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api, _, SUPERUSER_ID
+from odoo import models, fields, api, _, SUPERUSER_ID, tools
 
 
 class Prestation(models.Model):
     _name = 'br.prestation'
     _description = 'br.prestation'
+    _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
+    
+    def default_stage(self):
+        phase1 = self.env['prestation.stage'].search([('state', '=', 'phase1')], limit=1)
+        return phase1.id
 
     name = fields.Char("N° Rapport", default=lambda self: 'New')
     partner_id = fields.Many2one('res.partner', string="Entreprise")
@@ -35,13 +40,8 @@ class Prestation(models.Model):
     user_id = fields.Many2one('res.users', 'Vérificateur', default=lambda self: self.env.user)
     stage_id = fields.Many2one(
         'prestation.stage', string='Etape', index=True, tracking=True, readonly=False, store=True,
-        copy=False, group_expand='_read_group_stage_ids', ondelete='restrict')
-    state = fields.Selection([
-        ('phase1', 'Phase I - Création'),
-        ('phase2', 'Phase II - Validation'),
-        ('phase3', 'Phase III - Exploitation'),
-        ('phase4', 'Phase IV - Envoi'),
-        ], string='Status', readonly=True, copy=False, index=True, default='phase1', related='stage_id.state')
+        copy=False, group_expand='_read_group_stage_ids', ondelete='restrict', default=default_stage)
+    state = fields.Selection(string='Status', readonly=True, copy=False, index=True, related='stage_id.state')
 
     @api.model
     def create(self, vals):
