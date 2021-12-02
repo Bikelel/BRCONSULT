@@ -56,6 +56,12 @@
                     <sheet>
                         <div class="prestation_sheet_header">
                             <div class="prestation_sheet_header_fiche">Fiche d'intervention</div>
+                            <div class="prestation_name" attrs="{'invisible': [('title_label', '=', '')]}">
+                                <field name="title_label" readonly="1" force_save="1"/>
+                            </div>
+                            <div class="prestation_sheet_header_reference" attrs="{'invisible': [('message_label', '=', '')]}">
+                                <field name="message_label" readonly="1" force_save="1"/>
+                            </div>
                         </div>
                         <group>
                             <group>

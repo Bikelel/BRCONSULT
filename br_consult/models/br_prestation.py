@@ -42,6 +42,8 @@ class Prestation(models.Model):
         'prestation.stage', string='Etape', index=True, tracking=True, readonly=False, store=True,
         copy=False, group_expand='_read_group_stage_ids', ondelete='restrict', default=default_stage)
     state = fields.Selection(string='Status', readonly=True, copy=False, index=True, related='stage_id.state')
+    title_label = fields.Text("Titre de prestation", store = True)
+    message_label = fields.Text("Code de l'article", store = True)
 
     @api.model
     def create(self, vals):
@@ -79,4 +81,22 @@ class Prestation(models.Model):
         # perform search
         stage_ids = stages._search(search_domain, order=order, access_rights_uid=SUPERUSER_ID)
         return stages.browse(stage_ids)
+    
+    @api.onchange('inspection_type', 'installation_type', 'verification_type')
+    def onchange_label_header(self):
+        label = False
+        if self.inspection_type == 'echafaudage':
+            if self.verification_type:
+                label = self.env['prestation.message.label'].search([('inspection_type', '=', self.inspection_type), ('verification_type', '=', self.verification_type)])
+        elif self.inspection_type == 'levage':
+            if self.verification_type and self.installation_type:
+                label = self.env['prestation.message.label'].search([('inspection_type', '=', self.inspection_type), ('verification_type', '=', self.verification_type), ('installation_type', '=', self.installation_type)])
+        if label:
+            self.title_label = label.name
+            self.message_label = label.description
+        else:
+            self.title_label = ''
+            self.message_label = ''
+            
+            
 

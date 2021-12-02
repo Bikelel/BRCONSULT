@@ -21,6 +21,7 @@
         <menuitem name="Etape de prestation" 
               id="br_consult_menu_prestation_stage" 
               parent="br_consult_settings_menu"
+              sequence="10"
               action="action_prestation_stage"/>
 
 

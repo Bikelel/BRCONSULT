@@ -2,3 +2,4 @@
 
 from . import prestation_stage
 from . import br_prestation
+from . import prestation_message_label

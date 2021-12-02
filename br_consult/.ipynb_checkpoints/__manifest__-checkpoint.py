@@ -26,6 +26,7 @@
         'views/menu_item_views.xml',
         'views/prestation_stage_views.xml',
         'views/br_prestation_views.xml',
+        'views/prestation_message_label_views.xml',
         'data/prestation_stage_data.xml',
     ],
     'installable': True,

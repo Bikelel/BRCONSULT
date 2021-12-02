@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_prestation_message_label_list" model="ir.ui.view">
+            <field name="name">prestation.message.label.list</field>
+            <field name="model">prestation.message.label</field>
+            <field name="arch" type="xml">
+                <tree string="Label">
+                    <field name="name"/>
+                    <field name="inspection_type"/>
+                    <field name="installation_type"/>
+                    <field name="verification_type"/>
+                    <field name="date"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_prestation_message_label_form" model="ir.ui.view">
+            <field name="name">prestation.message.label</field>
+            <field name="model">prestation.message.label</field>
+            <field name="arch" type="xml">
+                <form string="Label">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" required="1"/>
+                            </group>
+                            <group>
+                                <field name="inspection_type" required="1"/>
+                                <field name="installation_type" attrs="{'invisible': [('inspection_type', '!=', 'levage')], 'required': [('inspection_type', '=', 'levage')]}"/>
+                                <field name="verification_type" required='1'/>
+                                <field name="date" required='1'/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name='description' string="Description" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                                <field name="description" nolabel="1" attrs="{'required': [('verification_type', 'in', ['MS', 'RS', 'VP'])]}"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_prestation_message_label" model="ir.actions.act_window">
+            <field name="name">Code de l'article de prestation</field>
+            <field name="res_model">prestation.message.label</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Code de l'article de prestation" 
+            id="br_consult_menu_prestation_message_label" 
+            parent="br_consult_settings_menu"
+            sequence="50"  
+            action="action_prestation_message_label"/>
+
+
+  </data>
+</odoo>
