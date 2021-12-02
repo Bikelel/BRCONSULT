@@ -44,6 +44,13 @@ class Prestation(models.Model):
     state = fields.Selection(string='Status', readonly=True, copy=False, index=True, related='stage_id.state')
     title_label = fields.Text("Titre de prestation", store = True)
     message_label = fields.Text("Code de l'article", store = True)
+    site_address = fields.Text("Adresse de chantier")
+    site_localisation = fields.Char("Localisation")
+    prensent_contact = fields.Char("Nom de la personne présente")
+    surface_echafaudage = fields.Float("Surface d'échafaudage annoncée (m2)")
+    favorable_opinion = fields.Boolean('Avis favorable')
+    opinion_with_observation = fields.Boolean('Avec observation')
+    defavorable_opinion = fields.Boolean('Avis defavorable')
 
     @api.model
     def create(self, vals):

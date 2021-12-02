@@ -80,15 +80,25 @@
                                         <field name="name"/>
                                         <field name="partner_id" required="1" domain="[('is_company', '=', True)]" options="{'no_create': True}"/>
                                         <field name="partner_contact"/>
-                                        
+                                        <field name="site_address" required="1"/>
+                                        <field name="site_localisation"/>
                                     </group>
                                     <group>
                                         <field name="date"/>
                                         <field name="verification_date"/>
                                         <field name="user_id"/>
-                                        
+                                        <field name="prensent_contact"/>
+                                        <field name="surface_echafaudage"/>
                                     </group>
-                                    
+                                </group>
+                                <group string="Conformité de l’installation">
+                                    <group>
+                                        <field name="favorable_opinion" attrs="{'readonly':[('state','!=','phase3')]}"/>
+                                        <field name="opinion_with_observation" attrs="{'readonly':[('state','!=','phase3')]}"/>
+                                    </group>
+                                    <group>
+                                        <field name="defavorable_opinion" attrs="{'readonly':[('state','!=','phase3')]}"/>
+                                    </group>
                                 </group>
                             </page>
                         </notebook>
