@@ -35,6 +35,7 @@ class Prestation(models.Model):
         ('VP', 'Vérification périodique'),
     ], copy=False, string="Type de vérification")
     date = fields.Date('Date', default=fields.Date.today())
+    requested_date = fields.Date('Date de la demande')
     verification_date = fields.Datetime('Date de vérification', default=fields.Datetime.now)
     partner_contact = fields.Char("Représentée par")
     user_id = fields.Many2one('res.users', 'Vérificateur', default=lambda self: self.env.user)
@@ -47,10 +48,16 @@ class Prestation(models.Model):
     site_address = fields.Text("Adresse de chantier")
     site_localisation = fields.Char("Localisation")
     prensent_contact = fields.Char("Nom de la personne présente")
-    surface_echafaudage = fields.Float("Surface d'échafaudage annoncée (m2)")
+    scaffolding_surface = fields.Float("Surface d'échafaudage annoncée (m2)")
+    inspected_scaffolding_surface = fields.Float("Surface d'échafaudage inspectée (m2)")
     favorable_opinion = fields.Boolean('Avis favorable')
     opinion_with_observation = fields.Boolean('Avec observation')
     defavorable_opinion = fields.Boolean('Avis defavorable')
+    comment_observation_fiche = fields.Html("Commentaires Observation")
+    visa_user_id = fields.Binary('Visa inspecteur', related='user_id.visa_user_id')
+    contrat_ref = fields.Char('Contrat réf')
+    scope_mission_date = fields.Date('Date Périmètre de la mission')
+    comment_scope_mission = fields.Html("Commentaires Périmètre de la mission")
 
     @api.model
     def create(self, vals):
@@ -93,11 +100,10 @@ class Prestation(models.Model):
     def onchange_label_header(self):
         label = False
         if self.inspection_type == 'echafaudage':
-            if self.verification_type:
-                label = self.env['prestation.message.label'].search([('inspection_type', '=', self.inspection_type), ('verification_type', '=', self.verification_type)])
+            label = self.env['prestation.message.label'].search([('inspection_type', '=', self.inspection_type)], limit=1)
         elif self.inspection_type == 'levage':
-            if self.verification_type and self.installation_type:
-                label = self.env['prestation.message.label'].search([('inspection_type', '=', self.inspection_type), ('verification_type', '=', self.verification_type), ('installation_type', '=', self.installation_type)])
+            if self.installation_type:
+                label = self.env['prestation.message.label'].search([('inspection_type', '=', self.inspection_type), ('installation_type', '=', self.installation_type)])
         if label:
             self.title_label = label.name
             self.message_label = label.description

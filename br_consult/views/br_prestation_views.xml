@@ -65,7 +65,7 @@
                         </div>
                         <group>
                             <group>
-                                <field name="inspection_type" required="1"/>
+                                <field name="inspection_type" required="1" />
                                 
                             </group>
                             <group>
@@ -77,18 +77,20 @@
                             <page name='fiche' string="Fiche" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
                                 <group>
                                     <group>
-                                        <field name="name"/>
-                                        <field name="partner_id" required="1" domain="[('is_company', '=', True)]" options="{'no_create': True}"/>
-                                        <field name="partner_contact"/>
-                                        <field name="site_address" required="1"/>
-                                        <field name="site_localisation"/>
+                                        <field name="name" />
+                                        <field name="requested_date" />
+                                        <field name="partner_id" required="1" domain="[('is_company', '=', True)]" options="{'no_create': True}" />
+                                        <field name="partner_contact" />
+                                        <field name="site_address" required="1" />
+                                        <field name="site_localisation" />
                                     </group>
                                     <group>
-                                        <field name="date"/>
-                                        <field name="verification_date"/>
-                                        <field name="user_id"/>
-                                        <field name="prensent_contact"/>
-                                        <field name="surface_echafaudage"/>
+                                        <field name="date" />
+                                        <field name="verification_date" />
+                                        <field name="user_id" />
+                                        <field name="prensent_contact" />
+                                        <field name="scaffolding_surface" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
+                                        <field name="inspected_scaffolding_surface"/>
                                     </group>
                                 </group>
                                 <group string="Conformité de l’installation">
@@ -100,6 +102,28 @@
                                         <field name="defavorable_opinion" attrs="{'readonly':[('state','!=','phase3')]}"/>
                                     </group>
                                 </group>
+                                <group string="Commantaires">
+                                    <field name="comment_observation_fiche" attrs="{'readonly':[('state','!=','phase3')]}" nolabel="1"/>
+                                </group>
+                                <group string="Visa de l’inspecteur technique">
+                                    <group>
+                                    </group>
+                                </group>
+                            </page>
+                            <page name='scope_mission' string="Périmètre de la mission" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                                <group>
+                                    <field name="contrat_ref" string="La mission est réalisée conformément au contrat réf"/>
+                                    <field name="scope_mission_date" string="Date" />
+                                </group>
+                                <group string="Commantaires">
+                                    <field name="comment_scope_mission" nolabel="1"/>
+                                </group>
+                            </page>
+                            <page name='scaffolding_characteristic' string="Caractéristique de l'échafaudage" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                            </page>
+                            <page name='exams' string="Examens" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                            </page>
+                            <page name='scaffolding_photographic_location' string="localisation photographique de l'échafaudage" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
                             </page>
                         </notebook>
                     </sheet>
