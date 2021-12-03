@@ -4,8 +4,8 @@ from odoo import models, fields, api, _, SUPERUSER_ID, tools
 
 
 class Prestation(models.Model):
-    _name = 'br.prestation'
-    _description = 'br.prestation'
+    _name = 'prestation.prestation'
+    _description = 'Prestation'
     _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
     
     def default_stage(self):

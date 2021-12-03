@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="view_br_prestation_list" model="ir.ui.view">
-            <field name="name">br.prestation.list</field>
-            <field name="model">br.prestation</field>
+        <record id="view_prestation_prestation_list" model="ir.ui.view">
+            <field name="name">prestation.prestation.list</field>
+            <field name="model">prestation.prestation</field>
             <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
@@ -11,9 +11,9 @@
                 </tree>
             </field>
         </record>
-        <record id="view_br_prestation_kanban" model="ir.ui.view">
-            <field name="name">br.prestation.kanban</field>
-            <field name="model">br.prestation</field>
+        <record id="view_prestation_prestation_kanban" model="ir.ui.view">
+            <field name="name">prestation.prestation.kanban</field>
+            <field name="model">prestation.prestation</field>
             <field name="priority" eval="100"/>
             <field name="arch" type="xml">
                 <kanban default_group_by="stage_id" class="o_kanban_mobile" archivable="false" sample="1">
@@ -45,9 +45,9 @@
             </field>
         </record>
         
-        <record id="view_br_prestation_form" model="ir.ui.view">
-            <field name="name">br.prestation.form</field>
-            <field name="model">br.prestation</field>
+        <record id="view_prestation_prestation_form" model="ir.ui.view">
+            <field name="name">prestation.prestation.form</field>
+            <field name="model">prestation.prestation</field>
             <field name="arch" type="xml">
                 <form string="Prestation">
                     <header>
@@ -132,16 +132,16 @@
         </record>
 
 
-    <record id="action_br_prestation" model="ir.actions.act_window">
+    <record id="action_prestation_prestation" model="ir.actions.act_window">
         <field name="name">Prestation</field>
-        <field name="res_model">br.prestation</field>
+        <field name="res_model">prestation.prestation</field>
         <field name="view_mode">kanban,tree,form</field>
     </record>
 
     <menuitem name="Prestation" 
-              id="br_consult_menu_prestation" 
+              id="prestation_consult_menu_prestation" 
               parent="br_consult_menu_root"
-              action="action_br_prestation"/>
+              action="action_prestation_prestation"/>
 
 
   </data>
