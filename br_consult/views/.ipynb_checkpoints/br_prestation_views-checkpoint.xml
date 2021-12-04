@@ -150,6 +150,32 @@
                                 </group>
                             </page>
                             <page name='exams' string="Examens" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                                <group string="Examen d'adéquation">
+                                    <field name="adequacy_exam_ids" nolabel="1">
+                                        <tree editable='bottom'>
+                                            <field name="works_nature"/>
+                                            <field name="other_nature"/>
+                                            <field name="precision"/>
+                                            <field name="is_examined"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Dispositif de protection">
+                                    <field name="is_pare_gravats"/>
+                                    <field name="is_other_device"/>
+                                    <field name="other_device" attrs="{'invisible':[('is_other_device', '!=', 'yes')]}"/>
+                                    <field name="other_device_char" attrs="{'invisible':[('other_device', '!=', 'other')]}"/>
+                                </group>
+                                <group string="Charge d'exploitation de l'échafaudage par défaut">
+                                    <field name="scaffolding_operating_load_ids" nolabel="1">
+                                        <tree editable='bottom'>
+                                            <field name="scaffolding_class_id" options="{'no_create': True}"/>
+                                            <field name="operating_overload"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                
+                                
                             </page>
                             <page name='scaffolding_photographic_location' string="localisation photographique de l'échafaudage" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
                             </page>

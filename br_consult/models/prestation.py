@@ -61,6 +61,18 @@ class Prestation(models.Model):
     scaffolding_mark_ids = fields.One2many('prestation.scaffolding.mark', 'prestation_id', 'Marques')
     scaffolding_characteristic_ids = fields.One2many('prestation.scaffolding.characteristic', 'prestation_id', 'Caractéristiques')
     comment_scaffolding_characteristic = fields.Html("Commentaires Caractéristique de l'échafaudage")
+    adequacy_exam_ids = fields.One2many('prestation.adequacy.exam', 'prestation_id', "Examen d'adéquation")
+    is_pare_gravats = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Présence d'un pare-gravats")
+    is_other_device = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Présence d'un autre dispositif")
+    other_device = fields.Selection([
+        ('net', 'Filet'), 
+        ('reinforced_polyane', 'Polyane armé'),
+        ('cladding', 'Bardage'),
+        ('advertising_tarpaulin', 'Bâche publicitaire'),
+        ('other', 'Autre')], string="Autre dispositif")
+    other_device_char = fields.Char("Autre dispositif à compléter")
+    scaffolding_operating_load_ids = fields.One2many('prestation.scaffolding.operating.load', 'prestation_id', "Charge d'exploitation de l'échafaudage par défaut")
+    
 
     @api.model
     def create(self, vals):
@@ -114,5 +126,11 @@ class Prestation(models.Model):
             self.title_label = ''
             self.message_label = ''
             
+    
+    @api.onchange('is_other_device')
+    def onchange_is_other_device(self):
+        if self.is_other_device == 'no':
+            self.other_device = None
+            self.other_device_char = ''
             
 
