@@ -5,3 +5,4 @@ from . import prestation
 from . import prestation_message_label
 from . import res_users
 from . import prestation_scaffolding_mark
+from . import prestation_scaffolding_characteristic

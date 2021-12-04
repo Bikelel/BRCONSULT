@@ -58,6 +58,9 @@ class Prestation(models.Model):
     contrat_ref = fields.Char('Contrat réf')
     scope_mission_date = fields.Date('Date Périmètre de la mission')
     comment_scope_mission = fields.Html("Commentaires Périmètre de la mission")
+    scaffolding_mark_ids = fields.One2many('prestation.scaffolding.mark', 'prestation_id', 'Marques')
+    scaffolding_characteristic_ids = fields.One2many('prestation.scaffolding.characteristic', 'prestation_id', 'Caractéristiques')
+    comment_scaffolding_characteristic = fields.Html("Commentaires Caractéristique de l'échafaudage")
 
     @api.model
     def create(self, vals):

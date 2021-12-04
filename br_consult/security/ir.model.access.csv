@@ -2,3 +2,5 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_prestation_prestation_admin,prestation.prestation,model_prestation_prestation,base.group_user,1,1,1,1
 access_prestation_stage_admin,prestation.stage,model_prestation_stage,base.group_user,1,1,1,1
 access_prestation_message_label_admin,prestation.message.label,model_prestation_message_label,base.group_user,1,1,1,1
+access_prestation_scaffolding_characteristic_admin,prestation.scaffolding.characteristic,model_prestation_scaffolding_characteristic,base.group_user,1,1,1,1
+access_prestation_scaffolding_mark_admin,prestation.scaffolding.mark,model_prestation_scaffolding_mark,base.group_user,1,1,1,1

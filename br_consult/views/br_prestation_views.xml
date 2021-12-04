@@ -120,6 +120,34 @@
                                 </group>
                             </page>
                             <page name='scaffolding_characteristic' string="Caractéristique de l'échafaudage" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                                <group>
+                                    <field name="scaffolding_mark_ids" nolabel="1">
+                                        <tree editable='bottom'>
+                                            <field name="mark"/>
+                                            <field name="other_mark"/>
+                                            <field name="type"/>
+                                            <field name="height"/>
+                                            <field name="height_max"/>
+                                            <field name="linear"/>
+                                            <field name="inspected_surface"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group>
+                                    <field name="scaffolding_characteristic_ids" nolabel="1">
+                                        <tree editable='bottom'>
+                                            <field name="name" string="Caractéristique"/>
+                                            <field name="is_presence"/>
+                                            <field name="length"/>
+                                            <field name="width"/>
+                                            <field name="height"/>
+                                            <field name="surface"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Commantaires">
+                                    <field name="comment_scaffolding_characteristic" nolabel="1"/>
+                                </group>
                             </page>
                             <page name='exams' string="Examens" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
                             </page>
