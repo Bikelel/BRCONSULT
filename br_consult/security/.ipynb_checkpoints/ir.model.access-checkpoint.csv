@@ -7,3 +7,4 @@ access_prestation_scaffolding_mark_admin,prestation.scaffolding.mark,model_prest
 access_prestation_adequacy_exam_admin,prestation.adequacy.exam,model_prestation_adequacy_exam,base.group_user,1,1,1,1
 access_prestation_scaffolding_class_admin,prestation.scaffolding.class,model_prestation_scaffolding_class,base.group_user,1,1,1,1
 access_prestation_scaffolding_operating_load_admin,prestation.scaffolding.operating.load,model_prestation_scaffolding_operating_load,base.group_user,1,1,1,1
+access_prestation_image_admin,prestation.image,model_prestation_image,base.group_user,1,1,1,1

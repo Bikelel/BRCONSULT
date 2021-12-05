@@ -100,6 +100,28 @@ class Prestation(models.Model):
     anchor_data_number = fields.Float("Nombre constaté (données d'ancrage)")
     anchor_data_theoretical_number = fields.Float("Nombre théorique requis (données d'ancrage)", compute='compute_anchor_data_number', store=True)
     anchor_data_difference_number = fields.Float("Nombre de différence (données d'ancrage)", compute='compute_anchor_data_number', store=True)
+    ground_support_data = fields.Selection([
+        ('transmitted', 'Transmises'), 
+        ('observed_site', 'Constatées sur place')], string="Données relatives aux réactions d'appuis au sol ou au support d’accueil")
+    climatic_data = fields.Selection([
+        ('zone1', "Zone 1 : Vent normal 103km/  / Vent extrême 136.1 km/h - Conformément aux règles NV 65 et N 84"), 
+        ('zone2', "Zone 2 : Vent normal 112km/  / Vent extrême 149.1 km/h - Conformément aux règles NV 65 et N 84"), 
+        ('zone3', "Zone 3 : Vent normal 126km/  / Vent extrême 166.6 km/h - Conformément aux règles NV 65 et N 84"), 
+        ('zone4', "Zone 4 : Vent normal; 138km/  / Vent extrême 182.6 km/h - Conformément aux règles NV 65 et N 84"), 
+        ('zone5', "Zone 5 : Vent normal 174.6km/  / Vent extrême 230.9 km/h - Conformément aux règles NV 65 et N 84"),
+    ], string="Données relatives aux charges climatiques")
+    covering_nature_data = fields.Selection([
+        ('transmitted', 'Transmises'), 
+        ('observed_site', 'Constatées sur place')], string="Données relatives à la nature du bâchage éventuel")
+    conservation_state_satisfaction = fields.Selection([('yes', 'Satisfait'), ('no', 'Non satisfait')], string="Examen de l'etat de conservation")
+    non_satisfaction_reason = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait'),
+    ], string="Raison de non satisfaction")
+    
+    location_diagram = fields.Binary("Schéma de l’emplacement")
+    image_ids = fields.One2many('prestation.image', 'prestation_id' ,"Photographies")
+    comment_scaffolding_photographic_location = fields.Html("Commentaires localisation photographique de l'échafaudage")
 
 
     @api.model
@@ -126,7 +148,7 @@ class Prestation(models.Model):
                 code_verification_type = vals.get('verification_type')
             else:
                 code_verification_type = ''
-            vals['name'] = partner_ref + '-' +code_installation_type+ '-' + code_verification_type + '-' + self.env['ir.sequence'].next_by_code('sale.order') or _('New')
+            vals['name'] = partner_ref + '-' +code_installation_type+ '-' + code_verification_type + '-' + self.env['ir.sequence'].next_by_code('prestation.prestation') or _('New')
         
         result = super(Prestation, self).create(vals)
         return result

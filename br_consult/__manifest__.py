@@ -30,6 +30,7 @@
         'views/prestation_scaffolding_class_views.xml',
         'data/prestation_stage_data.xml',
         'data/prestation_scaffolding_class.xml',
+        'views/prestation_image_views.xml',
     ],
     'installable': True,
     'auto_install': False,

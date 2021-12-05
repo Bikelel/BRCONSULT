@@ -196,10 +196,35 @@
                                     <field name="anchor_data_theoretical_number"/>
                                     <field name="anchor_data_difference_number"/>
                                 </group>
-                                
+                                <group string="Données relatives aux réactions d'appuis au sol ou au support d’accueil">
+                                    <field name="ground_support_data" string="Choix"/>
+                                </group>
+                                <group string="Données relatives aux charges climatiques">
+                                    <field name="climatic_data" string="Valeur"/>
+                                </group>
+                                <group string="Données relatives à la nature du bâchage éventuel">
+                                    <field name="covering_nature_data" string="Choix"/>
+                                </group>
+                                <group string="Examen de l'etat de conservation">
+                                    <field name="conservation_state_satisfaction" string="Choix"/>
+                                </group>
                                 
                             </page>
-                            <page name='scaffolding_photographic_location' string="localisation photographique de l'échafaudage" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                            <page name='scaffolding_photographic_location' string="Localisation photographique de l'échafaudage" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                                <group string="Schéma de l’emplacement">
+                                    <field name="location_diagram" nolabel="1" options='{"size":[0,90]}' widget='image'/>
+                                </group>
+                                <group string="Photographies">
+                                    <field name="image_ids" nolabel="1">
+                                        <tree>
+                                            <field name="image" nolabel="1"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Commantaires">
+                                    <field name="comment_scaffolding_photographic_location" nolabel="1"/>
+                                </group>
+                                
                             </page>
                         </notebook>
                     </sheet>
