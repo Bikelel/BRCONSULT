@@ -174,6 +174,28 @@
                                         </tree>
                                     </field>
                                 </group>
+                                <group string="Examen de montage et d'exploitation">
+                                    <field name="security_register"/>
+                                </group>
+                                <group string="Présentation du dossier du montage">
+                                    <field name="manufacturer_instructions"/>
+                                    <field name="execution_plan"/>
+                                    <field name="calculation_notice"/>
+                                    <field name="maintenance_log"/>
+                                </group>
+                                <group string="Données relatives au sol ou de support d'implantation">
+                                    <field name="soil_support_data" string="Choix"/>
+                                    <field name="other_soil_support_data" attrs="{'invisible':[('soil_support_data', '!=', 'other')]}"/>
+                                </group>
+                                <group string="Données aux ancrages">
+                                    <field name="anchor_type"/>
+                                    <field name="other_anchor_type" attrs="{'invisible':[('anchor_type', '!=', 'other')]}"/>
+                                    <field name="ankles_type" attrs="{'invisible':[('anchor_type', '!=', 'ankles_ring')]}"/>
+                                    
+                                    <field name="anchor_data_number"/>
+                                    <field name="anchor_data_theoretical_number"/>
+                                    <field name="anchor_data_difference_number"/>
+                                </group>
                                 
                                 
                             </page>

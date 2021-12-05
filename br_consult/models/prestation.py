@@ -72,7 +72,35 @@ class Prestation(models.Model):
         ('other', 'Autre')], string="Autre dispositif")
     other_device_char = fields.Char("Autre dispositif à compléter")
     scaffolding_operating_load_ids = fields.One2many('prestation.scaffolding.operating.load', 'prestation_id', "Charge d'exploitation de l'échafaudage par défaut")
-    
+    security_register = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Registre de sécurité")
+    manufacturer_instructions = fields.Boolean("Notice constructeur")
+    execution_plan = fields.Boolean("Plan d'exécution (PE)")
+    calculation_notice = fields.Boolean("Notice de calcul (NDC)")
+    maintenance_log = fields.Boolean("Carnet de maintenance")
+    soil_support_data = fields.Selection([
+        ('concrete', 'Béton'), 
+        ('bitume', 'Bitume'),
+        ('topsoil', 'Terre végétale'),
+        ('roof', 'Toiture'),
+        ('wall_cap', 'Murette et casquette'),
+        ('other', 'Autre')], string="Données relatives au sol ou de support d'implantation")
+    other_soil_support_data = fields.Char("Autre données relatives au sol ou de support d'implantation")
+    anchor_type = fields.Selection([
+        ('ankles_ring', 'Chevilles + anneau'), 
+        ('struts', 'Etrésillons'),
+        ('cravatage', 'Cravatage'),
+        ('other_stable', 'Autre stable'),
+        ('other', 'Autre')], string="Type d'ancrage")
+    other_anchor_type = fields.Char("Autre Type d'ancrage")
+    ankles_type = fields.Selection([
+        ('nylon_ankles', 'Chevilles en nylon'), 
+        ('expansion_ankles', 'Chevilles à expansion'), 
+        ('chemical_ankles', 'Chevilles chimique'), 
+        ('screw_eyebolt', 'Pitons à visser')], string="Type de chevilles")
+    anchor_data_number = fields.Float("Nombre constaté (données d'ancrage)")
+    anchor_data_theoretical_number = fields.Float("Nombre théorique requis (données d'ancrage)", compute='compute_anchor_data_number', store=True)
+    anchor_data_difference_number = fields.Float("Nombre de différence (données d'ancrage)", compute='compute_anchor_data_number', store=True)
+
 
     @api.model
     def create(self, vals):
@@ -126,11 +154,23 @@ class Prestation(models.Model):
             self.title_label = ''
             self.message_label = ''
             
-    
     @api.onchange('is_other_device')
     def onchange_is_other_device(self):
         if self.is_other_device == 'no':
             self.other_device = None
             self.other_device_char = ''
-            
+    
+    @api.depends('anchor_data_number', 'is_other_device')
+    def compute_anchor_data_number(self):
+        for rec in self:
+            if rec.anchor_data_number:
+                if rec.is_other_device == 'yes':
+                    anchor_data_theoretical_number = rec.anchor_data_number / 12
+                elif rec.is_other_device == 'no':
+                    anchor_data_theoretical_number = rec.anchor_data_number / 24
+                else:
+                    anchor_data_theoretical_number = 0.0
+                
+                rec.anchor_data_theoretical_number = anchor_data_theoretical_number
+                rec.anchor_data_difference_number = rec.anchor_data_number - anchor_data_theoretical_number
 
