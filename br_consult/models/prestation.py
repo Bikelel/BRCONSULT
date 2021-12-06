@@ -56,6 +56,12 @@ class Prestation(models.Model):
     comment_observation_fiche = fields.Html("Commentaires Observation")
     visa_user_id = fields.Binary('Visa inspecteur', related='user_id.visa_user_id')
     contrat_ref = fields.Char('Contrat réf')
+    motif_rs = fields.Selection([
+        ('enhances', 'Rehausse'), 
+        ('removal_reservations', 'Levée des réserves'),
+        ('other', 'Autre'),
+    ], string="Motif de remise en service")
+    other_motif_rs = fields.Char("Autre motif de remise en service")
     scope_mission_date = fields.Date('Date Périmètre de la mission')
     comment_scope_mission = fields.Html("Commentaires Périmètre de la mission")
     scaffolding_mark_ids = fields.One2many('prestation.scaffolding.mark', 'prestation_id', 'Marques')
