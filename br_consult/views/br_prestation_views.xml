@@ -221,7 +221,19 @@
                                     <field name="covering_nature_data" string="Choix"/>
                                 </group>
                                 <group string="Examen de l'etat de conservation">
-                                    <field name="conservation_state_satisfaction" string="Choix"/>
+                                    <field name="presence_correct_installation"/>
+                                    <field name="permanent_deformation_absence"/>
+                                    <field name="presence_fixing"/>
+                                    <field name="absence_detectable_play"/>
+                                    <field name="good_behavior"/>
+                                    <field name="absence_disorder"/>
+                                    <field name="presence_wedging"/>
+                                    <field name="good_fixing"/>
+                                    <field name="maintaining_continuity"/>
+                                    <field name="visibility_indications"/>
+                                    <field name="absence_loads_exceeding"/>
+                                    <field name="lack_floor_space"/>
+                                    
                                 </group>
                                 
                             </page>

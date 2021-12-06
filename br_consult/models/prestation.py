@@ -119,11 +119,44 @@ class Prestation(models.Model):
     covering_nature_data = fields.Selection([
         ('transmitted', 'Transmises'), 
         ('observed_site', 'Constatées sur place')], string="Données relatives à la nature du bâchage éventuel")
-    conservation_state_satisfaction = fields.Selection([('yes', 'Satisfait'), ('no', 'Non satisfait')], string="Examen de l'etat de conservation")
-    non_satisfaction_reason = fields.Selection([
+    # statisfaction fields
+    presence_correct_installation = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="La présence et la bonne installation des dispositifs de protection collective et des moyens d'accès")
+    permanent_deformation_absence = fields.Selection([
         ('yes', 'Satisfait'), 
         ('no', 'Non satisfait'),
-    ], string="Raison de non satisfaction")
+    ], string="L'absence de déformation permanente ou de corrosion des éléments constitutifs de l'échafaudage pouvant compromettre sa solidité")
+    presence_fixing = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="La présence de tous les éléments de fixation ou de liaison des constituants de l'échafaudage")
+    absence_detectable_play = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="L'absence de jeu décelable susceptible d'affecter ces éléments")
+    good_behavior = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="La bonne tenue des éléments d'amarrage (ancrage, vérinage) ")
+    absence_disorder = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="L'absence de désordre au niveau des appuis et des surfaces portantes")
+    presence_wedging = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="La présence de tous les éléments de calage et de stabilisation ou d'immobilisation")
+    good_fixing = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="La bonne fixation des filets et des bâches sur l'échafaudage, ainsi que la continuité du bâchage sur toute la surface extérieure")
+    maintaining_continuity = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="Le maintien de la continuité, de la planéité, de l'horizontalité et de la bonne tenue de chaque niveau de plancher")
+    visibility_indications = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="La visibilité des indications sur l'échafaudage relatives aux charges admissibles")
+    absence_loads_exceeding = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="L'absence de charges dépassant ces limites admissibles")
+    lack_floor_space = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="L'absence d'encombrement des planchers")
     
     location_diagram = fields.Binary("Schéma de l’emplacement")
     image_ids = fields.One2many('prestation.image', 'prestation_id' ,"Photographies")
