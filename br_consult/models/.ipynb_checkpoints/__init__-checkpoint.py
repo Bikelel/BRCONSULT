@@ -10,3 +10,4 @@ from . import prestation_adequacy_exam
 from . import prestation_scaffolding_class
 from . import prestation_scaffolding_operating_load
 from . import prestation_image
+from . import res_partner
