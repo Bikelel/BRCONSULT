@@ -10,7 +10,7 @@
                     <field name="name"/>
                     <field name="inspection_type"/>
                     <field name="installation_type"/>
-                    <field name="verification_type"/>
+                    
                     <field name="date"/>
                     <field name="description"/>
                 </tree>
@@ -30,13 +30,12 @@
                             <group>
                                 <field name="inspection_type" required="1"/>
                                 <field name="installation_type" attrs="{'invisible': [('inspection_type', '!=', 'levage')], 'required': [('inspection_type', '=', 'levage')]}"/>
-                                <field name="verification_type" required='1'/>
                                 <field name="date" required='1'/>
                             </group>
                         </group>
                         <notebook>
-                            <page name='description' string="Description" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
-                                <field name="description" nolabel="1" attrs="{'required': [('verification_type', 'in', ['MS', 'RS', 'VP'])]}"/>
+                            <page name='description' string="Description">
+                                <field name="description" nolabel="1"/>
                             </page>
                         </notebook>
                     </sheet>
