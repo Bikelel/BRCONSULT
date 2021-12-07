@@ -11,4 +11,9 @@ access_prestation_image_admin,prestation.image,model_prestation_image,base.group
 access_prestation_observation_admin,prestation.observation,model_prestation_observation,base.group_user,1,1,1,1
 access_prestation_verification_point_admin,prestation.verification.point,model_prestation_verification_point,base.group_user,1,1,1,1
 access_prestation_constat_admin,prestation.constat,model_prestation_constat,base.group_user,1,1,1,1
-
+access_prestation_motif_rs_admin,prestation.motif.rs,model_prestation_motif_rs,base.group_user,1,1,1,1
+access_prestation_other_device_admin,prestation.other.device,model_prestation_other_device,base.group_user,1,1,1,1
+access_prestation_anchor_type_admin,prestation.anchor.type,model_prestation_anchor_type,base.group_user,1,1,1,1
+access_prestation_soil_support_data_admin,prestation.soil.support.data,model_prestation_soil_support_data,base.group_user,1,1,1,1
+access_prestation_work_nature_admin,prestation.work.nature,model_prestation_work_nature,base.group_user,1,1,1,1
+access_prestation_mark_admin,prestation.mark,model_prestation_mark,base.group_user,1,1,1,1

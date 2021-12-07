@@ -56,48 +56,33 @@ class Prestation(models.Model):
     comment_observation_fiche = fields.Html("Commentaires Observation")
     visa_user_id = fields.Binary('Visa inspecteur', related='user_id.visa_user_id')
     contrat_ref = fields.Char('Contrat réf')
-    motif_rs = fields.Selection([
-        ('enhances', 'Rehausse'), 
-        ('removal_reservations', 'Levée des réserves'),
-        ('other', 'Autre'),
-    ], string="Motif de remise en service")
-    other_motif_rs = fields.Char("Autre motif de remise en service")
+    motif_rs_id = fields.Many2one('prestation.motif.rs', string="Motif de remise en service")
     scope_mission_date = fields.Date('Date Périmètre de la mission')
     comment_scope_mission = fields.Html("Commentaires Périmètre de la mission")
     scaffolding_mark_ids = fields.One2many('prestation.scaffolding.mark', 'prestation_id', 'Marques')
-    scaffolding_characteristic_ids = fields.One2many('prestation.scaffolding.characteristic', 'prestation_id', 'Caractéristiques')
+    #scaffolding_characteristic_ids = fields.One2many('prestation.scaffolding.characteristic', 'prestation_id', 'Caractéristiques')
+#     approach_floor_presence = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Présence plancher d'approche")
+#     approach_floor_width = fields.Selection([
+#         ('0_3', '0,3 m'), 
+#         ('0_7', '0,7 m'),
+#         ('0_8', '0,8 m'),
+#         ('1', '1 m'),
+#         ('other', 'Autre')
+#     ], string="Largeur plancher d'approche")
+    
     comment_scaffolding_characteristic = fields.Html("Commentaires Caractéristique de l'échafaudage")
     adequacy_exam_ids = fields.One2many('prestation.adequacy.exam', 'prestation_id', "Examen d'adéquation")
     is_pare_gravats = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Présence d'un pare-gravats")
     is_other_device = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Présence d'un autre dispositif")
-    other_device = fields.Selection([
-        ('net', 'Filet'), 
-        ('reinforced_polyane', 'Polyane armé'),
-        ('cladding', 'Bardage'),
-        ('advertising_tarpaulin', 'Bâche publicitaire'),
-        ('other', 'Autre')], string="Autre dispositif")
-    other_device_char = fields.Char("Autre dispositif à compléter")
+    other_device_id = fields.Many2one('prestation.other.device', string='Autre dispositif')
     scaffolding_operating_load_ids = fields.One2many('prestation.scaffolding.operating.load', 'prestation_id', "Charge d'exploitation de l'échafaudage par défaut")
     security_register = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Registre de sécurité")
     manufacturer_instructions = fields.Boolean("Notice constructeur")
     execution_plan = fields.Boolean("Plan d'exécution (PE)")
     calculation_notice = fields.Boolean("Notice de calcul (NDC)")
     maintenance_log = fields.Boolean("Carnet de maintenance")
-    soil_support_data = fields.Selection([
-        ('concrete', 'Béton'), 
-        ('bitume', 'Bitume'),
-        ('topsoil', 'Terre végétale'),
-        ('roof', 'Toiture'),
-        ('wall_cap', 'Murette et casquette'),
-        ('other', 'Autre')], string="Données relatives au sol ou de support d'implantation")
-    other_soil_support_data = fields.Char("Autre données relatives au sol ou de support d'implantation")
-    anchor_type = fields.Selection([
-        ('ankles_ring', 'Chevilles + anneau'), 
-        ('struts', 'Etrésillons'),
-        ('cravatage', 'Cravatage'),
-        ('other_stable', 'Autre stable'),
-        ('other', 'Autre')], string="Type d'ancrage")
-    other_anchor_type = fields.Char("Autre Type d'ancrage")
+    soil_support_data_id = fields.Many2one('prestation.soil.support.data', string="Données relatives au sol ou de support d'implantation ")
+    anchor_type_id = fields.Many2one('prestation.anchor.type', "Type d'ancrage")
     ankles_type = fields.Selection([
         ('nylon_ankles', 'Chevilles en nylon'), 
         ('expansion_ankles', 'Chevilles à expansion'), 

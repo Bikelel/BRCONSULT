@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_prestation_motif_rs_list" model="ir.ui.view">
+            <field name="name">prestation.motif.rs.list</field>
+            <field name="model">prestation.motif.rs</field>
+            <field name="arch" type="xml">
+                <tree string="Motif" multi_edit="1" editable="top">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_prestation_motif_rs" model="ir.actions.act_window">
+            <field name="name">Motif de remise en service</field>
+            <field name="res_model">prestation.motif.rs</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem name="Motif de remise en service" 
+              id="br_consult_menu_prestation_motif_rs" 
+              parent="br_consult_settings_menu"
+              sequence="50"
+              action="action_prestation_motif_rs"/>
+
+  </data>
+</odoo>

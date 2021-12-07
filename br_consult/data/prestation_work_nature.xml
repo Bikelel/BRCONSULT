@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.work.nature" id="prestation_work_nature1">
+        <field name="name">Ravalement de façade</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.work.nature" id="prestation_work_nature2">
+        <field name="name">Zinguerie en façade</field>
+        <field name="sequence">2</field>
+    </record>
+    <record model="prestation.work.nature" id="prestation_work_nature3">
+        <field name="name">Couverture en toiture</field>
+        <field name="sequence">3</field>
+    </record>
+    <record model="prestation.work.nature" id="prestation_work_nature4">
+        <field name="name">Bardage</field>
+        <field name="sequence">4</field>
+    </record>
+    <record model="prestation.work.nature" id="prestation_work_nature5">
+        <field name="name">Isolation thermique</field>
+        <field name="sequence">5</field>
+    </record>
+
+</odoo>

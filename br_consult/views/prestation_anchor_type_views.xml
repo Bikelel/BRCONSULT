@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_prestation_anchor_type_list" model="ir.ui.view">
+            <field name="name">prestation.anchor.type.list</field>
+            <field name="model">prestation.anchor.type</field>
+            <field name="arch" type="xml">
+                <tree string="Type d'ancrage" multi_edit="1" editable="top">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_prestation_anchor_type" model="ir.actions.act_window">
+            <field name="name">Type d'ancrage</field>
+            <field name="res_model">prestation.anchor.type</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem name="Type d'ancrage" 
+              id="br_consult_menu_prestation_anchor_type" 
+              parent="br_consult_settings_menu"
+              sequence="50"
+              action="action_prestation_anchor_type"/>
+
+  </data>
+</odoo>
