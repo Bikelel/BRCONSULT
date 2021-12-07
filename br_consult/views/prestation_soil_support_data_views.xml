@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_prestation_soil_support_data_list" model="ir.ui.view">
+            <field name="name">prestation.soil.support.data.list</field>
+            <field name="model">prestation.soil.support.data</field>
+            <field name="arch" type="xml">
+                <tree string="Données relatives au sol ou de support d'implantation" multi_edit="1" editable="top">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_prestation_soil_support_data" model="ir.actions.act_window">
+            <field name="name">Données relatives au sol ou de support d'implantation</field>
+            <field name="res_model">prestation.soil.support.data</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem name="Données relatives au sol ou de support d'implantation" 
+              id="br_consult_menu_prestation_soil_support_data" 
+              parent="br_consult_settings_menu"
+              sequence="50"
+              action="action_prestation_soil_support_data"/>
+
+  </data>
+</odoo>

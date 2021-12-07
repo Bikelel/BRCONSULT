@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.other.device" id="prestation_other_device1">
+        <field name="name">Filet</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.other.device" id="prestation_other_device2">
+        <field name="name">Polyane armé</field>
+        <field name="sequence">2</field>
+    </record>
+
+    <record model="prestation.other.device" id="prestation_other_device3">
+        <field name="name">Bardage</field>
+        <field name="sequence">3</field>
+    </record>
+    <record model="prestation.other.device" id="prestation_other_device4">
+        <field name="name">Bâche publicitaire</field>
+        <field name="sequence">4</field>
+    </record>
+</odoo>

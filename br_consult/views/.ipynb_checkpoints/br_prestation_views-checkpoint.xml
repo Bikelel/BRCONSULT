@@ -111,8 +111,8 @@
                             </page>
                             <page name='scope_mission' string="Périmètre de la mission" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
                                 <group>
-                                    <field name="motif_rs" attrs="{'invisible': ['|',('verification_type', 'not in', ['RS']), ('inspection_type', '!=', 'echafaudage')]}"/>
-                                    <field name="other_motif_rs" attrs="{'invisible': [('motif_rs', '!=', 'other')]}"/>
+                                    <field name="motif_rs_id" attrs="{'invisible': ['|',('verification_type', 'not in', ['RS']), ('inspection_type', '!=', 'echafaudage')]}"/>
+                                    
                                     <field name="contrat_ref" string="La mission est réalisée conformément au contrat réf"/>
                                     <field name="scope_mission_date" string="Date" />
                                 </group>
@@ -139,8 +139,7 @@
                                 <group string="Description générale">
                                     <field name="scaffolding_mark_ids" nolabel="1">
                                         <tree editable='bottom'>
-                                            <field name="mark"/>
-                                            <field name="other_mark"/>
+                                            <field name="mark_id"/>
                                             <field name="type"/>
                                             <field name="height"/>
                                             <field name="height_max"/>
@@ -150,7 +149,7 @@
                                     </field>
                                 </group>
                                 <group string="Spécificité de l’échafaudage">
-                                    <field name="scaffolding_characteristic_ids" nolabel="1">
+<!--                                     <field name="scaffolding_characteristic_ids" nolabel="1">
                                         <tree editable='bottom'>
                                             <field name="name" string="Caractéristique"/>
                                             <field name="is_presence"/>
@@ -159,7 +158,10 @@
                                             <field name="height"/>
                                             <field name="surface"/>
                                         </tree>
-                                    </field>
+                                    </field> -->
+                                    <group string="Plancher d’approche">
+                                        
+                                    </group>
                                 </group>
                                 <group string="Commantaires">
                                     <field name="comment_scaffolding_characteristic" nolabel="1"/>
@@ -169,8 +171,7 @@
                                 <group string="Examen d'adéquation">
                                     <field name="adequacy_exam_ids" nolabel="1">
                                         <tree editable='bottom'>
-                                            <field name="works_nature"/>
-                                            <field name="other_nature"/>
+                                            <field name="works_nature_id"/>
                                             <field name="precision"/>
                                             <field name="is_examined"/>
                                         </tree>
@@ -179,8 +180,8 @@
                                 <group string="Dispositif de protection">
                                     <field name="is_pare_gravats"/>
                                     <field name="is_other_device"/>
-                                    <field name="other_device" attrs="{'invisible':[('is_other_device', '!=', 'yes')]}"/>
-                                    <field name="other_device_char" attrs="{'invisible':[('other_device', '!=', 'other')]}"/>
+                                    <field name="other_device_id" attrs="{'invisible':[('is_other_device', '!=', 'yes')]}"/>
+                                    
                                 </group>
                                 <group string="Charge d'exploitation de l'échafaudage par défaut">
                                     <field name="scaffolding_operating_load_ids" nolabel="1">
@@ -212,13 +213,12 @@
                                     <field name="maintenance_log"/>
                                 </group>
                                 <group string="Données relatives au sol ou de support d'implantation">
-                                    <field name="soil_support_data" string="Choix"/>
-                                    <field name="other_soil_support_data" attrs="{'invisible':[('soil_support_data', '!=', 'other')]}"/>
+                                    <field name="soil_support_data_id" string="Choix"/>
+                                    
                                 </group>
                                 <group string="Données aux ancrages">
-                                    <field name="anchor_type"/>
-                                    <field name="other_anchor_type" attrs="{'invisible':[('anchor_type', '!=', 'other')]}"/>
-                                    <field name="ankles_type" attrs="{'invisible':[('anchor_type', '!=', 'ankles_ring')]}"/>
+                                    <field name="anchor_type_id"/>
+                                    <field name="ankles_type" attrs="{'invisible':[('anchor_type_id', '!=', 1)]}"/>
                                     <field name="anchor_data_number"/>
                                     <field name="anchor_data_theoretical_number"/>
                                     <field name="anchor_data_difference_number"/>

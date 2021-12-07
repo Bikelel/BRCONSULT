@@ -14,3 +14,9 @@ from . import res_partner
 from . import prestation_observation
 from . import prestation_verification_point
 from . import prestation_constat
+from . import prestation_motif_rs
+from . import prestation_other_device
+from . import prestation_soil_support_data
+from . import prestation_anchor_type
+from . import prestation_work_nature
+from . import prestation_mark

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.soil.support.data" id="prestation_soil_support_data1">
+        <field name="name">Béton</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.soil.support.data" id="prestation_soil_support_data2">
+        <field name="name">Bitume</field>
+        <field name="sequence">2</field>
+    </record>
+    <record model="prestation.soil.support.data" id="prestation_soil_support_data3">
+        <field name="name">Terre végétale</field>
+        <field name="sequence">3</field>
+    </record>
+    <record model="prestation.soil.support.data" id="prestation_soil_support_data4">
+        <field name="name">Toiture</field>
+        <field name="sequence">4</field>
+    </record>
+    <record model="prestation.soil.support.data" id="prestation_soil_support_data5">
+        <field name="name">Murette et casquette</field>
+        <field name="sequence">5</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.mark" id="prestation_mark1">
+        <field name="name">Layher</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.mark" id="prestation_mark2">
+        <field name="name">Comabi</field>
+        <field name="sequence">2</field>
+    </record>
+    <record model="prestation.mark" id="prestation_mark3">
+        <field name="name">Altrad plettac</field>
+        <field name="sequence">3</field>
+    </record>
+    
+</odoo>

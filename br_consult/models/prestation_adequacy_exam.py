@@ -9,15 +9,7 @@ class PrestationAdequacyExam(models.Model):
 
     name = fields.Char("Name")
     prestation_id = fields.Many2one('prestation.prestation', 'Prestation')
-    works_nature = fields.Selection([
-        ('facelift', 'Ravalement de façade'),
-        ('facade_zinc', 'Zinguerie en façade'),
-        ('roof_covering', 'Couverture en toiture'),
-        ('cladding', 'Bardage'),
-        ('thermal_insulation', 'Isolation thermique'),
-        ('other', 'Autre')], string="Nature des travaux")
-    
-    other_nature = fields.Char("Autre nature")
+    works_nature_id = fields.Many2one('prestation.work.nature', string="Nature des travaux")
     precision = fields.Char("Précision")
     is_examined = fields.Selection([
         ('yes', 'Oui'),

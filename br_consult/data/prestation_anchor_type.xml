@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.anchor.type" id="prestation_anchor_type1">
+        <field name="name">Chevilles + anneau</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.anchor.type" id="prestation_anchor_type2">
+        <field name="name">Etrésillons</field>
+        <field name="sequence">2</field>
+    </record>
+    <record model="prestation.anchor.type" id="prestation_anchor_type3">
+        <field name="name">Cravatage</field>
+        <field name="sequence">3</field>
+    </record>
+    <record model="prestation.anchor.type" id="prestation_anchor_type4">
+        <field name="name">Autre stable</field>
+        <field name="sequence">4</field>
+    </record>
+
+</odoo>

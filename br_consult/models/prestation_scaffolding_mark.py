@@ -9,13 +9,7 @@ class PrestationScaffoldingMark(models.Model):
 
     name = fields.Char("Name")
     prestation_id = fields.Many2one('prestation.prestation', 'Prestation')
-    mark = fields.Selection([
-        ('layher', 'Layher'),
-        ('comabi', 'Comabi'),
-        ('altrad_plettac', 'Altrad plettac'),
-        ('other', 'Autre')], copy=False, string="Marque")
-    
-    other_mark = fields.Char("Autre marque")
+    mark_id = fields.Many2one('prestation.mark', 'Marque')
     type = fields.Char("Type")
     height = fields.Float("Hauteur de niveau 1")
     height_max = fields.Float("Hauteur maxi (m2)")
