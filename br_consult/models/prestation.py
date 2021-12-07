@@ -12,7 +12,7 @@ class Prestation(models.Model):
         phase1 = self.env['prestation.stage'].search([('state', '=', 'phase1')], limit=1)
         return phase1.id
 
-    name = fields.Char("N° Rapport", default=lambda self: 'New')
+    name = fields.Char("N° Rapport", default=lambda self: 'New', copy=False)
     partner_id = fields.Many2one('res.partner', string="Entreprise")
     inspection_type = fields.Selection([
         ('echafaudage', 'Echafaudage'),

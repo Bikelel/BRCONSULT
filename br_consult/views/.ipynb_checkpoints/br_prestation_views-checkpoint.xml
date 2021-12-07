@@ -94,15 +94,15 @@
                                 </group>
                                 <group string="Conformité de l’installation">
                                     <group>
-                                        <field name="favorable_opinion" attrs="{'readonly':[('state','!=','phase3')]}"/>
-                                        <field name="opinion_with_observation" attrs="{'readonly':[('state','!=','phase3')]}"/>
+                                        <field name="favorable_opinion"/>
+                                        <field name="opinion_with_observation"/>
                                     </group>
                                     <group>
-                                        <field name="defavorable_opinion" attrs="{'readonly':[('state','!=','phase3')]}"/>
+                                        <field name="defavorable_opinion"/>
                                     </group>
                                 </group>
                                 <group string="Commantaires">
-                                    <field name="comment_observation_fiche" attrs="{'readonly':[('state','!=','phase3')]}" nolabel="1"/>
+                                    <field name="comment_observation_fiche" nolabel="1"/>
                                 </group>
                                 <group string="Visa de l’inspecteur technique">
                                     <group>
@@ -220,7 +220,7 @@
                                 <group string="Données relatives à la nature du bâchage éventuel">
                                     <field name="covering_nature_data" string="Choix"/>
                                 </group>
-                                <group string="Examen de l'etat de conservation">
+                                <group string="Examen de l'etat de conservation" class="exam_etat_satisfaction">
                                     <field name="presence_correct_installation"/>
                                     <field name="permanent_deformation_absence"/>
                                     <field name="presence_fixing"/>
