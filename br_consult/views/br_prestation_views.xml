@@ -127,7 +127,7 @@
                                 <group string="Photographies">
                                     <field name="image_ids" nolabel="1">
                                         <tree>
-                                            <field name="image" nolabel="1"/>
+                                            <field name="image" nolabel="1" options='{"size":[0,90]}' widget='image'/>
                                         </tree>
                                     </field>
                                 </group>
@@ -190,6 +190,18 @@
                                         </tree>
                                     </field>
                                 </group>
+                                <group string="Constat (s)">
+                                    <field name="constat_adequacy_exam_ids" nolabel="1">
+                                        <tree editable='bottom'>
+                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'adequacy_exam')]"/>
+                                            <field name="reserve"/>
+                                            <field name="precision"/>
+                                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+                                            <field name="state"/>
+                                            <field name="date"/>
+                                        </tree>
+                                    </field>
+                                </group>
                                 <group string="Examen de montage et d'exploitation">
                                     <field name="security_register"/>
                                 </group>
@@ -220,6 +232,18 @@
                                 <group string="Données relatives à la nature du bâchage éventuel">
                                     <field name="covering_nature_data" string="Choix"/>
                                 </group>
+                                <group string="Constat (s)">
+                                    <field name="constat_assembly_exam_ids" nolabel="1">
+                                        <tree editable='bottom'>
+                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'assembly_exam')]"/>
+                                            <field name="reserve"/>
+                                            <field name="precision"/>
+                                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+                                            <field name="state"/>
+                                            <field name="date"/>
+                                        </tree>
+                                    </field>
+                                </group>
                                 <group string="Examen de l'etat de conservation" class="exam_etat_satisfaction">
                                     <field name="presence_correct_installation"/>
                                     <field name="permanent_deformation_absence"/>
@@ -234,6 +258,18 @@
                                     <field name="absence_loads_exceeding"/>
                                     <field name="lack_floor_space"/>
                                     
+                                </group>
+                                <group string="Constat (s)">
+                                    <field name="constat_conservation_state_exam_ids" nolabel="1">
+                                        <tree editable='bottom'>
+                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'conservation_state_exam')]"/>
+                                            <field name="reserve"/>
+                                            <field name="precision"/>
+                                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+                                            <field name="state"/>
+                                            <field name="date"/>
+                                        </tree>
+                                    </field>
                                 </group>
                                 
                             </page>

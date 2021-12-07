@@ -161,7 +161,10 @@ class Prestation(models.Model):
     location_diagram = fields.Binary("Schéma de l’emplacement")
     image_ids = fields.One2many('prestation.image', 'prestation_id' ,"Photographies")
     comment_scaffolding_photographic_location = fields.Html("Commentaires localisation photographique de l'échafaudage")
-
+    
+    constat_adequacy_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'adéquation")
+    constat_assembly_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de montage et d'installation")
+    constat_conservation_state_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de l'état de conservation")
 
     @api.model
     def create(self, vals):

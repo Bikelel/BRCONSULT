@@ -8,3 +8,7 @@ access_prestation_adequacy_exam_admin,prestation.adequacy.exam,model_prestation_
 access_prestation_scaffolding_class_admin,prestation.scaffolding.class,model_prestation_scaffolding_class,base.group_user,1,1,1,1
 access_prestation_scaffolding_operating_load_admin,prestation.scaffolding.operating.load,model_prestation_scaffolding_operating_load,base.group_user,1,1,1,1
 access_prestation_image_admin,prestation.image,model_prestation_image,base.group_user,1,1,1,1
+access_prestation_observation_admin,prestation.observation,model_prestation_observation,base.group_user,1,1,1,1
+access_prestation_verification_point_admin,prestation.verification.point,model_prestation_verification_point,base.group_user,1,1,1,1
+access_prestation_constat_admin,prestation.constat,model_prestation_constat,base.group_user,1,1,1,1
+

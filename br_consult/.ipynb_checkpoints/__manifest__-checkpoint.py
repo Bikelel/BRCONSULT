@@ -17,7 +17,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'portal'],
+    'depends': ['base', 'portal', 'contacts'],
 
     # always loaded
     'data': [
@@ -32,6 +32,8 @@
         'data/prestation_scaffolding_class.xml',
         'views/prestation_image_views.xml',
         'views/res_partner_views.xml',
+        'views/prestation_observation_views.xml',
+        'views/prestation_verification_point_views.xml',
     ],
     'installable': True,
     'auto_install': False,

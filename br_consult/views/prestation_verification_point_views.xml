@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_prestation_verification_point_list" model="ir.ui.view">
+            <field name="name">prestation.verification.point.list</field>
+            <field name="model">prestation.verification.point</field>
+            <field name="arch" type="xml">
+                <tree string="Point de vérification" multi_edit="1" editable="top">
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="observation_ids" widget="many2many_tags" domain="[('type', '=', type)]"/>
+                    <field name="observations"/>
+                    
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_prestation_verification_point" model="ir.actions.act_window">
+            <field name="name">Point de vérification</field>
+            <field name="res_model">prestation.verification.point</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem name="Point de vérification" 
+              id="br_consult_menu_prestation_verification_point" 
+              parent="br_consult_settings_menu"
+              sequence="35"
+              action="action_prestation_verification_point"/>
+
+  </data>
+</odoo>

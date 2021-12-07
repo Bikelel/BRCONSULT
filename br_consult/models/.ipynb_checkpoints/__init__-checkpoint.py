@@ -11,3 +11,6 @@ from . import prestation_scaffolding_class
 from . import prestation_scaffolding_operating_load
 from . import prestation_image
 from . import res_partner
+from . import prestation_observation
+from . import prestation_verification_point
+from . import prestation_constat

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_prestation_observation_list" model="ir.ui.view">
+            <field name="name">prestation.observation.list</field>
+            <field name="model">prestation.observation</field>
+            <field name="arch" type="xml">
+                <tree string="Observation" multi_edit="1" editable="top">
+                    <field name="name"/>
+                    <field name="type"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_prestation_observation" model="ir.actions.act_window">
+            <field name="name">Observation</field>
+            <field name="res_model">prestation.observation</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem name="Observation" 
+              id="br_consult_menu_prestation_observation" 
+              parent="br_consult_settings_menu"
+              sequence="30"
+              action="action_prestation_observation"/>
+
+  </data>
+</odoo>
