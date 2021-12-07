@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.scaffolding.class" id="prestation_scaffolding_class1">
+        <field name="name">I</field>
+        <field name="sequence">1</field>
+        <field name="operating_overload">75</field>
+    </record>
+    <record model="prestation.scaffolding.class" id="prestation_scaffolding_class2">
+        <field name="name">II</field>
+        <field name="sequence">2</field>
+        <field name="operating_overload">150</field>
+    </record>
+    <record model="prestation.scaffolding.class" id="prestation_scaffolding_class3">
+        <field name="name">III</field>
+        <field name="sequence">3</field>
+        <field name="operating_overload">200</field>
+    </record>
+    <record model="prestation.scaffolding.class" id="prestation_scaffolding_class4">
+        <field name="name">IV</field>
+        <field name="sequence">4</field>
+        <field name="operating_overload">300</field>
+    </record>
+    <record model="prestation.scaffolding.class" id="prestation_scaffolding_class5">
+        <field name="name">V</field>
+        <field name="sequence">5</field>
+        <field name="operating_overload">450</field>
+    </record>
+    <record model="prestation.scaffolding.class" id="prestation_scaffolding_class6">
+        <field name="name">VI</field>
+        <field name="sequence">6</field>
+        <field name="operating_overload">600</field>
+    </record>
+</odoo>

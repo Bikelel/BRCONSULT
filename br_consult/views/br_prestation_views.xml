@@ -66,7 +66,6 @@
                         <group>
                             <group>
                                 <field name="inspection_type" required="1" />
-                                
                             </group>
                             <group>
                                 <field name="installation_type" attrs="{'invisible': [('inspection_type', '!=', 'levage')], 'required': [('inspection_type', '=', 'levage')]}"/>
@@ -112,6 +111,8 @@
                             </page>
                             <page name='scope_mission' string="Périmètre de la mission" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
                                 <group>
+                                    <field name="motif_rs" attrs="{'invisible': ['|',('verification_type', 'not in', ['RS']), ('inspection_type', '!=', 'echafaudage')]}"/>
+                                    <field name="other_motif_rs" attrs="{'invisible': [('motif_rs', '!=', 'other')]}"/>
                                     <field name="contrat_ref" string="La mission est réalisée conformément au contrat réf"/>
                                     <field name="scope_mission_date" string="Date" />
                                 </group>
@@ -119,8 +120,23 @@
                                     <field name="comment_scope_mission" nolabel="1"/>
                                 </group>
                             </page>
+                            <page name='scaffolding_photographic_location' string="Localisation photographique de l'échafaudage" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                                <group string="Schéma de l’emplacement">
+                                    <field name="location_diagram" nolabel="1" options='{"size":[0,90]}' widget='image'/>
+                                </group>
+                                <group string="Photographies">
+                                    <field name="image_ids" nolabel="1">
+                                        <tree>
+                                            <field name="image" nolabel="1"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Commantaires">
+                                    <field name="comment_scaffolding_photographic_location" nolabel="1"/>
+                                </group>
+                            </page>
                             <page name='scaffolding_characteristic' string="Caractéristique de l'échafaudage" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
-                                <group>
+                                <group string="Description générale">
                                     <field name="scaffolding_mark_ids" nolabel="1">
                                         <tree editable='bottom'>
                                             <field name="mark"/>
@@ -133,7 +149,7 @@
                                         </tree>
                                     </field>
                                 </group>
-                                <group>
+                                <group string="Spécificité de l’échafaudage">
                                     <field name="scaffolding_characteristic_ids" nolabel="1">
                                         <tree editable='bottom'>
                                             <field name="name" string="Caractéristique"/>
@@ -150,9 +166,78 @@
                                 </group>
                             </page>
                             <page name='exams' string="Examens" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                                <group string="Examen d'adéquation">
+                                    <field name="adequacy_exam_ids" nolabel="1">
+                                        <tree editable='bottom'>
+                                            <field name="works_nature"/>
+                                            <field name="other_nature"/>
+                                            <field name="precision"/>
+                                            <field name="is_examined"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Dispositif de protection">
+                                    <field name="is_pare_gravats"/>
+                                    <field name="is_other_device"/>
+                                    <field name="other_device" attrs="{'invisible':[('is_other_device', '!=', 'yes')]}"/>
+                                    <field name="other_device_char" attrs="{'invisible':[('other_device', '!=', 'other')]}"/>
+                                </group>
+                                <group string="Charge d'exploitation de l'échafaudage par défaut">
+                                    <field name="scaffolding_operating_load_ids" nolabel="1">
+                                        <tree editable='bottom'>
+                                            <field name="scaffolding_class_id" options="{'no_create': True}"/>
+                                            <field name="operating_overload"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Examen de montage et d'exploitation">
+                                    <field name="security_register"/>
+                                </group>
+                                <group string="Présentation du dossier du montage">
+                                    <field name="manufacturer_instructions"/>
+                                    <field name="execution_plan"/>
+                                    <field name="calculation_notice"/>
+                                    <field name="maintenance_log"/>
+                                </group>
+                                <group string="Données relatives au sol ou de support d'implantation">
+                                    <field name="soil_support_data" string="Choix"/>
+                                    <field name="other_soil_support_data" attrs="{'invisible':[('soil_support_data', '!=', 'other')]}"/>
+                                </group>
+                                <group string="Données aux ancrages">
+                                    <field name="anchor_type"/>
+                                    <field name="other_anchor_type" attrs="{'invisible':[('anchor_type', '!=', 'other')]}"/>
+                                    <field name="ankles_type" attrs="{'invisible':[('anchor_type', '!=', 'ankles_ring')]}"/>
+                                    <field name="anchor_data_number"/>
+                                    <field name="anchor_data_theoretical_number"/>
+                                    <field name="anchor_data_difference_number"/>
+                                </group>
+                                <group string="Données relatives aux réactions d'appuis au sol ou au support d’accueil">
+                                    <field name="ground_support_data" string="Choix"/>
+                                </group>
+                                <group string="Données relatives aux charges climatiques">
+                                    <field name="climatic_data" string="Valeur"/>
+                                </group>
+                                <group string="Données relatives à la nature du bâchage éventuel">
+                                    <field name="covering_nature_data" string="Choix"/>
+                                </group>
+                                <group string="Examen de l'etat de conservation">
+                                    <field name="presence_correct_installation"/>
+                                    <field name="permanent_deformation_absence"/>
+                                    <field name="presence_fixing"/>
+                                    <field name="absence_detectable_play"/>
+                                    <field name="good_behavior"/>
+                                    <field name="absence_disorder"/>
+                                    <field name="presence_wedging"/>
+                                    <field name="good_fixing"/>
+                                    <field name="maintaining_continuity"/>
+                                    <field name="visibility_indications"/>
+                                    <field name="absence_loads_exceeding"/>
+                                    <field name="lack_floor_space"/>
+                                    
+                                </group>
+                                
                             </page>
-                            <page name='scaffolding_photographic_location' string="localisation photographique de l'échafaudage" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
-                            </page>
+                            
                         </notebook>
                     </sheet>
                 </form>
