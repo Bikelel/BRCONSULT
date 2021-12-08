@@ -8,9 +8,7 @@
                 <tree string="Point de vérification" multi_edit="1" editable="top">
                     <field name="name"/>
                     <field name="type"/>
-                    <field name="observation_ids" widget="many2many_tags" domain="[('type', '=', type)]"/>
                     <field name="observations"/>
-                    
                 </tree>
             </field>
         </record>

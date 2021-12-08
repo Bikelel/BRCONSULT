@@ -20,6 +20,5 @@ from . import prestation_soil_support_data
 from . import prestation_anchor_type
 from . import prestation_work_nature
 from . import prestation_mark
-from . import prestation_approach_floor_width
 from . import prestation_localisation
 from . import prestation_characteristic
