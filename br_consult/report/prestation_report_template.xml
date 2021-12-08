@@ -108,21 +108,67 @@ La vérification journalière est à la charge du chef d’entreprise (Article 5
                     </div>
                 </div>
                 <div name="visa" style="margin-top:30px;">
-                        <table class='table'>
-                            <tr>
-                                <td style="width: 60%; border: 1px solid black;">
-                                    Commentaires:<br/>
-                                    <span t-field="doc.comment_observation_fiche"/>
-                                </td>
-                                <td style="width: 40%; border: 1px solid black;" class='text-center'>
-                                    Visa de <span t-field='doc.user_id'/><br/>
-                                    <img t-if="doc.user_id.visa_user" t-att-src="image_data_uri(doc.user_id.visa_user)" style="max-height: 80px;"/>
-                                    <br/>
-                                    BR CONSULT
-                                </td>
-                            </tr>
-                        </table>
+                    <table class='table'>
+                        <tr>
+                            <td style="width: 60%; border: 1px solid black;">
+                                Commentaires:<br/>
+                                <span t-field="doc.comment_observation_fiche"/>
+                            </td>
+                            <td style="width: 40%; border: 1px solid black;" class='text-center'>
+                                Visa de <span t-field='doc.user_id'/><br/>
+                                <img t-if="doc.user_id.visa_user" t-att-src="image_data_uri(doc.user_id.visa_user)" style="max-height: 80px;"/>
+                                <br/>
+                                BR CONSULT
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="border-radius:10px;border: 1px solid black; margin-top:30px; padding:15px">
+                    1) Périmètre de la mission
+                </div>
+                <div style="margin-top:30px;">
+La présente mission est réalisée conformément au contrat référencé A17 (dans sa dernière version)
+ Il s’agit d’une mission de MISE EN SERVICE (automatiquement) limitée à la vérification visuelle des zones de l’échafaudage accessibles en sécurité. <br/>
+
+L’examen d’adéquation repose sur les informations écrites, transmises par le client. <br/>
+
+Elle s’achève avec la remise du présent rapport.<br/>
+-	Les observations listent les non-conformités anomalies constatées par l’inspecteur, <br/>
+-	Les réserves listent les anomalies bloquantes (en gras dans le texte) qui motivent l’avis défavorable.<br/>
+-	Les commentaires précisent les conditions de l’inspection. <br/>
+
+En cas d’avis favorable avec observation(s), il est conseillé recommandé au chef d’entreprise de veiller à la levée des observations. Cette levée pourra être communiquée par courriel à l’adresse suivante controlebr@brconsult.fr et sera annexée au dossier.<br/>
+L’émission de tout nouveau rapport sera facturée.<br/>
+
+En cas d’avis défavorable, il est conseillé recommandé au chef d’entreprise de faire lever les observations réserves avant toute utilisation et d’en faire constater la levée par une personne compétente de son choix. A ce titre une nouvelle demande d’intervention est à transmettre  à l’adresse suivante controlebr@brconsult.fr .<br/>
+L’émission de tout nouveau rapport sera facturée. <br/>
+BR CONSULT, pour constater la levée des Observations réserves ayant entrainées l’avis défavorable. Cependant, cette nouvelle demande ne rentre pas dans le périmètre de la présente mission.<br/>
+
+Hors mission :  <br/>
+- La vérification de la résistance des supports (essais d’arrachement , pression admissible par les sols) <br/>
+- La vérification des couples de serrage ; <br/>
+- L’émissions d’un avis sur les notes de calculs; <br/>
+- La conformité de l’installation au code de la route. <br/>
+- Les contrôles réglementaires des appareils de levage installés sur l’échafaudage; <br/>
+
+                </div>
+                <div style="border-radius:10px;border: 1px solid black; margin-top:30px; padding:15px">
+                    2) Localisation, schéma et photographies de l’échafaudage
+                </div>
+                <div style="margin-top:30px;">
+                    Schéma <br/>
+                    <img t-if="doc.location_diagram" t-att-src="image_data_uri(doc.location_diagram)" style="max-height: 300px;"/>
+                </div>
+                <div style="margin-top:30px;">
+                    Photos <br/>
+                    <div class='row text-center' >
+                        <t t-foreach="doc.image_ids" t-as="image">
+                            <div class='col-6' style="padding:15px;"><img t-if="image.image" t-att-src="image_data_uri(image.image)" style="max-height: 200px;"/></div>
+                        </t>
                     </div>
+                    <img t-if="doc.location_diagram" t-att-src="image_data_uri(doc.location_diagram)" style="max-height: 300px;"/>
+                </div>
+                
             </div>
         </t>
     </template>
