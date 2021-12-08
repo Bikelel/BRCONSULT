@@ -29,7 +29,7 @@ class PrestationScaffoldingCharacteristic(models.Model):
     @api.onchange('characteristic_id')
     def _onchange_characteristic_id(self):
         if self.characteristic_id:
-            self.is_lenght = self.characteristic_id.is_lenght
+            self.is_length = self.characteristic_id.is_length
             self.is_width = self.characteristic_id.is_width
             self.is_height = self.characteristic_id.is_height
             self.is_surface = self.characteristic_id.is_surface

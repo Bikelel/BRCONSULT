@@ -5,7 +5,7 @@
             <field name="name">prestation.localisation.list</field>
             <field name="model">prestation.localisation</field>
             <field name="arch" type="xml">
-                <tree string="Marque" multi_edit="1" editable="top">
+                <tree string="Localisation" multi_edit="1" editable="top">
                     <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     
@@ -14,12 +14,12 @@
         </record>
 
         <record id="action_prestation_localisation" model="ir.actions.act_window">
-            <field name="name">Marque</field>
+            <field name="name">Localisation</field>
             <field name="res_model">prestation.localisation</field>
             <field name="view_mode">tree</field>
         </record>
 
-        <menuitem name="Marque" 
+        <menuitem name="Localisation" 
               id="br_consult_menu_prestation_localisation" 
               parent="br_consult_settings_menu"
               sequence="50"

@@ -159,25 +159,12 @@
                                             <field name="surface" attrs="{'readonly': [('is_surface', '=', False)]}"/>
                                             
                                             <field name="localisation_id"/>
-                                            <field name="is_length" invisible="0"/>
-                                            <field name="is_width" invisible="0"/>
-                                            <field name="is_height" invisible="0"/>
-                                            <field name="is_surface" invisible="0"/>
+                                            <field name="is_length" invisible="1"/>
+                                            <field name="is_width" invisible="1"/>
+                                            <field name="is_height" invisible="1"/>
+                                            <field name="is_surface" invisible="1"/>
                                         </tree>
                                     </field>
-<!--                                 <group string="Plancher d’approche" col='6'>
-                                    <field name="approach_floor_presence" string='Présence'/>
-                                    <field name="approach_floor_width_id" string='Largeur'/>
-                                    <field name="approach_floor_localisation_id" string='Localisation'/>
-                                    
-                                </group>
-                                <group string="Plancher d’approche" col='8'>
-                                    <field name="cross_walk_presence" string='Présence'/>
-                                    <field name="cross_walk_width_id" string='Largeur'/>
-                                    <field name="cross_walk_height" string='Hauteur'/>
-                                    
-                                    <field name="cross_walk_localisation_id" string='Localisation'/>
-                                </group> -->
                                 <group string="Commantaires">
                                     <field name="comment_scaffolding_characteristic" nolabel="1"/>
                                 </group>
