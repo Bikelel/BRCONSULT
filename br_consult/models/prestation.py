@@ -68,7 +68,7 @@ class Prestation(models.Model):
     opinion_with_observation = fields.Boolean('Avec observation')
     defavorable_opinion = fields.Boolean('Avis defavorable')
     comment_observation_fiche = fields.Html("Commentaires Observation")
-    visa_user_id = fields.Binary('Visa inspecteur', related='user_id.visa_user_id')
+    visa_user = fields.Binary('Visa inspecteur', related='user_id.visa_user')
     contrat_ref = fields.Char('Contrat réf')
     motif_rs_id = fields.Many2one('prestation.motif.rs', string="Motif de remise en service")
     scope_mission_date = fields.Date('Date Périmètre de la mission')

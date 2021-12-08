@@ -84,6 +84,45 @@ La vérification journalière est à la charge du chef d’entreprise (Article 5
 
                     </div>
                 </div>
+                <div name="opinion" style="margin-top:30px;border: 1px solid black; padding:30px" class="row">
+                    
+                    <div class="col-6">
+                        <div>
+                            <input type="checkbox" t-att-checked="'checked' if doc.favorable_opinion else None"/> AVIS FAVORABLE
+                        </div>
+                        <div style="margin-top:10px;">
+                            <input type="checkbox" t-att-checked="'checked' if doc.opinion_with_observation else None"/> Avec observation(s)
+                            <t t-if="doc.defavorable_opinion">
+                            <br/>
+                            Levée d’observations recommandée
+                        </t>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <input type="checkbox" t-att-checked="'checked' if doc.defavorable_opinion else None"/> AVIS DEFAVORABLE
+                        <t t-if="doc.defavorable_opinion">
+                            <br/>
+                            Levée de réserves recommandée)
+                        </t>
+                        
+                    </div>
+                </div>
+                <div name="visa" style="margin-top:30px;">
+                        <table class='table'>
+                            <tr>
+                                <td style="width: 60%; border: 1px solid black;">
+                                    Commentaires:<br/>
+                                    <span t-field="doc.comment_observation_fiche"/>
+                                </td>
+                                <td style="width: 40%; border: 1px solid black;" class='text-center'>
+                                    Visa de <span t-field='doc.user_id'/><br/>
+                                    <img t-if="doc.user_id.visa_user" t-att-src="image_data_uri(doc.user_id.visa_user)" style="max-height: 80px;"/>
+                                    <br/>
+                                    BR CONSULT
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
             </div>
         </t>
     </template>

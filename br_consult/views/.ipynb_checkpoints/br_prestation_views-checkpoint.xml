@@ -108,6 +108,7 @@
                                 </group>
                                 <group string="Visa de l’inspecteur technique">
                                     <group>
+                                        <field name='visa_user' widget='image'/>
                                     </group>
                                 </group>
                             </page>
