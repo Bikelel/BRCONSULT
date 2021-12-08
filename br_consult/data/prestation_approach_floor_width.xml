@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.approach.floor.width" id="prestation_approach_floor_width1">
+        <field name="name">0,30 m</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.approach.floor.width" id="prestation_approach_floor_width2">
+        <field name="name">0,70 m</field>
+        <field name="sequence">2</field>
+    </record>
+    <record model="prestation.approach.floor.width" id="prestation_approach_floor_width3">
+        <field name="name">0,80 m</field>
+        <field name="sequence">3</field>
+    </record>
+    <record model="prestation.approach.floor.width" id="prestation_approach_floor_width4">
+        <field name="name">1,00 m</field>
+        <field name="sequence">4</field>
+    </record>
+    
+</odoo>

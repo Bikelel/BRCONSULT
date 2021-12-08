@@ -148,21 +148,36 @@
                                         </tree>
                                     </field>
                                 </group>
-                                <group string="Spécificité de l’échafaudage">
-<!--                                     <field name="scaffolding_characteristic_ids" nolabel="1">
+                                <group string="Spécificité de l’échafaudage" />
+                                    <field name="scaffolding_characteristic_ids" nolabel="1">
                                         <tree editable='bottom'>
-                                            <field name="name" string="Caractéristique"/>
+                                            <field name="characteristic_id"/>
                                             <field name="is_presence"/>
-                                            <field name="length"/>
-                                            <field name="width"/>
-                                            <field name="height"/>
-                                            <field name="surface"/>
+                                            <field name="length" attrs="{'readonly': [('is_length', '=', False)]}"/>
+                                            <field name="width" attrs="{'readonly': [('is_width', '=', False)]}"/>
+                                            <field name="height" attrs="{'readonly': [('is_height', '=', False)]}"/>
+                                            <field name="surface" attrs="{'readonly': [('is_surface', '=', False)]}"/>
+                                            
+                                            <field name="localisation_id"/>
+                                            <field name="is_length" invisible="0"/>
+                                            <field name="is_width" invisible="0"/>
+                                            <field name="is_height" invisible="0"/>
+                                            <field name="is_surface" invisible="0"/>
                                         </tree>
-                                    </field> -->
-                                    <group string="Plancher d’approche">
-                                        
-                                    </group>
+                                    </field>
+<!--                                 <group string="Plancher d’approche" col='6'>
+                                    <field name="approach_floor_presence" string='Présence'/>
+                                    <field name="approach_floor_width_id" string='Largeur'/>
+                                    <field name="approach_floor_localisation_id" string='Localisation'/>
+                                    
                                 </group>
+                                <group string="Plancher d’approche" col='8'>
+                                    <field name="cross_walk_presence" string='Présence'/>
+                                    <field name="cross_walk_width_id" string='Largeur'/>
+                                    <field name="cross_walk_height" string='Hauteur'/>
+                                    
+                                    <field name="cross_walk_localisation_id" string='Localisation'/>
+                                </group> -->
                                 <group string="Commantaires">
                                     <field name="comment_scaffolding_characteristic" nolabel="1"/>
                                 </group>

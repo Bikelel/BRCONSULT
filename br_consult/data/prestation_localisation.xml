@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.localisation" id="prestation_localisation1">
+        <field name="name">Tous</field>
+        <field name="sequence">1</field>
+    </record>
+</odoo>

@@ -12,6 +12,19 @@ class Prestation(models.Model):
         phase1 = self.env['prestation.stage'].search([('state', '=', 'phase1')], limit=1)
         return phase1.id
 
+    def get_default_characteristic(self):
+        attributes = self.env['prestation.characteristic'].search([('is_default', '=', True)])
+        lines = []
+        for line in attributes:
+            lines.append((0, 0, {'name': line.name,
+                                 'characteristic_id': line.id,
+                                 'is_length': line.is_length,
+                                 'is_width': line.is_width,
+                                 'is_height': line.is_height,
+                                 'is_surface': line.is_surface,
+                                }))
+        return lines
+
     name = fields.Char("N° Rapport", default=lambda self: 'New', copy=False)
     partner_id = fields.Many2one('res.partner', string="Entreprise")
     inspection_type = fields.Selection([
@@ -60,15 +73,7 @@ class Prestation(models.Model):
     scope_mission_date = fields.Date('Date Périmètre de la mission')
     comment_scope_mission = fields.Html("Commentaires Périmètre de la mission")
     scaffolding_mark_ids = fields.One2many('prestation.scaffolding.mark', 'prestation_id', 'Marques')
-    #scaffolding_characteristic_ids = fields.One2many('prestation.scaffolding.characteristic', 'prestation_id', 'Caractéristiques')
-#     approach_floor_presence = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Présence plancher d'approche")
-#     approach_floor_width = fields.Selection([
-#         ('0_3', '0,3 m'), 
-#         ('0_7', '0,7 m'),
-#         ('0_8', '0,8 m'),
-#         ('1', '1 m'),
-#         ('other', 'Autre')
-#     ], string="Largeur plancher d'approche")
+    scaffolding_characteristic_ids = fields.One2many('prestation.scaffolding.characteristic', 'prestation_id', string="Caracteristiques", default=get_default_characteristic)
     
     comment_scaffolding_characteristic = fields.Html("Commentaires Caractéristique de l'échafaudage")
     adequacy_exam_ids = fields.One2many('prestation.adequacy.exam', 'prestation_id', "Examen d'adéquation")
@@ -150,7 +155,7 @@ class Prestation(models.Model):
     constat_adequacy_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'adéquation")
     constat_assembly_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de montage et d'installation")
     constat_conservation_state_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de l'état de conservation")
-
+    
     @api.model
     def create(self, vals):
         if 'company_id' in vals:
@@ -176,8 +181,11 @@ class Prestation(models.Model):
             else:
                 code_verification_type = ''
             vals['name'] = partner_ref + '-' +code_installation_type+ '-' + code_verification_type + '-' + self.env['ir.sequence'].next_by_code('prestation.prestation') or _('New')
-        
+#         characteristics = self.get_default_characteristic()
+#         vals.update({'scaffolding_characteristic_ids': characteristics})
+
         result = super(Prestation, self).create(vals)
+        
         return result
     
     @api.model
@@ -206,8 +214,7 @@ class Prestation(models.Model):
     @api.onchange('is_other_device')
     def onchange_is_other_device(self):
         if self.is_other_device == 'no':
-            self.other_device = None
-            self.other_device_char = ''
+            self.other_device_id = None
     
     @api.depends('anchor_data_number', 'is_other_device')
     def compute_anchor_data_number(self):
