@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>    
+    <template id="external_layout_standard_br_consult" inherit_id="web.external_layout_standard">
+        <xpath expr="//div[hasclass('row')]" position="replace">
+            <div class='row'>
+                <div class="col-4 mb4">
+                    <t t-if='report_name_brconsult'>
+                        <span t-esc='report_name_brconsult' />
+                    </t>
+                </div>
+                <div class="col-4 mb4 text-center">
+                    <t t-if='partner_id_name_brconsult'>
+                        <span t-esc='partner_id_name_brconsult' />
+                    </t>
+                </div>
+                <div class="col-4 mb4 text-right" >
+                    <t t-if='site_address_brconsult'>
+                        <span t-esc='site_address_brconsult' />
+                    </t>
+                </div>
+            </div>
+        </xpath>
+        <xpath expr="//div[@name='company_address']" position="attributes">
+            <attribute name="t-if">1==0</attribute>
+        </xpath>
+
+    </template>
+</odoo>

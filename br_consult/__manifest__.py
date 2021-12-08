@@ -49,6 +49,8 @@
         'views/prestation_localisation_views.xml',
         'data/prestation_characteristic.xml',
         'views/prestation_characteristic_views.xml',
+        'report/prestation_report_template.xml',
+        'report/external_layout_brconsult.xml',
         
     ],
     'installable': True,

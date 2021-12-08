@@ -26,6 +26,7 @@ class Prestation(models.Model):
         return lines
 
     name = fields.Char("N° Rapport", default=lambda self: 'New', copy=False)
+    company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
     partner_id = fields.Many2one('res.partner', string="Entreprise")
     inspection_type = fields.Selection([
         ('echafaudage', 'Echafaudage'),
