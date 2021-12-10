@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id="report_prestation_document">
+        <t t-call="web.external_layout">
+            <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)" />
+            <!--   HEADER           -->
+            <div>
+                <t t-set="report_name_brconsult" t-value='doc.name'/>
+                <t t-set="partner_id_name_brconsult" t-value='doc.partner_id.name' t-if='doc.partner_id'/>
+                <t t-set="site_address_brconsult" t-value='doc.site_address' t-if='doc.site_address'/>
+                <div class='row'>
+                    <div class='col-2'>
+                        <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" style="max-height: 100px;"/>
+                    </div>
+                    <div class='col-10 text-center' style="border-radius:10px;border: 1px solid black;">
+                        <div style="color:#5F5F5F;font-weight:bold;font-size:16px;"> <span>RAPPORT D’INSPECTION</span></div>
+                        <div style="color:#C00000;font-weight:bold;font-size:20px;"><span t-esc="doc.title_label"/></div>
+                        <div style="color:#5F5F5F;font-weight:bold;font-size:16px;">
+                            <span>Type de mission :</span>
+                            <span t-field="doc.verification_type" />
+                        </div>
+                        <div>
+                            <span t-field="doc.message_label" style="color:#5F5F5F;font-weight:bold; font-size:12px; margin: 10px 10px 10px;"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--   Body   -->
+            <div style="margin-top: 20px; font-size:12px;">
+                <div class="row" style="font-size:11px;">
+                    <div class='col-9'>
+                        <t t-if="doc.name">
+                            <span> N° Rapport: </span>
+                            <span t-field="doc.name"/>
+                        </t>
+                    </div>
+                    <div class='col-3' style="margin-left:40px;">
+                        <t t-if="doc.date">
+                            <span> Fait à </span>
+                            <span t-field="doc.company_id.city" />, <br/>
+                            Le <span t-field="doc.date"/>
+                        </t>
+                    </div>
+                </div>
+                <div name="table_fiche" style="margin-top:20px;">
+                    <table class="table" style="border: 1px solid black;">
+                        <tr style="border: 1px solid black;">
+                            <td style="width: 50%; border: 1px solid black;">
+                                Entreprise : <span t-field="doc.partner_id"/>
+                            </td>
+                            <td style="width: 50%; border: 1px solid black;">
+                                Date et heure de vérification : <span t-field="doc.verification_date"/>
+                            </td>
+                        </tr>
+                        <tr style="border: 1px solid black;">
+                            <td style="width: 50%; border: 1px solid black;">
+                                Représenté par : <span t-field="doc.partner_contact"/>
+                            </td>
+                            <td style="width: 50%; border: 1px solid black;">
+                                Vérificateur : <span t-field="doc.user_id"/>
+                            </td>
+                        </tr>
+                        <tr style="border: 1px solid black;">
+                            <td style="width: 50%; border: 1px solid black;">
+                                Adresse du chantier : <span t-field="doc.site_address"/><br/>
+                                Localisation : <span t-field="doc.site_localisation"/>
+                            </td>
+                            <td style="width: 50%; border: 1px solid black;">
+                                Nom de la personne présente lors de notre intervention : <span t-field="doc.prensent_contact"/><br/>
+                                Surface d’échafaudage annoncée (en m²) : <span t-field="doc.scaffolding_surface"/><br/>
+                                Surface d’échafaudage inspectée (en m²) = <span t-field="doc.inspected_scaffolding_surface"/>
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div name="conformite_installation" class="text-center" style="margin-top:30px;">
+                    <div style="font-weight:bold;font-size:16px;">CONFORMITE DE L’INSTALLATION</div>
+                    <div style="font-size:11px;">
+                        Rapport valable 3 mois. Au-delà, prévoir une vérification périodique (Article 6, Arrêté du 21/12/2004).<br/>
+Prévoir une vérification de remise en service, dans les cas cités par l’article 4 de l’arrêté du 21/12/2004.<br/>
+La vérification journalière est à la charge du chef d’entreprise (Article 5, Arrêté du 21/12/2004).
+
+                    </div>
+                </div>
+                <div name="opinion" style="margin-top:30px;border: 1px solid black; padding:30px" class="row">
+                    
+                    <div class="col-6">
+                        <div>
+                            <input type="checkbox" t-att-checked="'checked' if doc.favorable_opinion else None"/> AVIS FAVORABLE
+                        </div>
+                        <div style="margin-top:10px;">
+                            <input type="checkbox" t-att-checked="'checked' if doc.opinion_with_observation else None"/> Avec observation(s)
+                            <t t-if="doc.defavorable_opinion">
+                            <br/>
+                            Levée d’observations recommandée
+                        </t>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <input type="checkbox" t-att-checked="'checked' if doc.defavorable_opinion else None"/> AVIS DEFAVORABLE
+                        <t t-if="doc.defavorable_opinion">
+                            <br/>
+                            Levée de réserves recommandée)
+                        </t>
+                        
+                    </div>
+                </div>
+                <div name="visa" style="margin-top:30px;">
+                    <table class='table'>
+                        <tr>
+                            <td style="width: 60%; border: 1px solid black;">
+                                Commentaires:<br/>
+                                <span t-field="doc.comment_observation_fiche"/>
+                            </td>
+                            <td style="width: 40%; border: 1px solid black;" class='text-center'>
+                                Visa de <span t-field='doc.user_id'/><br/>
+                                <img t-if="doc.user_id.visa_user" t-att-src="image_data_uri(doc.user_id.visa_user)" style="max-height: 80px;"/>
+                                <br/>
+                                BR CONSULT
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="page-break-after: always;"/>
+                <div style="border-radius:10px;border: 1px solid black; margin-top:30px; padding:15px">
+                    1) Périmètre de la mission
+                </div>
+                <div style="margin-top:30px;">
+La présente mission est réalisée conformément au contrat référencé A17 (dans sa dernière version)
+ Il s’agit d’une mission de MISE EN SERVICE (automatiquement) limitée à la vérification visuelle des zones de l’échafaudage accessibles en sécurité. <br/>
+
+L’examen d’adéquation repose sur les informations écrites, transmises par le client. <br/>
+
+Elle s’achève avec la remise du présent rapport.<br/>
+-	Les observations listent les non-conformités anomalies constatées par l’inspecteur, <br/>
+-	Les réserves listent les anomalies bloquantes (en gras dans le texte) qui motivent l’avis défavorable.<br/>
+-	Les commentaires précisent les conditions de l’inspection. <br/>
+
+En cas d’avis favorable avec observation(s), il est conseillé recommandé au chef d’entreprise de veiller à la levée des observations. Cette levée pourra être communiquée par courriel à l’adresse suivante controlebr@brconsult.fr et sera annexée au dossier.<br/>
+L’émission de tout nouveau rapport sera facturée.<br/>
+
+En cas d’avis défavorable, il est conseillé recommandé au chef d’entreprise de faire lever les observations réserves avant toute utilisation et d’en faire constater la levée par une personne compétente de son choix. A ce titre une nouvelle demande d’intervention est à transmettre  à l’adresse suivante controlebr@brconsult.fr .<br/>
+L’émission de tout nouveau rapport sera facturée. <br/>
+BR CONSULT, pour constater la levée des Observations réserves ayant entrainées l’avis défavorable. Cependant, cette nouvelle demande ne rentre pas dans le périmètre de la présente mission.<br/>
+
+Hors mission :  <br/>
+- La vérification de la résistance des supports (essais d’arrachement , pression admissible par les sols) <br/>
+- La vérification des couples de serrage ; <br/>
+- L’émissions d’un avis sur les notes de calculs; <br/>
+- La conformité de l’installation au code de la route. <br/>
+- Les contrôles réglementaires des appareils de levage installés sur l’échafaudage; <br/>
+
+                </div>
+                <div style="border-radius:10px;border: 1px solid black; margin-top:30px; padding:15px">
+                    2) Localisation, schéma et photographies de l’échafaudage
+                </div>
+                <div style="margin-top:30px;">
+                    Schéma <br/>
+                    <img t-if="doc.location_diagram" t-att-src="image_data_uri(doc.location_diagram)" style="max-height: 300px;"/>
+                </div>
+                <div style="margin-top:30px;">
+                    Photos <br/>
+                    <div class='row text-center' >
+                        <t t-foreach="doc.image_ids" t-as="image">
+                            <div class='col-6' style="padding:15px;"><img t-if="image.image" t-att-src="image_data_uri(image.image)" style="max-height: 200px;"/></div>
+                        </t>
+                    </div>
+                    <img t-if="doc.location_diagram" t-att-src="image_data_uri(doc.location_diagram)" style="max-height: 300px;"/>
+                </div>
+                
+            </div>
+        </t>
+    </template>
+    <template id="report_prestation">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="br_consult.report_prestation_document" t-lang="doc.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+    
+    <record id="action_report_prestation" model="ir.actions.report">
+            <field name="name">Rapport prestation</field>
+            <field name="model">prestation.prestation</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">br_consult.report_prestation</field>
+            <field name="report_file">br_consult.report_prestation</field>
+            <field name="print_report_name">'Quotation - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="model_prestation_prestation"/>
+            <field name="binding_type">report</field>
+        </record>
+
+</odoo>

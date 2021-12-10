@@ -26,6 +26,7 @@ class Prestation(models.Model):
         return lines
 
     name = fields.Char("N° Rapport", default=lambda self: 'New', copy=False)
+    company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
     partner_id = fields.Many2one('res.partner', string="Entreprise")
     inspection_type = fields.Selection([
         ('echafaudage', 'Echafaudage'),
@@ -67,7 +68,7 @@ class Prestation(models.Model):
     opinion_with_observation = fields.Boolean('Avec observation')
     defavorable_opinion = fields.Boolean('Avis defavorable')
     comment_observation_fiche = fields.Html("Commentaires Observation")
-    visa_user_id = fields.Binary('Visa inspecteur', related='user_id.visa_user_id')
+    visa_user = fields.Binary('Visa inspecteur', related='user_id.visa_user')
     contrat_ref = fields.Char('Contrat réf')
     motif_rs_id = fields.Many2one('prestation.motif.rs', string="Motif de remise en service")
     scope_mission_date = fields.Date('Date Périmètre de la mission')
