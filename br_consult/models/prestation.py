@@ -83,11 +83,13 @@ class Prestation(models.Model):
     other_device_id = fields.Many2one('prestation.other.device', string='Autre dispositif')
     scaffolding_operating_load_ids = fields.One2many('prestation.scaffolding.operating.load', 'prestation_id', "Charge d'exploitation de l'échafaudage par défaut")
     security_register = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Registre de sécurité")
-    manufacturer_instructions = fields.Boolean("Notice constructeur")
+    assembly_file = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition du dossier de montage")
+    manufacturer_instructions = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition du otice constructeur")
     execution_plan = fields.Boolean("Plan d'exécution (PE)")
     calculation_notice = fields.Boolean("Notice de calcul (NDC)")
     maintenance_log = fields.Boolean("Carnet de maintenance")
-    soil_support_data_id = fields.Many2one('prestation.soil.support.data', string="Données relatives au sol ou de support d'implantation ")
+    soil_support_data_ids = fields.Many2many('prestation.soil.support.data', string="Données relatives au sol ou de support d'implantation")
+    anchor_support_data_ids = fields.Many2many('prestation.anchor.support.data', string="Nature des supports d’ancrage")
     anchor_type_id = fields.Many2one('prestation.anchor.type', "Type d'ancrage")
     ankles_type = fields.Selection([
         ('nylon_ankles', 'Chevilles en nylon'), 
@@ -231,3 +233,9 @@ class Prestation(models.Model):
                 rec.anchor_data_theoretical_number = anchor_data_theoretical_number
                 rec.anchor_data_difference_number = rec.anchor_data_number - anchor_data_theoretical_number
 
+    @api.onchange('assembly_file')
+    def onchange_assembly_file(self):
+        if self.assembly_file == 'no':
+            self.execution_plan = False
+            self.calculation_notice = False
+            self.manufacturer_instructions = False

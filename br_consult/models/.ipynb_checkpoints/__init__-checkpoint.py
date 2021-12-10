@@ -22,3 +22,4 @@ from . import prestation_work_nature
 from . import prestation_mark
 from . import prestation_localisation
 from . import prestation_characteristic
+from . import prestation_anchor_support_data
