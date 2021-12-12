@@ -212,13 +212,22 @@
                                     <field name="security_register"/>
                                 </group>
                                 <group string="Présentation du dossier du montage">
+                                    <field name="assembly_file"/>
+                                    
+                                    
+                                    <field name="execution_plan" attrs="{'invisible': [('assembly_file', '!=', 'yes')]}"/>
+                                    <field name="calculation_notice" attrs="{'invisible': [('assembly_file', '!=', 'yes')]}"/>
+                                    
+                                    <field name="maintenance_log" invisible="1"/>
                                     <field name="manufacturer_instructions"/>
-                                    <field name="execution_plan"/>
-                                    <field name="calculation_notice"/>
-                                    <field name="maintenance_log"/>
+                                    
                                 </group>
                                 <group string="Données relatives au sol ou de support d'implantation">
-                                    <field name="soil_support_data_id" string="Choix"/>
+                                
+                                    <field name="soil_support_data_ids" string="Choix" widget="many2many_tags"/>
+                                </group>
+                                <group string="Nature des supports d’ancrage">
+                                    <field name="anchor_support_data_ids" string="Choix" widget="many2many_tags"/>
                                     
                                 </group>
                                 <group string="Données aux ancrages">

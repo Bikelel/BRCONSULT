@@ -52,6 +52,8 @@
         'views/prestation_characteristic_views.xml',
         'report/prestation_report_template.xml',
         'report/external_layout_brconsult.xml',
+        'views/prestation_anchor_support_data_views.xml',
+        'data/prestation_anchor_support_data.xml',
         
     ],
     'installable': True,
