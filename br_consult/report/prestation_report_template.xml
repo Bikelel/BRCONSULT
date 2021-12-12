@@ -156,22 +156,34 @@ Hors mission :  <br/>
                 <div style="border-radius:10px;border: 1px solid black; margin-top:30px; padding:15px">
                     2) Localisation, schéma et photographies de l’échafaudage
                 </div>
-                <div style="margin-top:30px;" class="text-center">
+                <div style="margin-top:30px;">
                     Schéma <br/>
-                    <img t-if="doc.location_diagram" t-att-src="image_data_uri(doc.location_diagram)" style="max-height: 350px;"/>
+                    <img t-if="doc.location_diagram" t-att-src="image_data_uri(doc.location_diagram)" style="max-height: 350px;"  class='text-center'/>
                 </div>
                 <div style="margin-top:30px;">
                     Photos <br/>
-                    <div class='text-center' >
+                    <div class='text-center'>
+                        <t t-set="i" t-value="1" />
                         <t t-foreach="doc.image_ids" t-as="image">
-                            <div class='col-6' style="padding:15px;"><img t-if="image.image" t-att-src="image_data_uri(image.image)" style="max-height: 350px;"/></div>
+                            
+                            <div class='col-auto col-6' style="padding:15px;">
+                                <p><img t-if="image.image" t-att-src="image_data_uri(image.image)" style="max-height: 350px;"/></p>
+                                
+                                <span t-esc="i"/> 
+                               
+                                
+                            </div>
+<!--                             <t t-set="i" t-value="i+1"/>
+                            <t t-if="(i % 2) == 0">
+                                <br/>
+                            </t> -->
                         </t>
                     </div>
                 </div>
                 <div style="border-radius:10px;border: 1px solid black; margin-top:30px; padding:15px">
                     3) Caractéristiques de l’échafaudage
                 </div>
-                <table class='table' style="margin-top:30px;">
+                <table class='table' style="margin-top:30px;" border="1">
                     <thead>
                         <th>Marque</th>
                         <th>Type</th>
@@ -295,10 +307,10 @@ Art. 3 – I- « L’examen d’adéquation d’un échafaudage » consiste à v
                     <tbody>
                         <t t-foreach="doc.constat_adequacy_exam_ids" t-as="constat">
                             <tr>
-                                <td style="width: 20%;"><span t-field="constat.verification_point_id"/></td>
-                                <td style="width: 20%;"><span t-field="constat.reserve"/></td>
-                                <td style="width: 15%;"><span t-field="constat.precision"/></td>
-                                <td style="width: 30%;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-height: 100px;"/>
+                                <td ><span t-field="constat.verification_point_id"/></td>
+                                <td><span t-field="constat.reserve"/></td>
+                                <td><span t-field="constat.precision"/></td>
+                                <td style="width: 40%;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 160px;"/>
                                     </td>
                                 <td><span t-field="constat.state"/></td>
                                 <td><span t-field="constat.date"/></td>
@@ -340,12 +352,137 @@ Art. 3 – I- « L’examen d’adéquation d’un échafaudage » consiste à v
                     Mise à disposition du dossier de montage : <span t-field="doc.manufacturer_instructions"/>
                 </div>
                 <div>
-                    Nature du sol/support d’implantation : <span t-field="doc.soil_support_data_id"/>
+                     Nature du sol/support d’implantation : 
+                    <ul>
+                        <t t-foreach="doc.soil_support_data_ids" t-as="soil">
+                            <li><span t-field="soil.name"/></li>
+                        </t>
+                    </ul>
                 </div>
                 <div>
-                    Nature des supports d’ancrage : <span t-field="doc.soil_support_data_id"/>
+                    Nature des supports d’ancrage :
+                    <ul class="list-inline">
+                        <t t-foreach="doc.anchor_support_data_ids" t-as="anchor">
+                            <li><span t-field="anchor.name"/></li>
+                        </t>
+                    </ul>
                 </div>
-
+                <div>
+                    Données aux ancrages: 
+                    <div>Type d'ancrage : <span t-field="doc.anchor_type_id"/></div>
+                    <div t-if="doc.anchor_type_id and doc.anchor_type_id.id==1">Type de chevilles : <span t-field="doc.ankles_type"/></div>
+                    <div>Nombre constaté : <span t-field="doc.anchor_data_number"/></div>
+                    <div>Nombre théorique requis: <span t-field="doc.anchor_data_theoretical_number"/></div>
+                    <div>Différence : <span t-field="doc.anchor_data_difference_number"/></div>
+                </div>
+                <div>Données relatives aux réactions d'appuis au sol ou au support d’accueil: <span t-field="doc.ground_support_data"/></div>
+                <div>Données relatives aux charges climatiques: <span t-field="doc.climatic_data"/></div>
+                <div>Données relatives à la nature du bâchage éventuel: <span t-field="doc.covering_nature_data"/></div>
+                <div style="margin-top:20px;">
+                   • Constat(s):
+                </div>
+                <table class='table' style="margin-top:20px;">
+                    <thead>
+                        <th>Points de vérification</th>
+                        <th>Observations/Réserves </th>
+                        <th>Précisions </th>
+                        <th class="text-center">Photos </th>
+                        <th>Statut </th>
+                        <th>Date </th>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="doc.constat_assembly_exam_ids" t-as="constat">
+                            <tr>
+                                <td ><span t-field="constat.verification_point_id"/></td>
+                                <td ><span t-field="constat.reserve"/></td>
+                                <td><span t-field="constat.precision"/></td>
+                                <td style="width: 40%;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 160px;"/>
+                                    </td>
+                                <td><span t-field="constat.state"/></td>
+                                <td><span t-field="constat.date"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+                <div style="margin-top:20px;">
+                    Examen de l'etat de conservation:
+                </div>
+                <table class='table' style="margin-top:20px;">
+                    <tr>
+                        <td style="width: 80%;">La présence et la bonne installation des dispositifs de protection collective et des moyens d'accès</td>
+                        <td><span t-field="doc.presence_correct_installation"/></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 80%;">L'absence de déformation permanente ou de corrosion des éléments constitutifs de l'échafaudage pouvant compromettre sa solidité</td>
+                        <td><span t-field="doc.permanent_deformation_absence"/></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 80%;">La présence de tous les éléments de fixation ou de liaison des constituants de l'échafaudage</td>
+                        <td><span t-field="doc.presence_fixing"/></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 80%;">L'absence de jeu décelable susceptible d'affecter ces éléments</td>
+                        <td><span t-field="doc.absence_detectable_play"/></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 80%;">La bonne tenue des éléments d'amarrage (ancrage, vérinage)</td>
+                        <td><span t-field="doc.good_behavior"/></td>
+                    </tr>
+                     <tr>
+                        <td style="width: 80%;">L'absence de désordre au niveau des appuis et des surfaces portantes</td>
+                        <td><span t-field="doc.absence_disorder"/></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 80%;">La présence de tous les éléments de calage et de stabilisation ou d'immobilisation</td>
+                        <td><span t-field="doc.presence_wedging"/></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 80%;">La bonne fixation des filets et des bâches sur l'échafaudage, ainsi que la continuité du bâchage sur toute la surface extérieure</td>
+                        <td><span t-field="doc.good_fixing"/></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 80%;">Le maintien de la continuité, de la planéité, de l'horizontalité et de la bonne tenue de chaque niveau de plancher</td>
+                        <td><span t-field="doc.maintaining_continuity"/></td>
+                    </tr>
+                     <tr>
+                        <td style="width: 80%;">La visibilité des indications sur l'échafaudage relatives aux charges admissibles</td>
+                        <td><span t-field="doc.visibility_indications"/></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 80%;">L'absence de charges dépassant ces limites admissibles</td>
+                        <td><span t-field="doc.absence_loads_exceeding"/></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 80%;">L'absence d'encombrement des planchers</td>
+                        <td><span t-field="doc.lack_floor_space"/></td>
+                    </tr>
+                </table>
+                <div style="margin-top:20px;">
+                   • Constat(s):
+                </div>
+                <table class='table' style="margin-top:20px;">
+                    <thead>
+                        <th>Points de vérification</th>
+                        <th>Observations/Réserves </th>
+                        <th>Précisions </th>
+                        <th class="text-center">Photos </th>
+                        <th>Statut </th>
+                        <th>Date </th>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="doc.constat_conservation_state_exam_ids" t-as="constat">
+                            <tr>
+                                <td ><span t-field="constat.verification_point_id"/></td>
+                                <td><span t-field="constat.reserve"/></td>
+                                <td><span t-field="constat.precision"/></td>
+                                <td style="width: 40%;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 160px;"/>
+                                    </td>
+                                <td><span t-field="constat.state"/></td>
+                                <td><span t-field="constat.date"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
             </div>
         </t>
     </template>
