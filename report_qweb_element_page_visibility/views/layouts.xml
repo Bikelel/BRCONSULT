@@ -1,8 +1,7 @@
 <odoo>
     <template id="minimal_layout" inherit_id="web.minimal_layout">
-        <xpath expr="//t[@t-if='subst_needed']" position="replace">
-            <t t-if="subst is True">
-                <script>
+        <xpath expr="//script[@t-if='subst']" position="replace">
+            <script t-if="subst">
                     function subst() {
                         var vars = {};
                         var x = document.location.search.substring(1).split('&amp;');
@@ -51,7 +50,6 @@
                         }
                     }
                 </script>
-            </t>
         </xpath>
     </template>
 </odoo>
