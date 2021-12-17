@@ -38,32 +38,51 @@
                     border-radius: 10px;
                     margin-bottom: 10px;
                     margin-top: 50px;
+                    page-break-inside:avoid;
+                    }
+                    .bloc_sub_title {
+                    
+                    padding: 20px;
+                    background-color: #F1F1F1;
+                    border-radius: 10px;
+                    margin-bottom: 20px;
+                    margin-top: 20px;
+                    page-break-inside:avoid;
+                    }
+                    .bloc_sub_title2 {
+                    padding: 10px;
+                    background-color: #F3F3F3;
+                    border-radius: 5px;
+                    margin-bottom: 10px;
+                    margin-top: 10px;
+                    page-break-inside:avoid;
                     }
                     table {
                     margin-top: 15px;
                     border: 2px solid #5F5F5F;
                     width: 100%;
                     }
-                    table tbody tr{
-                    padding: 10px;
-                    border: 2px solid #5F5F5F;
-                    }
+                    
                     table tr td{
                     padding: 10px;
                     border: 2px solid #5F5F5F;
                     }
-                    table thead tr th{
+                    table tr th{
                     padding: 10px;
                     border: 2px solid #5F5F5F;
                     }
-                    
-                    
 
                     ul{
                     margin-left:20px;
                     }
                     .inspector_user{
                       text-transform: capitalize;
+                    }
+                    .borderless {
+                        border-top: none;
+                        border-left: none;
+                        border-right: none;
+                        border-bottom: none;
                     }
 
 
@@ -189,13 +208,8 @@ La présente mission est réalisée conformément au contrat référencé
                                 <p><img t-if="image.image" t-att-src="image_data_uri(image.image)" style="max-height: 350px;"/></p>
                                 
                                 <span t-esc="i"/> 
-                               
-                                
                             </div>
-<!--                             <t t-set="i" t-value="i+1"/>
-                            <t t-if="(i % 2) == 0">
-                                <br/>
-                            </t> -->
+
                         </t>
                     </div>
                 </div>
@@ -203,14 +217,14 @@ La présente mission est réalisée conformément au contrat référencé
                     3) Caractéristiques de l’échafaudage
                 </div>
                 <table class='table' style="margin-top:30px;">
-                    <thead style="border: 2px solid #5F5F5F;">
-                        <th>Marque</th>
-                        <th>Type</th>
-                        <th>Hauteur de 1er Niveau</th>
-                        <th>Hauteur maxi (en m)</th>
-                        <th>Linéaire (en m)</th>
-                        <th>Surface inspectée (en m2)</th>
-                    </thead>
+                    <tr>
+                        <td>Marque</td>
+                        <td>Type</td>
+                        <td>Hauteur de 1er Niveau</td>
+                        <td>Hauteur maxi (en m)</td>
+                        <td>Linéaire (en m)</td>
+                        <td>Surface inspectée (en m2)</td>
+                    </tr>
                     <tbody>
                         <t t-foreach="doc.scaffolding_mark_ids" t-as="mark">
                             <tr>
@@ -225,15 +239,15 @@ La présente mission est réalisée conformément au contrat référencé
                     </tbody>
                 </table>
                 <table class='table' style="margin-top:30px;">
-                    <thead>
-                        <th>Caractéristiques</th>
-                        <th>Présence</th>
-                        <th>HLongueur</th>
-                        <th>Largeur</th>
-                        <th>Hauteur</th>
-                        <th>Surface</th>
-                        <th>Localisation </th>
-                    </thead>
+                    <tr>
+                        <td>Caractéristiques</td>
+                        <td>Présence</td>
+                        <td>HLongueur</td>
+                        <td>Largeur</td>
+                        <td>Hauteur</td>
+                        <td>Surface</td>
+                        <td>Localisation </td>
+                    </tr>
                     <tbody>
                         <t t-foreach="doc.scaffolding_characteristic_ids" t-as="charac">
                             <tr>
@@ -249,28 +263,28 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
-                <div style="border: 1px solid black; padding:10px">
+                <div style="border: 2px solid #5F5F5F; padding:10px">
                     Commentaires:<br/>
                     <span t-field="doc.comment_scaffolding_characteristic"/>
                 </div>
                 <div class="bloc_title">
                     4) Examens
                 </div>
-                <div style="font-size:14px; margin-top:20px;">
+                <div class="bloc_sub_title">
                     4.1) Examen d’adéquation
                 </div>
                 <div t-if="doc.report_parameter_id and doc.report_parameter_id.adequation_exam">
                     <span t-field="doc.report_parameter_id.adequation_exam"/>
                 </div>
-                <div style="margin-top:20px;">
+                <div class="bloc_sub_title2">
                    • Nature des travaux :
                 </div>
                 <table class='table' style="margin-top:20px;">
-                    <thead>
-                        <th>Marque</th>
-                        <th>Type</th>
-                        <th>Hauteur de 1er Niveau</th>
-                    </thead>
+                    <tr>
+                        <td>Marque</td>
+                        <td>Type</td>
+                        <td>Hauteur de 1er Niveau</td>
+                    </tr>
                     <tbody>
                         <t t-foreach="doc.adequacy_exam_ids" t-as="exam">
                             <tr>
@@ -281,26 +295,33 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
-                <div style="margin-top:20px;">
+                <div class="bloc_sub_title2">
                    • Dispositif de protection :
                 </div>
-                <div>
-                    Présence d’un pare-gravats: <span t-field="doc.is_pare_gravats"/>
-                </div>
-                <div>
-                    Présence d’un autre dispositif: <span t-field="doc.is_other_device"/>
-                </div>
-                <div t-if="doc.is_other_device">
-                    Autre dispositif: <span t-field="doc.is_pare_gravats"/>
-                </div>
-                <div style="margin-top:20px;">
+                <table class='borderless'>
+                    <tr class='borderless'>
+                        <td style="width:35%;" class='borderless'>Présence d'un pare-gravats:</td>
+                        <td class='borderless'><span t-field="doc.is_pare_gravats"/></td>
+                    </tr>
+                    <tr class='borderless'>
+                        <td class='borderless'>Présence d'un autre dispositif:</td>
+                        <td class='borderless'><span t-field="doc.is_other_device"/></td>
+                    </tr>
+                    <tr t-if="doc.other_device_id" class='borderless'>
+                        <td class='borderless'>Autre dispositif:</td>
+                        <td class='borderless'><span t-field="doc.other_device_id"/></td>
+                    </tr>
+                   
+                </table>
+                
+                <div class="bloc_sub_title2">
                    • Charges d’exploitation de l’échafaudage par défaut:
                 </div>
                 <table class='table' style="margin-top:20px;">
-                    <thead>
-                        <th>Classe de l’échafaudage</th>
-                        <th>Surcharge d’exploitation (en kg/m2)</th>
-                    </thead>
+                    <tr>
+                        <td>Classe de l’échafaudage</td>
+                        <td>Surcharge d’exploitation (en kg/m2)</td>
+                    </tr>
                     <tbody>
                         <t t-foreach="doc.scaffolding_operating_load_ids" t-as="classe">
                             <tr>
@@ -310,18 +331,18 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
-                <div style="margin-top:20px;">
+                <div class="bloc_sub_title2">
                    • Constat(s):
                 </div>
                 <table class='table' style="margin-top:20px;">
-                    <thead>
-                        <th>Points de vérification</th>
-                        <th>Observations/Réserves </th>
-                        <th>Précisions </th>
-                        <th class="text-center">Photos </th>
-                        <th>Statut </th>
-                        <th>Date </th>
-                    </thead>
+                    <tr>
+                        <td>Points de vérification</td>
+                        <td>Observations/Réserves </td>
+                        <td>Précisions </td>
+                        <td class="text-center">Photos </td>
+                        <td>Statut </td>
+                        <td>Date </td>
+                    </tr>
                     <tbody>
                         <t t-foreach="doc.constat_adequacy_exam_ids" t-as="constat">
                             <tr>
@@ -337,25 +358,30 @@ La présente mission est réalisée conformément au contrat référencé
                     </tbody>
                 </table>
                 
-                <div style="font-size:14px; margin-top:20px;">
+                <div class="bloc_sub_title">
                     4.2) Examen de montage et d'installation
                 </div>
                 <div>
                 Art. 3 – II- « L’examen de l’état de montage et d’installation d’un échafaudage » consiste à s’assurer qu’il est monté et installé de façon sûre, conformément à la notice d’instructions du fabricant ou, lorsque la configuration de montage ne correspond pas à un montage prévu dans la notice, en tenant compte de la note de calcul et conformément au plan de montage établi par une personne compétente »
 (Arrêté du 21 Décembre 2004).
                 </div>
-                <div style="margin-top:20px;">
-                    Présentation de registre de sécurité : <span t-field="doc.security_register"/>
-                </div>
-                <div style="margin-top:20px;">
-                    Mise à disposition du dossier de montage : <span t-field="doc.assembly_file"/>
-                </div>
+                <table class='borderless'>
+                    <tr class='borderless'>
+                        <td class='borderless' style="width:35%;">Présentation de registre de sécurité:</td>
+                        <td class='borderless'><span t-field="doc.security_register"/></td>
+                    </tr>
+                    <tr class='borderless'>
+                        <td class='borderless'>Mise à disposition du dossier de montage:</td>
+                        <td class='borderless'><span t-field="doc.assembly_file"/></td>
+                    </tr>
+                </table>
+ 
                 <table t-if="doc.assembly_file=='yes'" class="table">
-                    <thead class="text-center">
+                    <tr class="text-center">
                         
-                        <th>Plans d’exécution (PE)</th>
-                        <th>Note de calcul</th>
-                    </thead>
+                        <td>Plans d’exécution (PE)</td>
+                        <td>Note de calcul</td>
+                    </tr>
                     <tbody>
                         <tbody>
                             <tr class="text-center">
@@ -366,48 +392,81 @@ La présente mission est réalisée conformément au contrat référencé
                         </tbody>
                     </tbody>
                 </table>
-                <div>
-                    Mise à disposition du dossier de montage : <span t-field="doc.manufacturer_instructions"/>
+                
+                <table class='borderless'>
+                    <tr class='borderless'>
+                        <td class='borderless' style="width:35%;">Mise à disposition du dossier de montage:</td>
+                        <td class='borderless'>
+                            <ul>
+                                <t t-foreach="doc.soil_support_data_ids" t-as="soil">
+                                    <li><span t-field="soil.name"/></li>
+                                </t>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr class='borderless'>
+                        <td class='borderless'>Nature du sol/support d’implantation:</td>
+                        <td class='borderless'>
+                            <ul>
+                                <t t-foreach="doc.anchor_support_data_ids" t-as="anchor">
+                                    <li><span t-field="anchor.name"/></li>
+                                </t>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+                <div class="bloc_sub_title">
+                   • Données aux ancrages:
                 </div>
-                <div>
-                     Nature du sol/support d’implantation : 
-                    <ul>
-                        <t t-foreach="doc.soil_support_data_ids" t-as="soil">
-                            <li><span t-field="soil.name"/></li>
-                        </t>
-                    </ul>
-                </div>
-                <div>
-                    Nature des supports d’ancrage :
-                    <ul class="list-inline">
-                        <t t-foreach="doc.anchor_support_data_ids" t-as="anchor">
-                            <li><span t-field="anchor.name"/></li>
-                        </t>
-                    </ul>
-                </div>
-                <div>
-                    Données aux ancrages: 
-                    <div>Type d'ancrage : <span t-field="doc.anchor_type_id"/></div>
-                    <div t-if="doc.anchor_type_id and doc.anchor_type_id.id==1">Type de chevilles : <span t-field="doc.ankles_type"/></div>
-                    <div>Nombre constaté : <span t-field="doc.anchor_data_number"/></div>
-                    <div>Nombre théorique requis: <span t-field="doc.anchor_data_theoretical_number"/></div>
-                    <div>Différence : <span t-field="doc.anchor_data_difference_number"/></div>
-                </div>
-                <div>Données relatives aux réactions d'appuis au sol ou au support d’accueil: <span t-field="doc.ground_support_data"/></div>
-                <div>Données relatives aux charges climatiques: <span t-field="doc.climatic_data"/></div>
-                <div>Données relatives à la nature du bâchage éventuel: <span t-field="doc.covering_nature_data"/></div>
-                <div style="margin-top:20px;">
+                <table class='borderless'>
+                    <tr class='borderless'>
+                        <td class='borderless' style="width:35%;">Type d'ancrage:</td>
+                        <td class='borderless'><span t-field="doc.anchor_type_id"/></td>
+                    </tr>
+                    <tr class='borderless' t-if="doc.anchor_type_id and doc.anchor_type_id.id==1">
+                        <td class='borderless' style="width:35%;">Type de chevilles:</td>
+                        <td class='borderless'><span t-field="doc.ankles_type"/></td>
+                    </tr>
+                    <tr class='borderless'>
+                        <td class='borderless' style="width:35%;">Nombre constaté:</td>
+                        <td class='borderless'><span t-field="doc.anchor_data_number"/></td>
+                    </tr>
+                    <tr class='borderless'>
+                        <td class='borderless' style="width:35%;">Nombre théorique requis:</td>
+                        <td class='borderless'><span t-field="doc.anchor_data_theoretical_number"/></td>
+                    </tr>
+                    <tr class='borderless'>
+                        <td class='borderless' style="width:35%;">Différence:</td>
+                        <td class='borderless'><span t-field="doc.anchor_data_difference_number"/></td>
+                    </tr>
+                    <tr class='borderless'>
+                        <td class='borderless' style="width:35%;">Données relatives aux réactions d'appuis au sol ou au support d’accueil:</td>
+                        <td class='borderless'><span t-field="doc.ground_support_data"/></td>
+                    </tr>
+                    <tr class='borderless'>
+                        <td class='borderless' style="width:35%;">Données relatives aux charges climatiques:</td>
+                        <td class='borderless'><span t-field="doc.climatic_data"/></td>
+                    </tr>
+                    <tr class='borderless'>
+                        <td class='borderless' style="width:35%;">Données relatives à la nature du bâchage éventuel:</td>
+                        <td class='borderless'><span t-field="doc.covering_nature_data"/></td>
+                    </tr>
+                </table>
+   
+
+                <div class="bloc_sub_title">
                    • Constat(s):
                 </div>
+                
                 <table class='table' style="margin-top:20px;">
-                    <thead>
-                        <th>Points de vérification</th>
-                        <th>Observations/Réserves </th>
-                        <th>Précisions </th>
-                        <th class="text-center">Photos </th>
-                        <th>Statut </th>
-                        <th>Date </th>
-                    </thead>
+                    <tr>
+                        <td>Points de vérification</td>
+                        <td>Observations/Réserves </td>
+                        <td>Précisions </td>
+                        <td class="text-center">Photos </td>
+                        <td>Statut </td>
+                        <td>Date </td>
+                    </tr>
                     <tbody>
                         <t t-foreach="doc.constat_assembly_exam_ids" t-as="constat">
                             <tr>
@@ -422,8 +481,8 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
-                <div style="margin-top:20px;">
-                    Examen de l'etat de conservation:
+                <div class="bloc_sub_title">
+                   • Examen de l'etat de conservation:
                 </div>
                 <table class='table' style="margin-top:20px;">
                     <tr>
@@ -475,18 +534,18 @@ La présente mission est réalisée conformément au contrat référencé
                         <td><span t-field="doc.lack_floor_space"/></td>
                     </tr>
                 </table>
-                <div style="margin-top:20px;">
+                <div class="bloc_sub_title">
                    • Constat(s):
                 </div>
                 <table class='table' style="margin-top:20px;">
-                    <thead>
-                        <th>Points de vérification</th>
-                        <th>Observations/Réserves </th>
-                        <th>Précisions </th>
-                        <th class="text-center">Photos </th>
-                        <th>Statut </th>
-                        <th>Date </th>
-                    </thead>
+                    <tr>
+                        <td>Points de vérification</td>
+                        <td>Observations/Réserves </td>
+                        <td>Précisions </td>
+                        <td class="text-center">Photos </td>
+                        <td>Statut </td>
+                        <td>Date </td>
+                    </tr>
                     <tbody>
                         <t t-foreach="doc.constat_conservation_state_exam_ids" t-as="constat">
                             <tr>
