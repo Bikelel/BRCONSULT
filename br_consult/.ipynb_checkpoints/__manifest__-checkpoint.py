@@ -17,7 +17,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'portal', 'contacts'],
+    'depends': ['base', 'portal', 'contacts', 'report_qweb_element_page_visibility'],
 
     # always loaded
     'data': [
@@ -32,6 +32,7 @@
         'data/prestation_scaffolding_class.xml',
         'views/prestation_image_views.xml',
         'views/res_partner_views.xml',
+        'views/res_users_views.xml',
         'views/prestation_verification_point_views.xml',
         'data/prestation_motif_rs.xml',
         'views/prestation_motif_rs_views.xml',
@@ -49,6 +50,11 @@
         'views/prestation_localisation_views.xml',
         'data/prestation_characteristic.xml',
         'views/prestation_characteristic_views.xml',
+        'report/prestation_report_template.xml',
+        'report/external_layout_brconsult.xml',
+        'views/prestation_anchor_support_data_views.xml',
+        'data/prestation_anchor_support_data.xml',
+        'views/prestation_report_parameter_views.xml',
         
     ],
     'installable': True,
