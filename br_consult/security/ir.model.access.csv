@@ -19,4 +19,6 @@ access_prestation_mark_admin,prestation.mark,model_prestation_mark,base.group_us
 access_prestation_localisation_admin,prestation.localisation,model_prestation_localisation,base.group_user,1,1,1,1
 access_prestation_characteristic_admin,prestation.characteristic,model_prestation_characteristic,base.group_user,1,1,1,1
 access_prestation_anchor_support_datac_admin,prestation.anchor.support.data,model_prestation_anchor_support_data,base.group_user,1,1,1,1
+access_prestation_report_parameter_admin,prestation.report.parameter,model_prestation_report_parameter,base.group_user,1,1,1,1
+
 

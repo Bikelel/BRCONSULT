@@ -17,7 +17,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'portal', 'contacts'],
+    'depends': ['base', 'portal', 'contacts', 'report_qweb_element_page_visibility'],
 
     # always loaded
     'data': [
@@ -54,6 +54,7 @@
         'report/external_layout_brconsult.xml',
         'views/prestation_anchor_support_data_views.xml',
         'data/prestation_anchor_support_data.xml',
+        'views/prestation_report_parameter_views.xml',
         
     ],
     'installable': True,

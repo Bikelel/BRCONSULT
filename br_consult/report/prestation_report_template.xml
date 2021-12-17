@@ -9,11 +9,12 @@
                 <t t-set="report_name_brconsult" t-value='doc.name'/>
                 <t t-set="partner_id_name_brconsult" t-value='doc.partner_id.name' t-if='doc.partner_id'/>
                 <t t-set="site_address_brconsult" t-value='doc.site_address' t-if='doc.site_address'/>
+                
                 <div class='row'>
                     <div class='col-2'>
-                        <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" style="max-height: 100px;"/>
+                        <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" style="max-height: 130px;"/>
                     </div>
-                    <div class='col-10 text-center' style="border-radius:10px;border: 1px solid black;">
+                    <div class='col-9 text-center' style="border-radius:10px;border: 3px solid black; background-color:#D3D3D3; min-height:130px; max-height: 130px;">
                         <div style="color:#5F5F5F;font-weight:bold;font-size:16px;"> <span>RAPPORT D’INSPECTION</span></div>
                         <div style="color:#C00000;font-weight:bold;font-size:20px;"><span t-esc="doc.title_label"/></div>
                         <div style="color:#5F5F5F;font-weight:bold;font-size:16px;">
@@ -27,8 +28,47 @@
                 </div>
             </div>
             <!--   Body   -->
-            <div style="margin-top: 20px; font-size:12px;">
-                <div class="row" style="font-size:11px;">
+            <div style="margin-top: 20px; font-size:14px;" class="page">
+                <div class="oe_structure"/>
+                <style>
+                    .bloc_title {
+                    border: 3px solid #5F5F5F;
+                    padding: 20px;
+                    background-color: #D8D8D8;
+                    border-radius: 10px;
+                    margin-bottom: 10px;
+                    margin-top: 50px;
+                    }
+                    table {
+                    margin-top: 15px;
+                    border: 2px solid #5F5F5F;
+                    width: 100%;
+                    }
+                    table tbody tr{
+                    padding: 10px;
+                    border: 2px solid #5F5F5F;
+                    }
+                    table tr td{
+                    padding: 10px;
+                    border: 2px solid #5F5F5F;
+                    }
+                    table thead tr th{
+                    padding: 10px;
+                    border: 2px solid #5F5F5F;
+                    }
+                    
+                    
+
+                    ul{
+                    margin-left:20px;
+                    }
+                    .inspector_user{
+                      text-transform: capitalize;
+                    }
+
+
+                </style>
+                <div class="row" style="font-size:12px; margin-bottom:50px;">
                     <div class='col-9'>
                         <t t-if="doc.name">
                             <span> N° Rapport: </span>
@@ -43,117 +83,96 @@
                         </t>
                     </div>
                 </div>
-                <div name="table_fiche" style="margin-top:20px;">
-                    <table class="table" style="border: 1px solid black;">
-                        <tr style="border: 1px solid black;">
-                            <td style="width: 50%; border: 1px solid black;">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td style="width: 50%;">
                                 Entreprise : <span t-field="doc.partner_id"/>
                             </td>
-                            <td style="width: 50%; border: 1px solid black;">
+                            <td style="width: 50%;">
                                 Date et heure de vérification : <span t-field="doc.verification_date"/>
                             </td>
                         </tr>
-                        <tr style="border: 1px solid black;">
-                            <td style="width: 50%; border: 1px solid black;">
+                        <tr>
+                            <td>
                                 Représenté par : <span t-field="doc.partner_contact"/>
                             </td>
-                            <td style="width: 50%; border: 1px solid black;">
+                            <td>
                                 Vérificateur : <span t-field="doc.user_id"/>
                             </td>
                         </tr>
-                        <tr style="border: 1px solid black;">
-                            <td style="width: 50%; border: 1px solid black;">
+                        <tr>
+                            <td >
                                 Adresse du chantier : <span t-field="doc.site_address"/><br/>
                                 Localisation : <span t-field="doc.site_localisation"/>
                             </td>
-                            <td style="width: 50%; border: 1px solid black;">
+                            <td>
                                 Nom de la personne présente lors de notre intervention : <span t-field="doc.prensent_contact"/><br/>
                                 Surface d’échafaudage annoncée (en m²) : <span t-field="doc.scaffolding_surface"/><br/>
                                 Surface d’échafaudage inspectée (en m²) = <span t-field="doc.inspected_scaffolding_surface"/>
 
                             </td>
                         </tr>
-                    </table>
-                </div>
-                <div name="conformite_installation" class="text-center" style="margin-top:30px;">
-                    <div style="font-weight:bold;font-size:16px;">CONFORMITE DE L’INSTALLATION</div>
-                    <div style="font-size:11px;">
-                        Rapport valable 3 mois. Au-delà, prévoir une vérification périodique (Article 6, Arrêté du 21/12/2004).<br/>
-Prévoir une vérification de remise en service, dans les cas cités par l’article 4 de l’arrêté du 21/12/2004.<br/>
-La vérification journalière est à la charge du chef d’entreprise (Article 5, Arrêté du 21/12/2004).
+                    </tbody>
+                </table>
 
+                <div name="conformite_installation" class="text-center" style="margin-top:50px;" t-if="doc.report_parameter_id and doc.report_parameter_id.installation_compliance">
+                    <div style="font-weight:bold;font-size:16px;">CONFORMITE DE L’INSTALLATION</div>
+                    <div>
+                       <span t-field="doc.report_parameter_id.installation_compliance" />
                     </div>
                 </div>
-                <div name="opinion" style="margin-top:30px;border: 1px solid black; padding:30px" class="row">
-                    
-                    <div class="col-6">
-                        <div>
-                            <input type="checkbox" t-att-checked="'checked' if doc.favorable_opinion else None"/> AVIS FAVORABLE
-                        </div>
-                        <div style="margin-top:10px;">
-                            <input type="checkbox" t-att-checked="'checked' if doc.opinion_with_observation else None"/> Avec observation(s)
-                            <t t-if="doc.defavorable_opinion">
-                            <br/>
-                            Levée d’observations recommandée
-                        </t>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <input type="checkbox" t-att-checked="'checked' if doc.defavorable_opinion else None"/> AVIS DEFAVORABLE
-                        <t t-if="doc.defavorable_opinion">
-                            <br/>
-                            Levée de réserves recommandée)
-                        </t>
-                        
-                    </div>
-                </div>
-                <div name="visa" style="margin-top:30px;">
-                    <table class='table'>
-                        <tr>
-                            <td style="width: 60%; border: 1px solid black;">
-                                Commentaires:<br/>
-                                <span t-field="doc.comment_observation_fiche"/>
-                            </td>
-                            <td style="width: 40%; border: 1px solid black;" class='text-center'>
-                                Visa de <span t-field='doc.user_id'/><br/>
-                                <img t-if="doc.user_id.visa_user" t-att-src="image_data_uri(doc.user_id.visa_user)" style="max-height: 80px;"/>
-                                <br/>
-                                BR CONSULT
-                            </td>
-                        </tr>
+                <div name="opinion" style="margin-top:30px;">
+                    <table name="opinion" style="margin-top:30px; min-height:250px; max-height: 250px;" class='table text-center'>
+                        <tbody>
+                            <tr>
+                                <td style="width: 50%; border: none; padding-top:40px;padding-bottom:40px;" >
+                                    <input type="checkbox" t-att-checked="'checked' if doc.favorable_opinion else None"/> AVIS FAVORABLE
+                                </td>
+                                <td style="width: 50%; border: none; padding-top:40px; padding-bottom:40px;">
+                                    <div style="margin-bottom:20px;">
+                                        <input type="checkbox" t-att-checked="'checked' if doc.favorable_opinion else None"/> AVIS FAVORABLE
+                                    </div>
+                                    <div style="margin-bottom:20px;">
+                                        <input type="checkbox" t-att-checked="'checked' if doc.opinion_with_observation else None"/> Avec observation(s)
+                                    </div>
+                                    <div t-if="doc.opinion_with_observation">
+                                    Levée d’observations recommandée
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+
                     </table>
+                </div>
+                <div name="visa" style="margin-top:50px; min-height:300px; max-height: 300px; border: 2px solid #5F5F5F;">
+                    <div class='row'>
+                        <div class='col-7' style="padding:20px;">
+                            Commentaires:<br/>
+                            <span t-field="doc.comment_observation_fiche"/>
+                        </div>
+                        <div class='col-5 text-center' style="padding:20px;">
+                            Visa de <span t-field='doc.user_id'/><br/>
+                            <img t-if="doc.user_id.visa_user" t-att-src="image_data_uri(doc.user_id.visa_user)" style="max-height: 80px;"/>
+                            <br/>
+                            BR CONSULT
+                        </div>
+                    </div>
                 </div>
                 <div style="page-break-after: always;"/>
-                <div style="border-radius:10px;border: 1px solid black; margin-top:30px; padding:15px">
+                <div class="bloc_title">
                     1) Périmètre de la mission
                 </div>
                 <div style="margin-top:30px;">
-La présente mission est réalisée conformément au contrat référencé A17 (dans sa dernière version)
- Il s’agit d’une mission de MISE EN SERVICE (automatiquement) limitée à la vérification visuelle des zones de l’échafaudage accessibles en sécurité. <br/>
-
-L’examen d’adéquation repose sur les informations écrites, transmises par le client. <br/>
-
-Elle s’achève avec la remise du présent rapport.<br/>
--	Les observations listent les non-conformités anomalies constatées par l’inspecteur, <br/>
--	Les réserves listent les anomalies bloquantes (en gras dans le texte) qui motivent l’avis défavorable.<br/>
--	Les commentaires précisent les conditions de l’inspection. <br/>
-
-En cas d’avis favorable avec observation(s), il est conseillé recommandé au chef d’entreprise de veiller à la levée des observations. Cette levée pourra être communiquée par courriel à l’adresse suivante controlebr@brconsult.fr et sera annexée au dossier.<br/>
-L’émission de tout nouveau rapport sera facturée.<br/>
-
-En cas d’avis défavorable, il est conseillé recommandé au chef d’entreprise de faire lever les observations réserves avant toute utilisation et d’en faire constater la levée par une personne compétente de son choix. A ce titre une nouvelle demande d’intervention est à transmettre  à l’adresse suivante controlebr@brconsult.fr .<br/>
-L’émission de tout nouveau rapport sera facturée. <br/>
-BR CONSULT, pour constater la levée des Observations réserves ayant entrainées l’avis défavorable. Cependant, cette nouvelle demande ne rentre pas dans le périmètre de la présente mission.<br/>
-
-Hors mission :  <br/>
-- La vérification de la résistance des supports (essais d’arrachement , pression admissible par les sols) <br/>
-- La vérification des couples de serrage ; <br/>
-- L’émissions d’un avis sur les notes de calculs; <br/>
-- La conformité de l’installation au code de la route. <br/>
-- Les contrôles réglementaires des appareils de levage installés sur l’échafaudage; <br/>
-
+                
+La présente mission est réalisée conformément au contrat référencé
+                    <span t-field="doc.contrat_ref"/>
+ Il s’agit d’une mission de <span t-field="doc.verification_type"/> (automatiquement) limitée à la vérification visuelle des zones de l’échafaudage accessibles en sécurité. <br/>
+                    
+                    <span t-field="doc.report_parameter_id.scope_mission" t-if="doc.report_parameter_id and doc.report_parameter_id.scope_mission"/>
+                    
                 </div>
-                <div style="border-radius:10px;border: 1px solid black; margin-top:30px; padding:15px">
+                <div class="bloc_title">
                     2) Localisation, schéma et photographies de l’échafaudage
                 </div>
                 <div style="margin-top:30px;">
@@ -166,7 +185,7 @@ Hors mission :  <br/>
                         <t t-set="i" t-value="1" />
                         <t t-foreach="doc.image_ids" t-as="image">
                             
-                            <div class='col-auto col-6' style="padding:15px;">
+                            <div style="padding:15px; width:50%;">
                                 <p><img t-if="image.image" t-att-src="image_data_uri(image.image)" style="max-height: 350px;"/></p>
                                 
                                 <span t-esc="i"/> 
@@ -180,11 +199,11 @@ Hors mission :  <br/>
                         </t>
                     </div>
                 </div>
-                <div style="border-radius:10px;border: 1px solid black; margin-top:30px; padding:15px">
+                <div class="bloc_title">
                     3) Caractéristiques de l’échafaudage
                 </div>
-                <table class='table' style="margin-top:30px;" border="1">
-                    <thead>
+                <table class='table' style="margin-top:30px;">
+                    <thead style="border: 2px solid #5F5F5F;">
                         <th>Marque</th>
                         <th>Type</th>
                         <th>Hauteur de 1er Niveau</th>
@@ -234,15 +253,14 @@ Hors mission :  <br/>
                     Commentaires:<br/>
                     <span t-field="doc.comment_scaffolding_characteristic"/>
                 </div>
-                <div style="border-radius:10px;border: 1px solid black; margin-top:30px; padding:15px">
+                <div class="bloc_title">
                     4) Examens
                 </div>
                 <div style="font-size:14px; margin-top:20px;">
                     4.1) Examen d’adéquation
                 </div>
-                <div>
-Art. 3 – I- « L’examen d’adéquation d’un échafaudage » consiste à vérifier que l’échafaudage est approprié aux travaux que l’utilisateur prévoit d’effectuer, ainsi qu’aux risques auxquels les travailleurs sont exposés, et que les opérations prévues sont compatibles avec les conditions d’utilisation de l’échafaudage définies par le fabricant »
-(Arrêté du 21 Décembre 2004).
+                <div t-if="doc.report_parameter_id and doc.report_parameter_id.adequation_exam">
+                    <span t-field="doc.report_parameter_id.adequation_exam"/>
                 </div>
                 <div style="margin-top:20px;">
                    • Nature des travaux :

@@ -24,8 +24,16 @@ class Prestation(models.Model):
                                  'is_surface': line.is_surface,
                                 }))
         return lines
+    
+    def get_default_report_parameter(self):
+        report_parameter_id = self.env['prestation.report.parameter'].search([], limit=1)
+        if report_parameter_id:
+            return report_parameter_id.id
+        else:
+            return False
 
     name = fields.Char("N° Rapport", default=lambda self: 'New', copy=False)
+    report_parameter_id = fields.Many2one('prestation.report.parameter',string="Parametre du rapport", default=get_default_report_parameter)
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
     partner_id = fields.Many2one('res.partner', string="Entreprise")
     inspection_type = fields.Selection([

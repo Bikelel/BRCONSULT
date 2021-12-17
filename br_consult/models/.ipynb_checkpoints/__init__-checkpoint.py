@@ -23,3 +23,4 @@ from . import prestation_mark
 from . import prestation_localisation
 from . import prestation_characteristic
 from . import prestation_anchor_support_data
+from . import prestation_report_parameter
