@@ -118,7 +118,7 @@
                                     <field name="motif_rs_id" attrs="{'invisible': ['|',('verification_type', 'not in', ['RS']), ('inspection_type', '!=', 'echafaudage')]}"/>
                                     
                                     <field name="contrat_ref" string="La mission est réalisée conformément au contrat réf"/>
-                                    <field name="scope_mission_date" string="Date" />
+                                    <field name="scope_mission_date" />
                                 </group>
                                 <group string="Commantaires">
                                     <field name="comment_scope_mission" nolabel="1"/>
@@ -183,25 +183,31 @@
                                         </tree>
                                     </field>
                                 </group>
-                                <group string="Dispositif de protection">
+                                <group string="Dispositif de protection" attrs="{'invisible':[('inspection_type', '!=', 'echafaudage')]}">
                                     <field name="is_pare_gravats"/>
                                     <field name="is_other_device"/>
                                     <field name="other_device_id" attrs="{'invisible':[('is_other_device', '!=', 'yes')]}"/>
                                     
+                                </group>
+                                <group attrs="{'invisible':[('inspection_type', '!=', 'levage')]}">
+                                    <field name="installation_use_id"/>
                                 </group>
                                 <group string="Charge d'exploitation de l'échafaudage par défaut">
                                     <field name="scaffolding_operating_load_ids" nolabel="1">
                                         <tree editable='bottom'>
                                             <field name="scaffolding_class_id" options="{'no_create': True}"/>
                                             <field name="operating_overload"/>
+                                            <field name="precision"/>
+                                            
                                         </tree>
                                     </field>
                                 </group>
                                 <group string="Constat (s)">
                                     <field name="constat_adequacy_exam_ids" nolabel="1">
-                                        <tree editable='bottom'>
+                                        <tree editable='bottom' style="max-width:90%;">
                                             <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'adequacy_exam')]"/>
-                                            <field name="reserve"/>
+                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" options="{'no_create': True}"/>
+                                            <field name="reserve" invisible="1"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
                                             <field name="state"/>
@@ -249,9 +255,9 @@
                                 </group>
                                 <group string="Constat (s)">
                                     <field name="constat_assembly_exam_ids" nolabel="1">
-                                        <tree editable='bottom'>
+                                        <tree editable='bottom' class="constat_class_table">
                                             <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'assembly_exam')]"/>
-                                            <field name="reserve"/>
+                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" options="{'no_create': True}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
                                             <field name="state"/>
@@ -276,9 +282,9 @@
                                 </group>
                                 <group string="Constat (s)">
                                     <field name="constat_conservation_state_exam_ids" nolabel="1">
-                                        <tree editable='bottom'>
+                                        <tree editable='bottom' class="constat_class_table">
                                             <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'conservation_state_exam')]"/>
-                                            <field name="reserve"/>
+                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" options="{'no_create': True}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
                                             <field name="state"/>
@@ -287,6 +293,52 @@
                                     </field>
                                 </group>
                                 
+                            </page>
+                            <page name='epreuve' string="Epreuve" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
+                                <separator string="5. Epreuves"/>
+                                <group string="Epreuve statique">
+                                    <field name="coefficient_statique" string="Coefficient" />
+                                    <field name="autorised_cmu_statique" string="CMU Autorisée statique"/>
+                                    <field name="theoretical_test_load_statique" string="Charge d'épreuve théorique (en KG)"/>
+                                    <field name="reel_test_load_statique" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}" string="Charge d'épreuve réelle (en KG)"/>
+                                    <field name="test_duration_statique" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}" widget="float_time" string=""/>
+                                    <field name="elevation_height_statique" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}" string=""/>
+                                    <field name="comment_epreuve_statique" string="Commentaire"/>
+                                    
+                                </group>
+                                <group string="Constat (s)" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}">
+                                    <field name="constat_epreuve_statique_ids" nolabel="1">
+                                        <tree editable='bottom' style="max-width:90%;">
+                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'epreuve_statique')]"/>
+                                            <field name="reserve"/>
+                                            <field name="precision"/>
+                                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+                                            <field name="state"/>
+                                            <field name="date"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Epreuve dynamique">
+                                    <field name="coefficient_dynamique" string="Coefficient" />
+                                    <field name="autorised_cmu_dynamique" string="CMU Autorisée statique"/>
+                                    <field name="theoretical_test_load_dynamique" string="Charge d'épreuve théorique (en KG)"/>
+                                    <field name="reel_test_load_dynamique" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}" string="Charge d'épreuve réelle (en KG)"/>
+                                    
+                                    <field name="comment_epreuve_statique" string="Commentaire"/>
+                                    
+                                </group>
+                                <group string="Constat (s)" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}">
+                                    <field name="constat_epreuve_dynamique_ids" nolabel="1">
+                                        <tree editable='bottom' style="max-width:90%;">
+                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'epreuve_dynamique')]"/>
+                                            <field name="reserve"/>
+                                            <field name="precision"/>
+                                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+                                            <field name="state"/>
+                                            <field name="date"/>
+                                        </tree>
+                                    </field>
+                                </group>
                             </page>
                             
                         </notebook>

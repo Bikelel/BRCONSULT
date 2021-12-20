@@ -9,6 +9,8 @@ access_prestation_scaffolding_class_admin,prestation.scaffolding.class,model_pre
 access_prestation_scaffolding_operating_load_admin,prestation.scaffolding.operating.load,model_prestation_scaffolding_operating_load,base.group_user,1,1,1,1
 access_prestation_image_admin,prestation.image,model_prestation_image,base.group_user,1,1,1,1
 access_prestation_verification_point_admin,prestation.verification.point,model_prestation_verification_point,base.group_user,1,1,1,1
+access_prestation_observation_admin,prestation.observation,model_prestation_observation,base.group_user,1,1,1,1
+
 access_prestation_constat_admin,prestation.constat,model_prestation_constat,base.group_user,1,1,1,1
 access_prestation_motif_rs_admin,prestation.motif.rs,model_prestation_motif_rs,base.group_user,1,1,1,1
 access_prestation_other_device_admin,prestation.other.device,model_prestation_other_device,base.group_user,1,1,1,1
@@ -20,5 +22,7 @@ access_prestation_localisation_admin,prestation.localisation,model_prestation_lo
 access_prestation_characteristic_admin,prestation.characteristic,model_prestation_characteristic,base.group_user,1,1,1,1
 access_prestation_anchor_support_datac_admin,prestation.anchor.support.data,model_prestation_anchor_support_data,base.group_user,1,1,1,1
 access_prestation_report_parameter_admin,prestation.report.parameter,model_prestation_report_parameter,base.group_user,1,1,1,1
+access_prestation_levage_installation_use_admin,prestation.levage.installation.use,model_prestation_levage_installation_use,base.group_user,1,1,1,1
+
 
 

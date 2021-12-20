@@ -56,7 +56,7 @@ class Prestation(models.Model):
         ('RS', 'Remise en service'),
         ('VP', 'Vérification périodique'),
     ], copy=False, string="Type de vérification")
-    date = fields.Date('Date', default=fields.Date.today())
+    date = fields.Date(string="Date de saisie du rapport", default=fields.Date.today())
     requested_date = fields.Date('Date de la demande')
     verification_date = fields.Datetime('Date de vérification', default=fields.Datetime.now)
     partner_contact = fields.Char("Représentée par")
@@ -79,7 +79,7 @@ class Prestation(models.Model):
     visa_user = fields.Binary('Visa inspecteur', related='user_id.visa_user')
     contrat_ref = fields.Char('Contrat réf')
     motif_rs_id = fields.Many2one('prestation.motif.rs', string="Motif de remise en service")
-    scope_mission_date = fields.Date('Date Périmètre de la mission')
+    scope_mission_date = fields.Date(string="Date du contrat")
     comment_scope_mission = fields.Html("Commentaires Périmètre de la mission")
     scaffolding_mark_ids = fields.One2many('prestation.scaffolding.mark', 'prestation_id', 'Marques')
     scaffolding_characteristic_ids = fields.One2many('prestation.scaffolding.characteristic', 'prestation_id', string="Caracteristiques", default=get_default_characteristic)
@@ -92,7 +92,7 @@ class Prestation(models.Model):
     scaffolding_operating_load_ids = fields.One2many('prestation.scaffolding.operating.load', 'prestation_id', "Charge d'exploitation de l'échafaudage par défaut")
     security_register = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Registre de sécurité")
     assembly_file = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition du dossier de montage")
-    manufacturer_instructions = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition du otice constructeur")
+    manufacturer_instructions = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition du notice constructeur")
     execution_plan = fields.Boolean("Plan d'exécution (PE)")
     calculation_notice = fields.Boolean("Notice de calcul (NDC)")
     maintenance_log = fields.Boolean("Carnet de maintenance")
@@ -163,9 +163,27 @@ class Prestation(models.Model):
     image_ids = fields.One2many('prestation.image', 'prestation_id' ,"Photographies")
     comment_scaffolding_photographic_location = fields.Html("Commentaires localisation photographique de l'échafaudage")
     
-    constat_adequacy_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'adéquation")
-    constat_assembly_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de montage et d'installation")
-    constat_conservation_state_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de l'état de conservation")
+    constat_adequacy_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'adéquation", domain=[('type', '=', 'adequacy_exam')])
+    constat_assembly_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de montage et d'installation", domain=[('type', '=', 'assembly_exam')])
+    constat_conservation_state_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat épreuve statique", domain=[('type', '=', 'conservation_state_exam')])
+    ############### Levage Fields ##################
+    installation_use_id = fields.Many2one('prestation.levage.installation.use', "Utilisation de l'installation")
+    coefficient_statique = fields.Float("Coefficient statique")
+    autorised_cmu_statique = fields.Float("CMU Autorisée statique (en KG)")
+    theoretical_test_load_statique = fields.Float("Charge d'épreuve théorique statique (en KG)", store="True", compute='_compute_theoretical_test_load_statique')
+    reel_test_load_statique = fields.Float("Charge d'épreuve réelle statique (en KG)")
+    test_duration_statique = fields.Float("Durée d’épreuve statique (en minutes)")
+    elevation_height_statique = fields.Float("Hauteur d'élévation (en m)")
+    comment_epreuve_statique = fields.Html("Commentaires Epreuve")
+    constat_epreuve_statique_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'adéquation", domain=[('type', '=', 'epreuve_statique')])
+    coefficient_dynamique = fields.Float("Coefficient dynamique")
+    autorised_cmu_dynamique = fields.Float("CMU Autorisée dynamique (en KG)")
+    theoretical_test_load_dynamique = fields.Float("Charge d'épreuve théorique dynamique (en KG)", store="True", compute='_compute_theoretical_test_load_dynamique')
+    reel_test_load_dynamique = fields.Float("Charge d'épreuve réelle dynamique (en KG)")
+    comment_epreuve_dynamique = fields.Html("Commentaires Epreuve dynamique")
+    constat_epreuve_dynamique_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat épreuve dynamique", domain=[('type', '=', 'epreuve_dynamique')])
+        
+    
     
     @api.model
     def create(self, vals):
@@ -192,8 +210,6 @@ class Prestation(models.Model):
             else:
                 code_verification_type = ''
             vals['name'] = partner_ref + '-' +code_installation_type+ '-' + code_verification_type + '-' + self.env['ir.sequence'].next_by_code('prestation.prestation') or _('New')
-#         characteristics = self.get_default_characteristic()
-#         vals.update({'scaffolding_characteristic_ids': characteristics})
 
         result = super(Prestation, self).create(vals)
         
@@ -227,14 +243,15 @@ class Prestation(models.Model):
         if self.is_other_device == 'no':
             self.other_device_id = None
     
-    @api.depends('anchor_data_number', 'is_other_device')
+    @api.depends('scaffolding_mark_ids','scaffolding_mark_ids.inspected_surface', 'is_other_device')
     def compute_anchor_data_number(self):
         for rec in self:
-            if rec.anchor_data_number:
+            total = sum(rec.scaffolding_mark_ids.mapped('inspected_surface'))
+            if total:
                 if rec.is_other_device == 'yes':
-                    anchor_data_theoretical_number = rec.anchor_data_number / 12
+                    anchor_data_theoretical_number = total / 12
                 elif rec.is_other_device == 'no':
-                    anchor_data_theoretical_number = rec.anchor_data_number / 24
+                    anchor_data_theoretical_number = total / 24
                 else:
                     anchor_data_theoretical_number = 0.0
                 
@@ -247,3 +264,16 @@ class Prestation(models.Model):
             self.execution_plan = False
             self.calculation_notice = False
             self.manufacturer_instructions = False
+    
+    @api.depends('coefficient_statique', 'autorised_cmu_statique')
+    def _compute_theoretical_test_load_statique(self):
+        for rec in self:
+            if rec.autorised_cmu_statique and rec.coefficient_statique:
+                rec.theoretical_test_load_statique = rec.autorised_cmu_statique * rec.coefficient_statique
+    
+    @api.depends('coefficient_dynamique', 'autorised_cmu_dynamique')
+    def _compute_theoretical_test_load_dynamique(self):
+        for rec in self:
+            if rec.autorised_cmu_dynamique and rec.coefficient_dynamique:
+                rec.theoretical_test_load_dynamique = rec.autorised_cmu_dynamique * rec.coefficient_dynamique
+    

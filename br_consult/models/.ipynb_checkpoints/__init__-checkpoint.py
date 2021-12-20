@@ -24,3 +24,4 @@ from . import prestation_localisation
 from . import prestation_characteristic
 from . import prestation_anchor_support_data
 from . import prestation_report_parameter
+from . import prestation_levage_installation_use

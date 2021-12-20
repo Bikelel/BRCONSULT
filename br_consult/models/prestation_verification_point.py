@@ -11,6 +11,10 @@ class PrestationVerificationPoint(models.Model):
     type = fields.Selection([
         ('adequacy_exam', "Examen d'adéquation"),
         ('assembly_exam', "Examen de montage et d'installation"),
-        ('conservation_state_exam', "Examen de l'état de conservation")], string="Type")
-    observations = fields.Text("Observations")
+        ('conservation_state_exam', "Examen de l'état de conservation"),
+        ('epreuve_statique', "Epreuve statique"),
+        ('epreuve_dynamique', "Epreuve dynamique")], string="Type")
+    observations = fields.Text("Observations old")
+    observation_ids = fields.One2many("prestation.observation", 'verification_point_id', "Observations")
+    
    
