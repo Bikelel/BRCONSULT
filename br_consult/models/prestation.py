@@ -120,7 +120,7 @@ class Prestation(models.Model):
     covering_nature_data = fields.Selection([
         ('transmitted', 'Transmises'), 
         ('observed_site', 'Constatées sur place')], string="Données relatives à la nature du bâchage éventuel")
-    # statisfaction fields
+    # statisfaction fields echafaudage
     presence_correct_installation = fields.Selection([
         ('yes', 'Satisfait'), 
         ('no', 'Non satisfait')], string="La présence et la bonne installation des dispositifs de protection collective et des moyens d'accès")
@@ -167,6 +167,77 @@ class Prestation(models.Model):
     constat_assembly_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de montage et d'installation", domain=[('type', '=', 'assembly_exam')])
     constat_conservation_state_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat épreuve statique", domain=[('type', '=', 'conservation_state_exam')])
     ############### Levage Fields ##################
+    announced_installation_number = fields.Integer("Nombre d'installation annoncée(s)")
+    inspected_installation_number = fields.Integer("Nombre d'installation inspectée(s)")
+    protection_dispositif = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Présence d'un dispositif de protection")
+    levage_protection_dispositif = fields.Char("Dispositif de protection de levage")
+    comment_protection_dispositif = fields.Html("Commentaires dispositif de protection")
+    comment_assembly_exam = fields.Html("Commentaires examen de montage")
+    
+    # statisfaction fields Levage
+    locking_device = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="Dispositif de verrouillage (freins)")
+    immobilizer_device = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait'),
+    ], string="Dispositif d'immobilisation")
+    device_control_descent_loads = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="Dispositif contrôlant la descente des charges")
+    pulleys = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="Poulies de mouflage, Poulies à empreintes")
+    overturning_moment_limiters = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="Limiteurs de charges et de moment de renversement")
+    cable = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="Câbles")
+    hook_marking = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="Crochet (+ marquage")
+    devices_limiting_movements = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="Dispositifs limitant les mouvements de l'appareil de levage et de la charge tels que limiteurs de course, limiteurs de relevage, limiteurs d'orientation, dispositifs anticollision, dispositifs parachutes ")
+    mast = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="Mât(s)")
+    
+    # examen de bon fonctionnement Levage
+    up_down_movements = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="Mouvements de montée et de descente")
+    operation_adjustment_load_limiter = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait'),
+    ], string="Fonctionnement et réglage du limiteur de charge")
+    evacuation_device = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="Dispositif d'évacuation : Descente manuelle")
+    operation_limit_switches = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="Fonctionnement des limiteurs de fin de course")
+    tilt_indicator_operation = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="Fonctionnement de l'indicateur de devers : limiteur d'inclinaison")
+    operation_parachute_device = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="Fonctionnement du dispositif de parachute")
+    operation_guidance_device = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="Fonctionnement du dispositif du guidage")
+    operation_emergency_stop_device = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="Fonctionnement du dispositif d'arrêt d'urgence")
+    wind_service_limit = fields.Selection([
+        ('yes', 'Satisfait'), 
+        ('no', 'Non satisfait')], string="Vent limite de service: 50 km/h ")
+    constat_good_functioning_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de bon fonctionnement", domain=[('type', '=', 'good_functioning')])
+    
+    
+    
+    
     installation_use_id = fields.Many2one('prestation.levage.installation.use', "Utilisation de l'installation")
     coefficient_statique = fields.Float("Coefficient statique")
     autorised_cmu_statique = fields.Float("CMU Autorisée statique (en KG)")
@@ -175,15 +246,14 @@ class Prestation(models.Model):
     test_duration_statique = fields.Float("Durée d’épreuve statique (en minutes)")
     elevation_height_statique = fields.Float("Hauteur d'élévation (en m)")
     comment_epreuve_statique = fields.Html("Commentaires Epreuve")
-    constat_epreuve_statique_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'adéquation", domain=[('type', '=', 'epreuve_statique')])
+    constat_epreuve_statique_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'épreuve statique", domain=[('type', '=', 'epreuve_statique')])
     coefficient_dynamique = fields.Float("Coefficient dynamique")
     autorised_cmu_dynamique = fields.Float("CMU Autorisée dynamique (en KG)")
     theoretical_test_load_dynamique = fields.Float("Charge d'épreuve théorique dynamique (en KG)", store="True", compute='_compute_theoretical_test_load_dynamique')
     reel_test_load_dynamique = fields.Float("Charge d'épreuve réelle dynamique (en KG)")
     comment_epreuve_dynamique = fields.Html("Commentaires Epreuve dynamique")
-    constat_epreuve_dynamique_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat épreuve dynamique", domain=[('type', '=', 'epreuve_dynamique')])
+    constat_epreuve_dynamique_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat d'épreuve dynamique", domain=[('type', '=', 'epreuve_dynamique')])
         
-    
     
     @api.model
     def create(self, vals):
@@ -277,3 +347,15 @@ class Prestation(models.Model):
             if rec.autorised_cmu_dynamique and rec.coefficient_dynamique:
                 rec.theoretical_test_load_dynamique = rec.autorised_cmu_dynamique * rec.coefficient_dynamique
     
+    @api.onchange('inspection_type', 'verification_type')
+    def onchange_levage_vp(self):
+        if self.inspection_type == 'levage' and self.verification_type=='VP':
+            self.comment_protection_dispositif = "Examen d'adéquation non concerné par la vérification périodique"
+            self.comment_assembly_exam = "Examen de montage et d'installation non concerné par la vérification périodique"
+            self.comment_epreuve_statique = "Epreuve statique non concerné par la vérification périodique"
+            self.comment_epreuve_dynamique = "Epreuve dynamique non concerné par la vérification périodique"
+        else:
+            self.comment_protection_dispositif = ""
+            self.comment_assembly_exam = ""
+            self.comment_epreuve_statique = ""
+            self.comment_epreuve_dynamique = ""

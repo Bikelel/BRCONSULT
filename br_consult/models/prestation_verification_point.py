@@ -12,6 +12,7 @@ class PrestationVerificationPoint(models.Model):
         ('adequacy_exam', "Examen d'adéquation"),
         ('assembly_exam', "Examen de montage et d'installation"),
         ('conservation_state_exam', "Examen de l'état de conservation"),
+        ('good_functioning', "Examen de bon fonctionnement"),
         ('epreuve_statique', "Epreuve statique"),
         ('epreuve_dynamique', "Epreuve dynamique")], string="Type")
     observations = fields.Text("Observations old")
