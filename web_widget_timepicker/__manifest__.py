@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 {
     "name": "Web Timepicker Widget",
-    "version": "12.0.1.0.0",
+    "version": "15.0.1.0.0",
     "author": "VividLab, "
               "Kaushal Prajapati, "
               "Alexandre Díaz, "
@@ -15,6 +15,12 @@
         "web",
     ],
     "data": [
-        "views/web_widget_timepicker_assets.xml",
+        #"views/web_widget_timepicker_assets.xml",
     ],
+    
+    "assets": {
+        "web.assets_backend": [
+            "web_widget_timepicker/static/src/js/web_widget_timepicker.js"
+        ]
+    }
 }
