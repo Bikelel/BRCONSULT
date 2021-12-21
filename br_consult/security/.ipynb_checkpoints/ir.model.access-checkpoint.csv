@@ -23,6 +23,5 @@ access_prestation_characteristic_admin,prestation.characteristic,model_prestatio
 access_prestation_anchor_support_datac_admin,prestation.anchor.support.data,model_prestation_anchor_support_data,base.group_user,1,1,1,1
 access_prestation_report_parameter_admin,prestation.report.parameter,model_prestation_report_parameter,base.group_user,1,1,1,1
 access_prestation_levage_installation_use_admin,prestation.levage.installation.use,model_prestation_levage_installation_use,base.group_user,1,1,1,1
-
-
-
+access_prestation_conservation_state_admin,prestation.conservation.state,model_prestation_conservation_state,base.group_user,1,1,1,1
+access_prestation_conservation_state_exam_admin,prestation.conservation.state.exam,model_prestation_conservation_state_exam,base.group_user,1,1,1,1

@@ -178,7 +178,7 @@
                         </div>
                         <div class='col-5 text-center' style="padding:20px;">
                             
-                            <img t-if="doc.user_id.visa_user" t-att-src="image_data_uri(doc.user_id.visa_user)" style="max-height: 300px;"/>
+                            <img t-if="doc.user_id.visa_user" t-att-src="image_data_uri(doc.user_id.visa_user)" style="max-height: 270px;"/>
                             
                         </div>
                     </div>

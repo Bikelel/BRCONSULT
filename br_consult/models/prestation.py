@@ -11,7 +11,7 @@ class Prestation(models.Model):
     def default_stage(self):
         phase1 = self.env['prestation.stage'].search([('state', '=', 'phase1')], limit=1)
         return phase1.id
-
+    
     def get_default_characteristic(self):
         attributes = self.env['prestation.characteristic'].search([('is_default', '=', True)])
         lines = []
@@ -121,6 +121,8 @@ class Prestation(models.Model):
         ('transmitted', 'Transmises'), 
         ('observed_site', 'Constatées sur place')], string="Données relatives à la nature du bâchage éventuel")
     # statisfaction fields echafaudage
+    conservation_state_exam_ids = fields.One2many('prestation.conservation.state.exam', 'prestation_id', string="Examen d'état de conservation")
+    
     presence_correct_installation = fields.Selection([
         ('yes', 'Satisfait'), 
         ('no', 'Non satisfait')], string="La présence et la bonne installation des dispositifs de protection collective et des moyens d'accès")
@@ -280,7 +282,20 @@ class Prestation(models.Model):
             else:
                 code_verification_type = ''
             vals['name'] = partner_ref + '-' +code_installation_type+ '-' + code_verification_type + '-' + self.env['ir.sequence'].next_by_code('prestation.prestation') or _('New')
-
+            
+            if vals.get('inspection_type') == 'echafaudage':
+                attributes = self.env['prestation.conservation.state'].search([('inspection_type', '=', 'echafaudage')])
+            elif vals.get('inspection_type') == 'levage' and vals.get('installation_type'):
+                attributes = self.env['prestation.conservation.state'].search([('inspection_type', '=', 'levage'), ('installation_type', '=', vals.get('installation_type'))])
+            else:
+                attributes = None
+            if attributes:
+                lines = []
+                for line in attributes:
+                    lines.append((0, 0, {'conservation_state_id': line.id,}))
+                
+                vals.update({'conservation_state_exam_ids': lines})
+                
         result = super(Prestation, self).create(vals)
         
         return result
@@ -359,3 +374,18 @@ class Prestation(models.Model):
             self.comment_assembly_exam = ""
             self.comment_epreuve_statique = ""
             self.comment_epreuve_dynamique = ""
+            
+#     @api.onchange('installation_type', 'inspection_type')
+#     def onchange_installation_inspection_type(self):
+
+#         attributes = self.env['prestation.conservation.state'].search([('installation_type', '=', self.installation_type), ('installation_type', '=', self.installation_type)])
+#         lines = []
+#         for line in attributes:
+#             lines.append((0, 0, {'name': line.name,
+#                                  'characteristic_id': line.id,
+#                                  'is_length': line.is_length,
+#                                  'is_width': line.is_width,
+#                                  'is_height': line.is_height,
+#                                  'is_surface': line.is_surface,
+#                                 }))
+#         return lines

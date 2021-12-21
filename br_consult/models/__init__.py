@@ -25,3 +25,6 @@ from . import prestation_characteristic
 from . import prestation_anchor_support_data
 from . import prestation_report_parameter
 from . import prestation_levage_installation_use
+from . import prestation_conservation_state
+from . import prestation_conservation_state_exam
+from . import prestation_conservation_state_exam_config

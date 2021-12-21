@@ -58,6 +58,7 @@
         'views/prestation_report_parameter_views.xml',
         'data/prestation_levage_installation_use.xml',
         'views/prestation_levage_installation_use.xml',
+        'views/prestation_conservation_state_views.xml',
         
     ],
     'installable': True,

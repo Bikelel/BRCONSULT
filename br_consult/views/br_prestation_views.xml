@@ -271,7 +271,16 @@
                                         </tree>
                                     </field>
                                 </group>
-                                <group string="Examen de l'etat de conservation" class="exam_etat_satisfaction">
+                                <group string="Examen de l'etat de conservation OLD" >
+                                    <field name="conservation_state_exam_ids" nolabel="1">
+                                        <tree editable="bottom" delete="false" create="false">
+                                            <field name="conservation_state_id"/>
+                                            <field name="opinion"/>
+                                            
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Examen de l'etat de conservation OLD" class="exam_etat_satisfaction">
                                     <!--    Echafaudage   -->
                                     <field name="presence_correct_installation" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
                                     <field name="permanent_deformation_absence" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
