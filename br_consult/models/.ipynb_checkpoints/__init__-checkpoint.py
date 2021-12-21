@@ -28,3 +28,6 @@ from . import prestation_levage_installation_use
 from . import prestation_conservation_state
 from . import prestation_conservation_state_exam
 from . import prestation_conservation_state_exam_config
+from . import prestation_good_functioning
+from . import prestation_good_functioning_exam
+from . import characteristic

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_prestation_levage_characteristic_suspended_platform_list" model="ir.ui.view">
+            <field name="name">prestation.levage.characteristic.suspended.platform.list</field>
+            <field name="model">prestation.levage.characteristic.suspended.platform</field>
+            <field name="arch" type="xml">
+                <tree string="Caractéristique plateforme suspendue">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_prestation_levage_characteristic_suspended_platform_form" model="ir.ui.view">
+            <field name="name">prestation.levage.characteristic.suspended.platform.form</field>
+            <field name="model">prestation.levage.characteristic.suspended.platform</field>
+            <field name="arch" type="xml">
+                <form string="Caractéristique plateforme suspendue">
+                    <sheet>
+                        <group string="Caractéristiques de la plateforme">
+                            <group>
+                                <field name="name"/>
+                                <field name="height_platform"/>
+                                <field name="suspended_platform_location_id"/>
+                                
+                            </group>
+                            <group>
+                                <field name="length_platform"/>
+                                <field name="suspended_platform_access_id"/>
+                                <field name="suspended_platform_constitution_id"/>
+                                
+                                
+                            </group>
+                        </group>
+                        <group string="Caractéristiques module">
+                            <group>
+                                <field name="suspended_platform_mark_id"/>
+                            </group>
+                            <group>
+                                <field name="suspended_platform_assembly_id"/>
+                            </group>
+                        </group>
+                        <group string="Caractéristiques treuil">
+                            <group>
+                                <field name="suspended_platform_mark_treuil_id"/>
+                                <field name="type_treuil"/>
+                                <field name="alimentation"/>
+                            </group>
+                            <group>
+                                <field name="numero_treuil"/>
+                                <field name="capacity_treuil"/>
+                                <field name="is_taree"/>
+                                <field name="capacity_taree" attrs="{'invisible': [('is_taree', '=', False)]}"/>
+                                <field name="suspended_platform_cable_diameter_id"/>
+                                
+                            </group>
+                        </group>
+                        <group string="Caractéristiques suspension">
+                            <field name="suspended_platform_suspension_id"/>
+                            <field name="suspended_platform_suspension_location_id"/>
+                            <field name="suspended_platform_suspension_mark_id"/>
+                            <field name="vertical_guide"/>
+                        </group>
+                        
+                        
+                        
+                        
+                    </sheet>
+                    
+                    
+                    
+                </form>
+            </field>
+        </record>
+
+       
+
+  </data>
+</odoo>

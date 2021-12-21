@@ -209,18 +209,18 @@ La présente mission est réalisée conformément au contrat référencé
                     <div class="bloc_sub_title2">
                     Photos
                     </div>
-                    
-                    <t t-foreach="doc.image_ids" t-as="image">
-                        <div class='text-center col-12 row' style="page-break-inside:avoid;">
-                            <div style="padding:15px;" class="col-6" t-if="image">
-                                <img t-if="image.image" t-att-src="image_data_uri(image.image)" style="max-height: 300px;"/>
+                    <div class='row'>
+<!--                         <t t-set="i" t-attr-value="{len(doc.image_ids)}" /> -->
+                        <t t-foreach="doc.image_ids" t-as="image">
+                            
+                        
+                            <div style="padding:15px;" class="col-6 text-center">
+<!--                                 <img t-if="image.image" t-att-src="image_data_uri(image.image)" style="max-height: 200px;"/> -->
+                                txt
                             </div>
-                            <div style="padding:15px;" class="col-6" t-if="image">
-                                <img t-if="image.image" t-att-src="image_data_uri(image.image)" style="max-height: 300px;"/>
-
-                            </div>
-                        </div>
-                    </t>
+                        
+                        </t>
+                   </div>
                     
                 </div>
                 <div class="bloc_title">
@@ -509,7 +509,7 @@ La présente mission est réalisée conformément au contrat référencé
                 <div class="bloc_sub_title">
                    • Examen de l'etat de conservation:
                 </div>
-                <table class='table' style="margin-top:20px;">
+<!--                 <table class='table' style="margin-top:20px;">
                     <tr>
                         <td style="width: 80%;">La présence et la bonne installation des dispositifs de protection collective et des moyens d'accès</td>
                         <td><span t-field="doc.presence_correct_installation"/></td>
@@ -558,7 +558,7 @@ La présente mission est réalisée conformément au contrat référencé
                         <td style="width: 80%;">L'absence d'encombrement des planchers</td>
                         <td><span t-field="doc.lack_floor_space"/></td>
                     </tr>
-                </table>
+                </table> -->
                 <div class="bloc_sub_title">
                    • Constat(s):
                 </div>

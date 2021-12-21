@@ -175,8 +175,20 @@
                                     <field name="comment_scaffolding_characteristic" nolabel="1"/>
                                 </group>
                             </page>
+                            <page name='characteristic_suspended_platform' string="Caractéristique de levage" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                                <group>
+                                    <field name="characteristic_suspended_platform_ids" nolabel="1">
+                                        <tree>
+                                            <field name="name"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                
+                            </page>
+                            
                             <page name='exams' string="Examens" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
                                 <group string="Examen d'adéquation">
+                                    
                                     <field name="adequacy_exam_ids" nolabel="1">
                                         <tree editable='bottom'>
                                             <field name="works_nature_id"/>
@@ -271,41 +283,17 @@
                                         </tree>
                                     </field>
                                 </group>
-                                <group string="Examen de l'etat de conservation OLD" >
+                                <group string="Examen de l'etat de conservation" >
                                     <field name="conservation_state_exam_ids" nolabel="1">
                                         <tree editable="bottom" delete="false" create="false">
-                                            <field name="conservation_state_id"/>
+                                            <field name="conservation_state_id" invisible="1"/>
+                                            <field name="name" readonly="1" widget='html'/>
                                             <field name="opinion"/>
                                             
                                         </tree>
                                     </field>
                                 </group>
-                                <group string="Examen de l'etat de conservation OLD" class="exam_etat_satisfaction">
-                                    <!--    Echafaudage   -->
-                                    <field name="presence_correct_installation" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
-                                    <field name="permanent_deformation_absence" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
-                                    <field name="presence_fixing" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
-                                    <field name="absence_detectable_play" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
-                                    <field name="good_behavior" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
-                                    <field name="absence_disorder" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
-                                    <field name="presence_wedging" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
-                                    <field name="good_fixing" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
-                                    <field name="maintaining_continuity" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
-                                    <field name="visibility_indications" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
-                                    <field name="absence_loads_exceeding" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
-                                    <field name="lack_floor_space" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
-                                    <!--    levage   -->
-                                    <field name="locking_device" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
-                                    <field name="immobilizer_device" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
-                                    <field name="device_control_descent_loads" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
-                                    <field name="pulleys" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
-                                    <field name="overturning_moment_limiters" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
-                                    <field name="cable" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
-                                    <field name="hook_marking" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
-                                    <field name="devices_limiting_movements" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
-                                    <field name="mast" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
-                                    
-                                </group>
+
                                 <group string="Constat (s)">
                                     <field name="constat_conservation_state_exam_ids" nolabel="1">
                                         <tree editable='bottom' class="constat_class_table">
@@ -319,18 +307,17 @@
                                         </tree>
                                     </field>
                                 </group>
-                                
-                                <group string="Examen du bon fonctionenement" class="exam_etat_satisfaction" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
-                                    <field name="up_down_movements"/>
-                                    <field name="operation_adjustment_load_limiter"/>
-                                    <field name="evacuation_device"/>
-                                    <field name="operation_limit_switches"/>
-                                    <field name="tilt_indicator_operation"/>
-                                    <field name="operation_parachute_device"/>
-                                    <field name="operation_guidance_device"/>
-                                    <field name="operation_emergency_stop_device"/>
-                                    <field name="wind_service_limit"/>
+                                <group string="Examen du bon fonctionenement" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
+                                    <field name="good_functioning_exam_ids" nolabel="1">
+                                        <tree editable="bottom" delete="false" create="false">
+                                            <field name="good_functioning_id" invisible="1"/>
+                                            <field name="name" readonly="1" widget='html'/>
+                                            <field name="opinion"/>
+                                            
+                                        </tree>
+                                    </field>
                                 </group>
+
                                 <group string="Constat (s)">
                                     <field name="constat_good_functioning_exam_ids" nolabel="1">
                                         <tree editable='bottom' class="constat_class_table">
@@ -361,7 +348,7 @@
                                     <field name="constat_epreuve_statique_ids" nolabel="1">
                                         <tree editable='bottom' style="max-width:90%;">
                                             <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'epreuve_statique')]"/>
-                                            <field name="reserve"/>
+                                        
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
                                             <field name="state"/>
@@ -382,7 +369,7 @@
                                     <field name="constat_epreuve_dynamique_ids" nolabel="1">
                                         <tree editable='bottom' style="max-width:90%;">
                                             <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'epreuve_dynamique')]"/>
-                                            <field name="reserve"/>
+                                            
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
                                             <field name="state"/>

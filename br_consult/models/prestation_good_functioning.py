@@ -2,15 +2,15 @@
 from odoo import api, fields, models
 
 
-class PrestationConservationState(models.Model):
-    _name = "prestation.conservation.state"
-    _description = "Prestation conservation state List"
+class PrestationGoodFunctioning(models.Model):
+    _name = "prestation.good.functioning"
+    _description = "Prestation good functioning List"
 
-    name = fields.Html("Nom", required=True)
+    name = fields.Text("Nom", required=True)
     inspection_type = fields.Selection([
-        ('echafaudage', 'Echafaudage'),
+        #('echafaudage', 'Echafaudage'),
         ('levage', 'Levage'),
-    ], string="Type d'inspection", required=True)
+    ], string="Type d'inspection", required=True, default='levage')
     installation_type = fields.Selection([
         ('PSE', 'Plateforme suspendue électrique'),
         ('PSM', 'Plateforme suspendue manuelle'),
@@ -21,4 +21,4 @@ class PrestationConservationState(models.Model):
         ('TRE', 'Treuil'),
         ('PAE', 'Palant motorisé'),
         ('PAM', 'Palant manuel'),
-    ], string="Type d'installation")
+    ], string="Type d'installation", required=True)

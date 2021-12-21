@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.suspended.platform.location" id="prestation_suspended_platform_location1">
+        <field name="name">Façade rue</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.suspended.platform.location" id="prestation_suspended_platform_location2">
+        <field name="name">Façade cour</field>
+        <field name="sequence">2</field>
+    </record>
+    <record model="prestation.suspended.platform.location" id="prestation_suspended_platform_location3">
+        <field name="name">Façade arrière</field>
+        <field name="sequence">3</field>
+    </record>
+    <record model="prestation.suspended.platform.location" id="prestation_suspended_platform_location4">
+        <field name="name">Pignon</field>
+        <field name="sequence">4</field>
+    </record>
+
+</odoo>

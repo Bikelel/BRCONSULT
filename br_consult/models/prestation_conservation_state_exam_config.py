@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models
 
-
+##### Absolète #####
 class PrestationConservationStateExamConfig(models.Model):
     _name = "prestation.conservation.state.exam.config"
     _description = "Prestation conservation state exam config"

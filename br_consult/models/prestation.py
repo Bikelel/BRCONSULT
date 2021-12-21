@@ -48,8 +48,8 @@ class Prestation(models.Model):
         ('PTR', 'Plateforme de transport'),
         ('MMA', 'Monte-matériaux'),
         ('TRE', 'Treuil'),
-        ('PAE', 'Palant motorisé'),
-        ('PAM', 'Palant manuel'),
+        ('PAE', 'Palan motorisé'),
+        ('PAM', 'Palan manuel'),
     ], copy=False, string="Type d'installation")
     verification_type = fields.Selection([
         ('MS', 'Mise en service'),
@@ -120,46 +120,8 @@ class Prestation(models.Model):
     covering_nature_data = fields.Selection([
         ('transmitted', 'Transmises'), 
         ('observed_site', 'Constatées sur place')], string="Données relatives à la nature du bâchage éventuel")
-    # statisfaction fields echafaudage
     conservation_state_exam_ids = fields.One2many('prestation.conservation.state.exam', 'prestation_id', string="Examen d'état de conservation")
-    
-    presence_correct_installation = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="La présence et la bonne installation des dispositifs de protection collective et des moyens d'accès")
-    permanent_deformation_absence = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait'),
-    ], string="L'absence de déformation permanente ou de corrosion des éléments constitutifs de l'échafaudage pouvant compromettre sa solidité")
-    presence_fixing = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="La présence de tous les éléments de fixation ou de liaison des constituants de l'échafaudage")
-    absence_detectable_play = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="L'absence de jeu décelable susceptible d'affecter ces éléments")
-    good_behavior = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="La bonne tenue des éléments d'amarrage (ancrage, vérinage) ")
-    absence_disorder = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="L'absence de désordre au niveau des appuis et des surfaces portantes")
-    presence_wedging = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="La présence de tous les éléments de calage et de stabilisation ou d'immobilisation")
-    good_fixing = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="La bonne fixation des filets et des bâches sur l'échafaudage, ainsi que la continuité du bâchage sur toute la surface extérieure")
-    maintaining_continuity = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Le maintien de la continuité, de la planéité, de l'horizontalité et de la bonne tenue de chaque niveau de plancher")
-    visibility_indications = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="La visibilité des indications sur l'échafaudage relatives aux charges admissibles")
-    absence_loads_exceeding = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="L'absence de charges dépassant ces limites admissibles")
-    lack_floor_space = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="L'absence d'encombrement des planchers")
+    good_functioning_exam_ids = fields.One2many('prestation.good.functioning.exam', 'prestation_id', string="Examen du bon fonctionnement")
     
     location_diagram = fields.Binary("Schéma de l’emplacement")
     image_ids = fields.One2many('prestation.image', 'prestation_id' ,"Photographies")
@@ -176,69 +138,7 @@ class Prestation(models.Model):
     comment_protection_dispositif = fields.Html("Commentaires dispositif de protection")
     comment_assembly_exam = fields.Html("Commentaires examen de montage")
     
-    # statisfaction fields Levage
-    locking_device = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Dispositif de verrouillage (freins)")
-    immobilizer_device = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait'),
-    ], string="Dispositif d'immobilisation")
-    device_control_descent_loads = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Dispositif contrôlant la descente des charges")
-    pulleys = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Poulies de mouflage, Poulies à empreintes")
-    overturning_moment_limiters = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Limiteurs de charges et de moment de renversement")
-    cable = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Câbles")
-    hook_marking = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Crochet (+ marquage")
-    devices_limiting_movements = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Dispositifs limitant les mouvements de l'appareil de levage et de la charge tels que limiteurs de course, limiteurs de relevage, limiteurs d'orientation, dispositifs anticollision, dispositifs parachutes ")
-    mast = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Mât(s)")
-    
-    # examen de bon fonctionnement Levage
-    up_down_movements = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Mouvements de montée et de descente")
-    operation_adjustment_load_limiter = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait'),
-    ], string="Fonctionnement et réglage du limiteur de charge")
-    evacuation_device = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Dispositif d'évacuation : Descente manuelle")
-    operation_limit_switches = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Fonctionnement des limiteurs de fin de course")
-    tilt_indicator_operation = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Fonctionnement de l'indicateur de devers : limiteur d'inclinaison")
-    operation_parachute_device = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Fonctionnement du dispositif de parachute")
-    operation_guidance_device = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Fonctionnement du dispositif du guidage")
-    operation_emergency_stop_device = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Fonctionnement du dispositif d'arrêt d'urgence")
-    wind_service_limit = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Vent limite de service: 50 km/h ")
     constat_good_functioning_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de bon fonctionnement", domain=[('type', '=', 'good_functioning')])
-    
-    
-    
     
     installation_use_id = fields.Many2one('prestation.levage.installation.use', "Utilisation de l'installation")
     coefficient_statique = fields.Float("Coefficient statique")
@@ -255,6 +155,10 @@ class Prestation(models.Model):
     reel_test_load_dynamique = fields.Float("Charge d'épreuve réelle dynamique (en KG)")
     comment_epreuve_dynamique = fields.Html("Commentaires Epreuve dynamique")
     constat_epreuve_dynamique_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat d'épreuve dynamique", domain=[('type', '=', 'epreuve_dynamique')])
+    
+    characteristic_suspended_platform_ids = fields.One2many('prestation.levage.characteristic.suspended.platform', 'prestation_id', "Caractéristique de la plateforme suspendue")
+    
+    
         
     
     @api.model
@@ -284,17 +188,30 @@ class Prestation(models.Model):
             vals['name'] = partner_ref + '-' +code_installation_type+ '-' + code_verification_type + '-' + self.env['ir.sequence'].next_by_code('prestation.prestation') or _('New')
             
             if vals.get('inspection_type') == 'echafaudage':
-                attributes = self.env['prestation.conservation.state'].search([('inspection_type', '=', 'echafaudage')])
+                attributes_conservation_state = self.env['prestation.conservation.state'].search([('inspection_type', '=', 'echafaudage')])
             elif vals.get('inspection_type') == 'levage' and vals.get('installation_type'):
-                attributes = self.env['prestation.conservation.state'].search([('inspection_type', '=', 'levage'), ('installation_type', '=', vals.get('installation_type'))])
+                attributes_conservation_state = self.env['prestation.conservation.state'].search([('inspection_type', '=', 'levage'), ('installation_type', '=', vals.get('installation_type'))])
+                
+                attributes_good_functioning = self.env['prestation.good.functioning'].search([('inspection_type', '=', 'levage'), ('installation_type', '=', vals.get('installation_type'))])
+                
             else:
-                attributes = None
-            if attributes:
+                attributes_conservation_state = None
+                attributes_good_functioning = None
+            if attributes_conservation_state:
                 lines = []
-                for line in attributes:
-                    lines.append((0, 0, {'conservation_state_id': line.id,}))
+                for line in attributes_conservation_state:
+                    lines.append((0, 0, {'conservation_state_id': line.id,
+                                         'name': line.name}))
                 
                 vals.update({'conservation_state_exam_ids': lines})
+            if attributes_good_functioning:
+                lines = []
+                for line in attributes_good_functioning:
+                    lines.append((0, 0, {'good_functioning_id': line.id,
+                                         'name': line.name}))
+                
+                vals.update({'good_functioning_exam_ids': lines})
+                
                 
         result = super(Prestation, self).create(vals)
         
@@ -373,19 +290,4 @@ class Prestation(models.Model):
             self.comment_protection_dispositif = ""
             self.comment_assembly_exam = ""
             self.comment_epreuve_statique = ""
-            self.comment_epreuve_dynamique = ""
-            
-#     @api.onchange('installation_type', 'inspection_type')
-#     def onchange_installation_inspection_type(self):
-
-#         attributes = self.env['prestation.conservation.state'].search([('installation_type', '=', self.installation_type), ('installation_type', '=', self.installation_type)])
-#         lines = []
-#         for line in attributes:
-#             lines.append((0, 0, {'name': line.name,
-#                                  'characteristic_id': line.id,
-#                                  'is_length': line.is_length,
-#                                  'is_width': line.is_width,
-#                                  'is_height': line.is_height,
-#                                  'is_surface': line.is_surface,
-#                                 }))
-#         return lines
+            self.comment_epreuve_dynamique = ""            
