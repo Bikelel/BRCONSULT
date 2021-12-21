@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_prestation_other_device_list" model="ir.ui.view">
+            <field name="name">prestation.other.device.list</field>
+            <field name="model">prestation.other.device</field>
+            <field name="arch" type="xml">
+                <tree string="Motif" multi_edit="1" editable="top">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_prestation_other_device" model="ir.actions.act_window">
+            <field name="name">Autre dispositif</field>
+            <field name="res_model">prestation.other.device</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem name="Autre dispositif" 
+              id="br_consult_menu_prestation_other_device" 
+              parent="br_consult_settings_menu"
+              sequence="50"
+              action="action_prestation_other_device"/>
+
+  </data>
+</odoo>

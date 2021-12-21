@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_prestation_prestation_list" model="ir.ui.view">
+            <field name="name">prestation.prestation.list</field>
+            <field name="model">prestation.prestation</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="company_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_prestation_prestation_kanban" model="ir.ui.view">
+            <field name="name">prestation.prestation.kanban</field>
+            <field name="model">prestation.prestation</field>
+            <field name="priority" eval="100"/>
+            <field name="arch" type="xml">
+                <kanban default_group_by="stage_id" class="o_kanban_mobile" archivable="false" sample="1">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="inspection_type"/>
+                    <field name="user_id"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_content oe_kanban_global_click">
+                                <div>
+                                    <strong class="o_kanban_record_title"><span><field name="name"/></span></strong>
+                                </div>
+                                <div>
+                                    <span class="o_kanban_record_subtitle"><field name="partner_id"/></span>
+                                </div>
+                                <div>
+                                    <span class="o_kanban_record_subtitle"><field name="inspection_type"/></span>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="user_id" widget="many2one_avatar_user"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        
+        <record id="view_prestation_prestation_form" model="ir.ui.view">
+            <field name="name">prestation.prestation.form</field>
+            <field name="model">prestation.prestation</field>
+            <field name="arch" type="xml">
+                <form string="Prestation">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="phase1,phase2,phase3,phase4"/>
+                    </header>
+                    <sheet>
+                        <div class="prestation_sheet_header">
+                            <div class="prestation_sheet_header_fiche">Fiche d'intervention</div>
+                            <div class="prestation_name" attrs="{'invisible': [('title_label', '=', '')]}">
+                                <field name="title_label" readonly="1" force_save="1"/>
+                            </div>
+                            <div class="prestation_sheet_header_reference" attrs="{'invisible': [('message_label', '=', '')]}">
+                                <field name="message_label" readonly="1" force_save="1"/>
+                            </div>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="inspection_type" required="1" />
+                                <field name="report_parameter_id" invisible="1" />
+                            </group>
+                            <group>
+                                <field name="installation_type" attrs="{'invisible': [('inspection_type', '!=', 'levage')], 'required': [('inspection_type', '=', 'levage')]}"/>
+                                <field name="verification_type" required='1'/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name='fiche' string="Fiche" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                                <group>
+                                    <group>
+                                        <field name="name" />
+                                        <field name="company_id" invisible="1"/>
+                                        <field name="requested_date" />
+                                        <field name="partner_id" required="1" domain="[('is_company', '=', True)]" options="{'no_create': True}" />
+                                        <field name="partner_contact" />
+                                        <field name="site_address" required="1" />
+                                        <field name="site_localisation" />
+                                    </group>
+                                    <group>
+                                        <field name="date" />
+                                        <field name="verification_date" widget="daterange"/>
+                                        <field name="user_id" domain="[('is_inspector', '=', True)]"/>
+                                        <field name="prensent_contact" />
+                                        <field name="scaffolding_surface" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
+                                        <field name="inspected_scaffolding_surface" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
+                                        <field name="announced_installation_number" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                                        <field name="inspected_installation_number" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                                    </group>
+                                </group>
+                                <group string="Conformité de l’installation">
+                                    <group>
+                                        <field name="favorable_opinion"/>
+                                        <field name="opinion_with_observation"/>
+                                    </group>
+                                    <group>
+                                        <field name="defavorable_opinion"/>
+                                    </group>
+                                </group>
+                                <group string="Commantaires">
+                                    <field name="comment_observation_fiche" nolabel="1"/>
+                                </group>
+                                <group string="Visa de l’inspecteur technique">
+                                    <group>
+                                        <field name='visa_user' widget='image'/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page name='scope_mission' string="Périmètre de la mission" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                                <group>
+                                    <field name="motif_rs_id" attrs="{'invisible': [('verification_type', 'not in', ['RS'])]}"/>
+                                    
+                                    <field name="contrat_ref" string="La mission est réalisée conformément au contrat réf"/>
+                                    <field name="scope_mission_date" />
+                                </group>
+                                <group string="Commantaires">
+                                    <field name="comment_scope_mission" nolabel="1"/>
+                                </group>
+                            </page>
+                            <page name='scaffolding_photographic_location' string="Localisation photographique de l'échafaudage" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                                <group string="Schéma de l’emplacement">
+                                    <field name="location_diagram" nolabel="1" options='{"size":[0,90]}' widget='image'/>
+                                </group>
+                                <group string="Photographies">
+                                    <field name="image_ids" nolabel="1">
+                                        <tree>
+                                            <field name="image" nolabel="1" options='{"size":[0,90]}' widget='image'/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Commantaires">
+                                    <field name="comment_scaffolding_photographic_location" nolabel="1"/>
+                                </group>
+                            </page>
+                            <page name='scaffolding_characteristic' string="Caractéristique de l'échafaudage" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                                <group string="Description générale">
+                                    <field name="scaffolding_mark_ids" nolabel="1">
+                                        <tree editable='bottom'>
+                                            <field name="mark_id"/>
+                                            <field name="type"/>
+                                            <field name="height"/>
+                                            <field name="height_max"/>
+                                            <field name="linear"/>
+                                            <field name="inspected_surface"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Spécificité de l’échafaudage" />
+                                    <field name="scaffolding_characteristic_ids" nolabel="1">
+                                        <tree editable='bottom'>
+                                            <field name="characteristic_id"/>
+                                            <field name="is_presence"/>
+                                            <field name="length" attrs="{'readonly': [('is_length', '=', False)]}"/>
+                                            <field name="width" attrs="{'readonly': [('is_width', '=', False)]}"/>
+                                            <field name="height" attrs="{'readonly': [('is_height', '=', False)]}"/>
+                                            <field name="surface" attrs="{'readonly': [('is_surface', '=', False)]}"/>
+                                            
+                                            <field name="localisation_id"/>
+                                            <field name="is_length" invisible="1"/>
+                                            <field name="is_width" invisible="1"/>
+                                            <field name="is_height" invisible="1"/>
+                                            <field name="is_surface" invisible="1"/>
+                                        </tree>
+                                    </field>
+                                <group string="Commantaires">
+                                    <field name="comment_scaffolding_characteristic" nolabel="1"/>
+                                </group>
+                            </page>
+                            <page name='exams' string="Examens" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                                <group string="Examen d'adéquation">
+                                    <field name="adequacy_exam_ids" nolabel="1">
+                                        <tree editable='bottom'>
+                                            <field name="works_nature_id"/>
+                                            <field name="precision"/>
+                                            <field name="is_examined"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Dispositif de protection" >
+                                    <field name="is_pare_gravats" attrs="{'invisible':[('inspection_type', '!=', 'echafaudage')]}"/>
+                                    <field name="is_other_device" attrs="{'invisible':[('inspection_type', '!=', 'echafaudage')]}"/>
+                                    <field name="other_device_id" attrs="{'invisible':[('is_other_device', '!=', 'yes')]}"/>
+                                    <field name="protection_dispositif" attrs="{'invisible':[('inspection_type', '!=', 'levage')]}"/>
+                                    <field name="levage_protection_dispositif" attrs="{'invisible':[('protection_dispositif', '!=', 'yes')]}"/>
+                                </group>
+                                <group attrs="{'invisible':[('inspection_type', '!=', 'levage')]}">
+                                    <field name="installation_use_id"/>
+                                </group>
+                                <group string="Charge d'exploitation de l'échafaudage par défaut" attrs="{'invisible':[('inspection_type', '!=', 'echafaudage')]}">
+                                    <field name="scaffolding_operating_load_ids" nolabel="1">
+                                        <tree editable='bottom'>
+                                            <field name="scaffolding_class_id" options="{'no_create': True}"/>
+                                            <field name="operating_overload"/>
+                                            <field name="precision"/>
+                                            
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Constat (s)" attrs="{'invisible': [('inspection_type', '=', 'levage'), ('verification_type', '=', 'VP')]}">
+                                    <field name="constat_adequacy_exam_ids" nolabel="1">
+                                        <tree editable='bottom' style="max-width:90%;">
+                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'adequacy_exam')]"/>
+                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" options="{'no_create': True}"/>
+                                            <field name="reserve" invisible="1"/>
+                                            <field name="precision"/>
+                                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+                                            <field name="state"/>
+                                            <field name="date"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Examen de montage et d'exploitation">
+                                    <field name="security_register"/>
+                                </group>
+                                <group string="Présentation du dossier du montage">
+                                    <field name="assembly_file"/>
+                                    
+                                    
+                                    <field name="execution_plan" attrs="{'invisible': [('assembly_file', '!=', 'yes')]}"/>
+                                    <field name="calculation_notice" attrs="{'invisible': [('assembly_file', '!=', 'yes')]}"/>
+                                    
+                                    <field name="maintenance_log" invisible="1"/>
+                                    <field name="manufacturer_instructions"/>
+                                    
+                                </group>
+                                <group string="Données relatives au sol ou de support d'implantation">
+                                
+                                    <field name="soil_support_data_ids" string="Choix" widget="many2many_tags"/>
+                                </group>
+                                <group string="Nature des supports d’ancrage">
+                                    <field name="anchor_support_data_ids" string="Choix" widget="many2many_tags"/>
+                                    
+                                </group>
+                                <group string="Données aux ancrages" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}">
+                                    <field name="anchor_type_id"/>
+                                    <field name="ankles_type" attrs="{'invisible':[('anchor_type_id', '!=', 1)]}"/>
+                                    <field name="anchor_data_number"/>
+                                    <field name="anchor_data_theoretical_number"/>
+                                    <field name="anchor_data_difference_number"/>
+                                </group>
+                                <group string="Données relatives aux réactions d'appuis au sol ou au support d’accueil" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}">
+                                    <field name="ground_support_data" string="Choix"/>
+                                </group>
+                                <group string="Données relatives aux charges climatiques" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}">
+                                    <field name="climatic_data" string="Valeur"/>
+                                </group>
+                                <group string="Données relatives à la nature du bâchage éventuel" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}">
+                                    <field name="covering_nature_data" string="Choix"/>
+                                </group>
+                                <field name="comment_assembly_exam" string="Commentaires"/>
+                                
+                                <group string="Constat (s)" attrs="{'invisible': [('inspection_type', '=', 'levage'), ('verification_type', '=', 'VP')]}">
+                                    <field name="constat_assembly_exam_ids" nolabel="1">
+                                        <tree editable='bottom' class="constat_class_table">
+                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'assembly_exam')]"/>
+                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" options="{'no_create': True}"/>
+                                            <field name="precision"/>
+                                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+                                            <field name="state"/>
+                                            <field name="date"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Examen de l'etat de conservation" class="exam_etat_satisfaction">
+                                    <!--    Echafaudage   -->
+                                    <field name="presence_correct_installation" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
+                                    <field name="permanent_deformation_absence" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
+                                    <field name="presence_fixing" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
+                                    <field name="absence_detectable_play" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
+                                    <field name="good_behavior" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
+                                    <field name="absence_disorder" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
+                                    <field name="presence_wedging" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
+                                    <field name="good_fixing" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
+                                    <field name="maintaining_continuity" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
+                                    <field name="visibility_indications" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
+                                    <field name="absence_loads_exceeding" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
+                                    <field name="lack_floor_space" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
+                                    <!--    levage   -->
+                                    <field name="locking_device" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                                    <field name="immobilizer_device" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                                    <field name="device_control_descent_loads" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                                    <field name="pulleys" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                                    <field name="overturning_moment_limiters" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                                    <field name="cable" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                                    <field name="hook_marking" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                                    <field name="devices_limiting_movements" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                                    <field name="mast" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                                    
+                                </group>
+                                <group string="Constat (s)">
+                                    <field name="constat_conservation_state_exam_ids" nolabel="1">
+                                        <tree editable='bottom' class="constat_class_table">
+                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'conservation_state_exam')]"/>
+                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" options="{'no_create': True}"/>
+                                            <field name="precision"/>
+                                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+                                            <field name="state"/>
+                                            <field name="date"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                
+                                <group string="Examen du bon fonctionenement" class="exam_etat_satisfaction" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
+                                    <field name="up_down_movements"/>
+                                    <field name="operation_adjustment_load_limiter"/>
+                                    <field name="evacuation_device"/>
+                                    <field name="operation_limit_switches"/>
+                                    <field name="tilt_indicator_operation"/>
+                                    <field name="operation_parachute_device"/>
+                                    <field name="operation_guidance_device"/>
+                                    <field name="operation_emergency_stop_device"/>
+                                    <field name="wind_service_limit"/>
+                                </group>
+                                <group string="Constat (s)">
+                                    <field name="constat_good_functioning_exam_ids" nolabel="1">
+                                        <tree editable='bottom' class="constat_class_table">
+                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'good_functioning')]"/>
+                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" options="{'no_create': True}"/>
+                                            <field name="precision"/>
+                                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+                                            <field name="state"/>
+                                            <field name="date"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                
+                            </page>
+                            <page name='epreuve' string="Epreuve" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
+                                <separator string="5. Epreuves"/>
+                                <group string="Epreuve statique">
+                                    <field name="coefficient_statique" string="Coefficient" />
+                                    <field name="autorised_cmu_statique" string="CMU Autorisée statique"/>
+                                    <field name="theoretical_test_load_statique" string="Charge d'épreuve théorique (en KG)"/>
+                                    <field name="reel_test_load_statique" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}" string="Charge d'épreuve réelle (en KG)"/>
+                                    <field name="test_duration_statique" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}" widget="float_time" string=""/>
+                                    <field name="elevation_height_statique" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}" string=""/>
+                                    <field name="comment_epreuve_statique" string="Commentaire"/>
+                                    
+                                </group>
+                                <group string="Constat (s)" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}">
+                                    <field name="constat_epreuve_statique_ids" nolabel="1">
+                                        <tree editable='bottom' style="max-width:90%;">
+                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'epreuve_statique')]"/>
+                                            <field name="reserve"/>
+                                            <field name="precision"/>
+                                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+                                            <field name="state"/>
+                                            <field name="date"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Epreuve dynamique">
+                                    <field name="coefficient_dynamique" string="Coefficient" />
+                                    <field name="autorised_cmu_dynamique" string="CMU Autorisée statique"/>
+                                    <field name="theoretical_test_load_dynamique" string="Charge d'épreuve théorique (en KG)"/>
+                                    <field name="reel_test_load_dynamique" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}" string="Charge d'épreuve réelle (en KG)"/>
+                                    
+                                    <field name="comment_epreuve_statique" string="Commentaire"/>
+                                    
+                                </group>
+                                <group string="Constat (s)" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}">
+                                    <field name="constat_epreuve_dynamique_ids" nolabel="1">
+                                        <tree editable='bottom' style="max-width:90%;">
+                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'epreuve_dynamique')]"/>
+                                            <field name="reserve"/>
+                                            <field name="precision"/>
+                                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+                                            <field name="state"/>
+                                            <field name="date"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                            
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+    <record id="action_prestation_prestation" model="ir.actions.act_window">
+        <field name="name">Prestation</field>
+        <field name="res_model">prestation.prestation</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <menuitem name="Prestation" 
+              id="prestation_consult_menu_prestation" 
+              parent="br_consult_menu_root"
+              action="action_prestation_prestation"/>
+
+
+  </data>
+</odoo>

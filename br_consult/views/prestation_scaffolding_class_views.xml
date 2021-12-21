@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_prestation_scaffolding_class_list" model="ir.ui.view">
+            <field name="name">prestation.scaffolding.class.list</field>
+            <field name="model">prestation.scaffolding.class</field>
+            <field name="arch" type="xml">
+                <tree string="Classe de l'échafaudage" multi_edit="1" editable="top">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="operating_overload"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_prestation_scaffolding_class" model="ir.actions.act_window">
+            <field name="name">Classe de l'échafaudage</field>
+            <field name="res_model">prestation.scaffolding.class</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem name="Classe de l'échafaudage" 
+              id="br_consult_menu_prestation_scaffolding_class" 
+              parent="br_consult_settings_menu"
+              sequence="20"
+              action="action_prestation_scaffolding_class"/>
+
+
+  </data>
+</odoo>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_prestation_stage_list" model="ir.ui.view">
+            <field name="name">prestation.stage.list</field>
+            <field name="model">prestation.stage</field>
+            <field name="arch" type="xml">
+                <tree string="Stages" multi_edit="1" editable="top">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_prestation_stage" model="ir.actions.act_window">
+            <field name="name">Etape de prestation</field>
+            <field name="res_model">prestation.stage</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem name="Etape de prestation" 
+              id="br_consult_menu_prestation_stage" 
+              parent="br_consult_settings_menu"
+              sequence="10"
+              action="action_prestation_stage"/>
+
+
+  </data>
+</odoo>

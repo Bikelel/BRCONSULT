@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_prestation_verification_point_list" model="ir.ui.view">
+            <field name="name">prestation.verification.point.list</field>
+            <field name="model">prestation.verification.point</field>
+            <field name="arch" type="xml">
+                <tree string="Point de vérification">
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="observations"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_prestation_verification_point_form" model="ir.ui.view">
+            <field name="name">prestation.verification.point.form</field>
+            <field name="model">prestation.verification.point</field>
+            <field name="arch" type="xml">
+                <form string="Point de vérification">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="type"/>
+                            <field name="observations"/>
+                            
+                        </group>
+                        <group string="Observations">
+                            <field name="observation_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                    
+                    
+                    
+                </form>
+            </field>
+        </record>
+
+        <record id="action_prestation_verification_point" model="ir.actions.act_window">
+            <field name="name">Point de vérification</field>
+            <field name="res_model">prestation.verification.point</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Point de vérification" 
+              id="br_consult_menu_prestation_verification_point" 
+              parent="br_consult_settings_menu"
+              sequence="35"
+              action="action_prestation_verification_point"/>
+
+  </data>
+</odoo>

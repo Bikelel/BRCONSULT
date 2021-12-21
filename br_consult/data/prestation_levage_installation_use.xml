@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.levage.installation.use" id="prestation_levage_installation_use1">
+        <field name="name">Levage de charge suspendue</field>
+        <field name="sequence">1</field>
+    </record>
+   
+</odoo>

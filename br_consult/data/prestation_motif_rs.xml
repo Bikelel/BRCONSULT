@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.motif.rs" id="prestation_motif_rs1">
+        <field name="name">Rehausse</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.motif.rs" id="prestation_motif_rs2">
+        <field name="name">Levée des réserves</field>
+        <field name="sequence">2</field>
+    </record>
+</odoo>

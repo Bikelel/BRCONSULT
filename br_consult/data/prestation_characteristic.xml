@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.characteristic" id="prestation_characteristic1">
+        <field name="name">Plancher d’approche</field>
+        <field name="sequence">1</field>
+        <field name="is_default">1</field>
+        <field name="is_length">0</field>
+        <field name="is_width">1</field>
+        <field name="is_height">0</field>
+        <field name="is_surface">0</field>
+    </record>
+    <record model="prestation.characteristic" id="prestation_characteristic2">
+        <field name="name">Passage piéton</field>
+        <field name="sequence">2</field>
+        <field name="is_default">1</field>
+        <field name="is_length">0</field>
+        <field name="is_width">1</field>
+        <field name="is_height">1</field>
+        <field name="is_surface">0</field>
+    </record>
+    <record model="prestation.characteristic" id="prestation_characteristic3">
+        <field name="name">Tour escalier</field>
+        <field name="sequence">3</field>
+        <field name="is_default">1</field>
+        <field name="is_length">1</field>
+        <field name="is_width">1</field>
+        <field name="is_height">1</field>
+        <field name="is_surface">0</field>
+    </record>
+    <record model="prestation.characteristic" id="prestation_characteristic4">
+        <field name="name">Parapluie</field>
+        <field name="sequence">4</field>
+        <field name="is_default">1</field>
+        <field name="is_length">1</field>
+        <field name="is_width">1</field>
+        <field name="is_height">1</field>
+        <field name="is_surface">1</field>
+    </record>
+    
+</odoo>

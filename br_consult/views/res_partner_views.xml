@@ -1,0 +1,40 @@
+<odoo>
+    <data>
+        <record id="view_partner_form_br_consult" model="ir.ui.view">
+            <field name="name">res.partner.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='contact_addresses']" position="attributes">
+                    <attribute name='invisible'>1</attribute>
+                </xpath>
+                <xpath expr="//page[@name='sales_purchases']" position="attributes">
+                    <attribute name='invisible'>1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='vat']" position="before">
+                    <field name="siret"/>
+                    <xpath expr="//field[@name='ref']" position="move"/>
+                    <xpath expr="//field[@name='industry_id']" position="move"/>
+                </xpath>
+                <xpath expr="//page[@name='internal_notes']" position="before">
+                    <page name="legal_representative" string="Infos du représentant légal">
+                        <group>
+                            <group>
+                                <field name="lastname_legal_representative"/>
+                                <field name="firstname_legal_representative"/>
+                                <field name="email_legal_representative"/>
+                            </group>
+                            <group>
+                                <field name="phone_legal_representative"/>
+                                <field name="mobil_phone_legal_representative"/>
+                            </group>
+                        </group>
+                        
+                    </page>
+                </xpath>
+                
+                
+            </field>
+        </record>
+    </data>
+</odoo>

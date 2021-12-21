@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_prestation_report_parameter_list" model="ir.ui.view">
+            <field name="name">prestation.report.parameter.list</field>
+            <field name="model">prestation.report.parameter</field>
+            <field name="arch" type="xml">
+                <tree string="Report parameter">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_prestation_report_parameter_form" model="ir.ui.view">
+            <field name="name">prestation.report.parameter.form</field>
+            <field name="model">prestation.report.parameter</field>
+            <field name="arch" type="xml">
+                <form string="Report parameter">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="installation_compliance"/>
+                        </group>
+                        <group>
+                            <field name="scope_mission"/>
+                        </group>
+                        <group>
+                            <field name="adequation_exam"/>
+                        </group>
+                    </sheet>
+                    
+                </form>
+            </field>
+        </record>
+
+        <record id="action_prestation_report_parameter" model="ir.actions.act_window">
+            <field name="name">report.parameter</field>
+            <field name="res_model">prestation.report.parameter</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Champs texte du rapport" 
+              id="br_consult_menu_prestation_report_parameter" 
+              parent="br_consult_settings_menu"
+              sequence="30"
+              action="action_prestation_report_parameter"/>
+
+  </data>
+</odoo>
