@@ -165,7 +165,7 @@ class Prestation(models.Model):
     
     constat_adequacy_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'adéquation", domain=[('type', '=', 'adequacy_exam')])
     constat_assembly_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de montage et d'installation", domain=[('type', '=', 'assembly_exam')])
-    constat_conservation_state_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat épreuve statique", domain=[('type', '=', 'conservation_state_exam')])
+    constat_conservation_state_exam_ids = fields.One2many('prestation.constat', 'prestation_id', string="Constat Examen de l'état de conservation", domain=[('type', '=', 'conservation_state_exam')])
     ############### Levage Fields ##################
     announced_installation_number = fields.Integer("Nombre d'installation annoncée(s)")
     inspected_installation_number = fields.Integer("Nombre d'installation inspectée(s)")
