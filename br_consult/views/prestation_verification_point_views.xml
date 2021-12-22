@@ -8,6 +8,7 @@
                 <tree string="Point de vérification">
                     <field name="name"/>
                     <field name="inspection_type"/>
+                    <field name="installation_type"/>
                     <field name="type"/>
                     <field name="observation_ids" widget="many2many_tags"/>
                 </tree>
@@ -22,7 +23,10 @@
                         <group>
                             <field name="name"/>
                             <field name="inspection_type"/>
+                            <field name="installation_type" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
                             <field name="type"/>
+                            
+                            
                         </group>
                         <group string="Observations">
                             <field name="observation_ids" nolabel="1">

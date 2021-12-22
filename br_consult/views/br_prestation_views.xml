@@ -126,7 +126,7 @@
                                     <field name="comment_scope_mission" nolabel="1"/>
                                 </group>
                             </page>
-                            <page name='scaffolding_photographic_location' string="Localisation photographique de l'échafaudage" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                            <page name='scaffolding_photographic_location' string="Localisation photographique" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
                                 <group string="Schéma de l’emplacement">
                                     <field name="location_diagram" nolabel="1" options='{"size":[0,90]}' widget='image'/>
                                 </group>
@@ -141,7 +141,7 @@
                                     <field name="comment_scaffolding_photographic_location" nolabel="1"/>
                                 </group>
                             </page>
-                            <page name='scaffolding_characteristic' string="Caractéristique de l'échafaudage" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                            <page name='scaffolding_characteristic' string="Caractéristique de l'échafaudage" attrs="{'invisible': ['|',('verification_type', 'not in', ['MS', 'RS', 'VP']), ('inspection_type', '!=', 'echafaudage')]}">
                                 <group string="Description générale">
                                     <field name="scaffolding_mark_ids" nolabel="1">
                                         <tree editable='bottom'>
@@ -163,7 +163,6 @@
                                             <field name="width" attrs="{'readonly': [('is_width', '=', False)]}"/>
                                             <field name="height" attrs="{'readonly': [('is_height', '=', False)]}"/>
                                             <field name="surface" attrs="{'readonly': [('is_surface', '=', False)]}"/>
-                                            
                                             <field name="localisation_id"/>
                                             <field name="is_length" invisible="1"/>
                                             <field name="is_width" invisible="1"/>
@@ -175,7 +174,7 @@
                                     <field name="comment_scaffolding_characteristic" nolabel="1"/>
                                 </group>
                             </page>
-                            <page name='characteristic_suspended_platform' string="Caractéristique de levage" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                            <page name='characteristic_suspended_platform' string="Caractéristique de levage" attrs="{'invisible': ['|',('verification_type', 'not in', ['MS', 'RS', 'VP']), ('inspection_type', '!=', 'levage')]}">
                                 <group>
                                     <field name="characteristic_suspended_platform_ids" nolabel="1">
                                         <tree>
@@ -332,7 +331,7 @@
                                 </group>
                                 
                             </page>
-                            <page name='epreuve' string="Epreuve" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
+                            <page name='epreuve' string="Epreuve" attrs="{'invisible': ['|',('verification_type', 'not in', ['MS', 'RS', 'VP']), ('inspection_type', '!=', 'levage')]}">
                                 <separator string="5. Epreuves"/>
                                 <group string="Epreuve statique">
                                     <field name="coefficient_statique" string="Coefficient" />

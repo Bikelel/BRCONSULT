@@ -9,7 +9,7 @@ class PrestationLevageCharacteristicSuspendedPlatform(models.Model):
 
     name = fields.Char("N° de la plateforme suspendue")
     prestation_id = fields.Many2one('prestation.prestation', 'Prestation')
-    height_platform = fields.Float("Hauteur plateforme")
+    height_platform = fields.Float("Hauteur d'élévation (en mètre)")
     length_platform = fields.Float("Largeur plateforme")
     suspended_platform_location_id = fields.Many2one('prestation.suspended.platform.location', "Localisationde la plateforme suspendue")
     suspended_platform_access_id = fields.Many2one('prestation.suspended.platform.access', "Acces plateforme suspendue")
@@ -23,12 +23,19 @@ class PrestationLevageCharacteristicSuspendedPlatform(models.Model):
         ('monophase', 'Monophase'),
     ], string="Alimentation")
     numero_treuil = fields.Char("N° treuil")
-    capacity_treuil = fields.Char("Capacité treuil")
+    capacity_treuil = fields.Integer("Capacité nominale des treuils")
     is_taree = fields.Boolean("A une capacité tarée")
     capacity_taree = fields.Float("Capacité tarée")
     suspended_platform_cable_diameter_id = fields.Many2one('prestation.suspended.platform.cable.diameter', "Diametre des cables (en mm)")
     
-    suspended_platform_suspension_id = fields.Many2one('prestation.suspended.platform.suspension', "Suspension par")
+#     suspended_platform_suspension_id = fields.Many2one('prestation.suspended.platform.suspension', "Suspension par")
+    suspension_by = fields.Selection([
+        ('p_lest', 'Poutres lestées'),
+        ('p_spit', 'Poutres spittées'),
+        ('pince', "Pince d'acrotère"),
+        ('other', 'Autre'),
+    ], string="Suspension par")
+    other_suspension_by = fields.Char("Autre Suspension par")
     suspended_platform_suspension_location_id = fields.Many2one('prestation.suspended.platform.suspension.location', "Localisation des suspensions")
     suspended_platform_suspension_mark_id = fields.Many2one('prestation.suspended.platform.suspension.mark', "Marque des suspensions")
     vertical_guide = fields.Selection([
@@ -64,30 +71,27 @@ class PrestationLevageCharacteristicSuspendedPlatform(models.Model):
     nb_personne_max = fields.Integer("Nombre de personnes maximum", related="suspended_platform_cmu_id.nb_personne_max")
     comment_cmu = fields.Html("Commentaire CMU")
     
-    @api.depends('f1', 'r1','is_taree','capacity_taree')
+    @api.depends('f1', 'r1','is_taree','capacity_taree', 'capacity_treuil')
     def _compute_p1_lca(self):
         for rec in self:
             if rec.r1 != 0.0:
                 if rec.is_taree:
                     rec.p1_lca = round(((rec.f1 * rec.capacity_taree) / rec.r1) * 3.0, 2)
                 else:
-                    if rec.p1:
-                        rec.p1_lca = rec.p1
-                    else:
-                        rec.p1_lca = 0.0
+                    rec.p1_lca = round(((rec.f1 * rec.capacity_treuil) / rec.r1) * 3.0, 2)
             else:
-                rec.p1 = 0.0
+                rec.p1_lca = 0.0
     
-    @api.depends('f2', 'r2','is_taree','capacity_taree')
+    @api.depends('f2', 'r2','is_taree','capacity_taree', 'capacity_treuil')
     def _compute_p2_lca(self):
         for rec in self:
             if rec.r2 != 0.0:
                 if rec.is_taree:
                     rec.p2_lca = round(((rec.f2 * rec.capacity_taree) / rec.r2) * 3.0, 2)
                 else:
-                    rec.p2_lca = rec.p2
+                    rec.p2_lca = round(((rec.f2 * rec.capacity_treuil) / rec.r2) * 3.0, 2)
             else:
-                rec.p2 = 0.0
+                rec.p2_lca = 0.0
     
     @api.depends('f1', 'r1','capacity_taree')
     def _compute_p1(self):

@@ -21,5 +21,16 @@ class PrestationVerificationPoint(models.Model):
         ('epreuve_dynamique', "Epreuves dynamiques")], string="Type", required=True)
     observations = fields.Text("Observations old")
     observation_ids = fields.One2many("prestation.observation", 'verification_point_id', "Observations")
+    installation_type = fields.Selection([
+        ('PSE', 'Plateforme suspendue électrique'),
+        ('PSM', 'Plateforme suspendue manuelle'),
+        ('PWM', 'Plateforme de travail sur mat'),
+        ('ASC', "Ascenseur de chantier"),
+        ('PTR', 'Plateforme de transport'),
+        ('MMA', 'Monte-matériaux'),
+        ('TRE', 'Treuil'),
+        ('PAE', 'Palan motorisé'),
+        ('PAM', 'Palan manuel'),
+    ], string="Type d'installation")
     
    

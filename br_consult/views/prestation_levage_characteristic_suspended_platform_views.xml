@@ -55,12 +55,13 @@
                             </group>
                         </group>
                         <group string="Caractéristiques suspension">
-                            <field name="suspended_platform_suspension_id"/>
+                            <field name="suspension_by"/>
+                            <field name="other_suspension_by" attrs="{'invisible': [('suspension_by', '!=', 'other')]}"/>
                             <field name="suspended_platform_suspension_location_id"/>
                             <field name="suspended_platform_suspension_mark_id"/>
                             <field name="vertical_guide"/>
                         </group>
-                        <group string="Calcul du lest" colspan="4">
+                        <group string="Calcul du lest" colspan="4" attrs="{'invisible': [('suspension_by', 'not in', ['p_lest', 'p_spit'])]}">
                             <group>
                                 <h3 colspan="4">Côtes</h3>
                                 <table border="1" style="width:300px;">
@@ -77,14 +78,14 @@
                                 </table>
                                 
                             </group>
-                            <group>
+                            <group attrs="{'invisible': [('suspension_by', 'not in', ['p_lest'])]}">
                                 <div>
                                     <h3>Lest calculé (Lca)</h3>
                                     <p>Lca P1 = <field name="p1_lca" /> </p>
                                     <p>Lca P2 = <field name="p2_lca" /></p>
                                 </div>
                             </group>
-                            <group>
+                            <group attrs="{'invisible': [('suspension_by', 'not in', ['p_lest'])]}">
                                 <h3 colspan="4" style="margin-top:50px;">Lest constaté (Lco)</h3>
                                 <h4 colspan="4"> Lco : P1 </h4>
                                 <field name="poids_p1"/>
@@ -95,7 +96,7 @@
                                 <field name="nombre_p2"/>
                                 <field name="total_p2"/>
 							</group>
-                            <group>
+                            <group attrs="{'invisible': [('suspension_by', 'not in', ['p_lest'])]}">
                                 <h3 style="margin-top:50px;">Différence</h3>
                                 <br/>
                                 <ul>
