@@ -64,7 +64,7 @@ class Prestation(models.Model):
     stage_id = fields.Many2one(
         'prestation.stage', string='Etape', index=True, tracking=True, readonly=False, store=True,
         copy=False, group_expand='_read_group_stage_ids', ondelete='restrict', default=default_stage)
-    state = fields.Selection(string='Status', readonly=True, copy=False, index=True, related='stage_id.state')
+    state = fields.Selection(string='Status', readonly=True, copy=False, index=True, related='stage_id.state', default="phase1")
     title_label = fields.Text("Titre de prestation", store = True)
     message_label = fields.Text("Code de l'article", store = True)
     site_address = fields.Text("Adresse de chantier")
@@ -132,7 +132,7 @@ class Prestation(models.Model):
     constat_conservation_state_exam_ids = fields.One2many('prestation.constat', 'prestation_id', string="Constat Examen de l'état de conservation", domain=[('type', '=', 'conservation_state_exam')])
     ############### Levage Fields ##################
     announced_installation_number = fields.Integer("Nombre d'installation annoncée(s)")
-    inspected_installation_number = fields.Integer("Nombre d'installation inspectée(s)")
+    inspected_installation_number = fields.Integer("Nombre d'installation inspectée(s)", compute="_compute_inspected_installation_number", store=True)
     protection_dispositif = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Présence d'un dispositif de protection")
     levage_protection_dispositif = fields.Char("Dispositif de protection de levage")
     comment_protection_dispositif = fields.Html("Commentaires dispositif de protection")
@@ -158,8 +158,8 @@ class Prestation(models.Model):
     
     characteristic_suspended_platform_ids = fields.One2many('prestation.levage.characteristic.suspended.platform', 'prestation_id', "Caractéristique de la plateforme suspendue")
     
-    
-        
+    # travail sur mat
+    characteristic_platform_ids = fields.One2many('prestation.levage.characteristic.platform', 'prestation_id', "Caractéristique de la plateforme")
     
     @api.model
     def create(self, vals):
@@ -186,7 +186,7 @@ class Prestation(models.Model):
             else:
                 code_verification_type = ''
             vals['name'] = partner_ref + '-' +code_installation_type+ '-' + code_verification_type + '-' + self.env['ir.sequence'].next_by_code('prestation.prestation') or _('New')
-            
+            attributes_good_functioning = None
             if vals.get('inspection_type') == 'echafaudage':
                 attributes_conservation_state = self.env['prestation.conservation.state'].search([('inspection_type', '=', 'echafaudage')])
             elif vals.get('inspection_type') == 'levage' and vals.get('installation_type'):
@@ -196,7 +196,7 @@ class Prestation(models.Model):
                 
             else:
                 attributes_conservation_state = None
-                attributes_good_functioning = None
+                
             if attributes_conservation_state:
                 lines = []
                 for line in attributes_conservation_state:
@@ -290,4 +290,11 @@ class Prestation(models.Model):
             self.comment_protection_dispositif = ""
             self.comment_assembly_exam = ""
             self.comment_epreuve_statique = ""
-            self.comment_epreuve_dynamique = ""            
+            self.comment_epreuve_dynamique = ""
+        
+    @api.depends('characteristic_suspended_platform_ids', 'inspection_type', 'installation_type')
+    def _compute_inspected_installation_number(self):
+        for rec in self:
+            if rec.inspection_type and rec.installation_type in ['PSE', 'PSM', 'PWM']:
+                rec.inspected_installation_number = len(rec.characteristic_suspended_platform_ids)
+            
