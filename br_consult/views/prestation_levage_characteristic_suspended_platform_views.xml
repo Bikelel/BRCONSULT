@@ -60,6 +60,58 @@
                             <field name="suspended_platform_suspension_mark_id"/>
                             <field name="vertical_guide"/>
                         </group>
+                        <group string="Calcul du lest" colspan="4">
+                            <group>
+                                <h3 colspan="4">Côtes</h3>
+                                <table border="1" style="width:300px;">
+                                    <tr>
+                                        <th rowspan="2">P1</th>
+                                        <th>F1 = <field name="f1"/></th>
+                                        <th rowspan="2">P2</th>
+                                        <th>F2 = <field name="f2"/></th>
+                                    </tr>
+                                    <tr>
+                                        <td>R1 = <field name="r1"/></td>
+                                        <td>R2 = <field name="r2"/></td>
+                                    </tr>
+                                </table>
+                                
+                            </group>
+                            <group>
+                                <div>
+                                    <h3>Lest calculé (Lca)</h3>
+                                    <p>Lca P1 = <field name="p1_lca" /> </p>
+                                    <p>Lca P2 = <field name="p2_lca" /></p>
+                                </div>
+                            </group>
+                            <group>
+                                <h3 colspan="4" style="margin-top:50px;">Lest constaté (Lco)</h3>
+                                <h4 colspan="4"> Lco : P1 </h4>
+                                <field name="poids_p1"/>
+                                <field name="nombre_p1"/>
+                                <field name="total_p1"/>
+                                <h4 colspan="4"> Lco : P2 </h4>
+                                <field name="poids_p2"/>
+                                <field name="nombre_p2"/>
+                                <field name="total_p2"/>
+							</group>
+                            <group>
+                                <h3 style="margin-top:50px;">Différence</h3>
+                                <br/>
+                                <ul>
+                                    <li>Différence P1 = <field name="difference_p1" /> </li>
+                                    <li>Différence P2 = <field name="difference_p2" /></li>
+                                </ul>
+                                <br/>
+                            </group>
+                        </group>
+                        <group string="Charge Maximale d'Utilisation (CMU)">
+                            <field name="suspended_platform_cmu_id"/>
+                            <field name="nb_personne_max"/>
+                        </group>
+                        <group>
+                            <field name="comment_cmu" nolabel="1" placeholder="Commentaire..."/>
+                        </group>
                         
                         
                         

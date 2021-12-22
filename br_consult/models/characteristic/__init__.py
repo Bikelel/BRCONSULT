@@ -11,3 +11,4 @@ from . import prestation_suspended_platform_cable_diameter
 from . import prestation_suspended_platform_suspension
 from . import prestation_suspended_platform_suspension_location
 from . import prestation_suspended_platform_suspension_mark
+from . import prestation_suspended_platform_cmu

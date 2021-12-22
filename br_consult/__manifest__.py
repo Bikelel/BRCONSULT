@@ -82,6 +82,9 @@
         'views/characteristic/prestation_suspended_platform_suspension_location_views.xml',
         'data/characteristic/prestation_suspended_platform_suspension_mark.xml',
         'views/characteristic/prestation_suspended_platform_suspension_mark_views.xml',
+        'data/characteristic/prestation_suspended_platform_cmu.xml',
+        'views/characteristic/prestation_suspended_platform_cmu_views.xml',
+        
     ],
     'installable': True,
     'auto_install': False,
