@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.suspended.platform.access" id="prestation_suspended_platform_access1">
+        <field name="name">Sol, RDC</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.suspended.platform.access" id="prestation_suspended_platform_access2">
+        <field name="name">Terasse</field>
+        <field name="sequence">2</field>
+    </record>
+    <record model="prestation.suspended.platform.access" id="prestation_suspended_platform_access3">
+        <field name="name">Sapine</field>
+        <field name="sequence">3</field>
+    </record>
+</odoo>

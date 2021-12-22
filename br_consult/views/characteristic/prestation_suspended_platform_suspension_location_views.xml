@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_prestation_suspended_platform_suspension_location_list" model="ir.ui.view">
+            <field name="name">prestation.suspended.platform.suspension.location.list</field>
+            <field name="model">prestation.suspended.platform.suspension.location</field>
+            <field name="arch" type="xml">
+                <tree string="Localisation des suspensions" multi_edit="1" editable="top">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_prestation_suspended_platform_suspension_location" model="ir.actions.act_window">
+            <field name="name">Localisation des suspensions</field>
+            <field name="res_model">prestation.suspended.platform.suspension.location</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem name="Localisation des suspensions" 
+              id="br_consult_menu_prestation_suspended_platform_suspension_location" 
+              parent="br_consult_settings_levage_data_menu"
+              sequence="50"
+              action="action_prestation_suspended_platform_suspension_location"/>
+
+  </data>
+</odoo>

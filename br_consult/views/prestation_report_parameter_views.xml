@@ -40,7 +40,7 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem name="Paramétre du rapprt" 
+        <menuitem name="Champs texte du rapport" 
               id="br_consult_menu_prestation_report_parameter" 
               parent="br_consult_settings_menu"
               sequence="30"

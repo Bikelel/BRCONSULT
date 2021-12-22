@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.suspended.platform.assembly" id="prestation_suspended_platform_assembly1">
+        <field name="name">Goupilles</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.suspended.platform.assembly" id="prestation_suspended_platform_assembly2">
+        <field name="name">Boulons</field>
+        <field name="sequence">2</field>
+    </record>
+</odoo>
