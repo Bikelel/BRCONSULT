@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_prestation_levage_characteristic_platform_list" model="ir.ui.view">
+            <field name="name">prestation.levage.characteristic.platform.list</field>
+            <field name="model">prestation.levage.characteristic.platform</field>
+            <field name="arch" type="xml">
+                <tree string="Caractéristique plateforme">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_prestation_levage_characteristic_platform_form" model="ir.ui.view">
+            <field name="name">prestation.levage.characteristic.platform.form</field>
+            <field name="model">prestation.levage.characteristic.platform</field>
+            <field name="arch" type="xml">
+                <form string="Caractéristique de la plateforme">
+                    <sheet>
+                        <group string="Caractéristiques de la plateforme">
+                            <group>
+                                <field name="name"/>
+                                <field name="prestation_id" invisible="1"/>
+                                <field name="installation_type" invisible="1"/>
+                                <field name="platform_location_id"/>
+                                
+                            </group>
+                            <group>
+                                <field name="platform_access_id"/>
+                                <field name="length_platform"/>
+                                <field name="width_platform"/>
+                                
+                                <field name="presence_extention"/>
+                                <field name="width_extention" attrs="{'invisible': [('presence_extention', '!=', 'yes')]}"/>
+                                <field name="maximum_range"/>
+                                <field name="maximum_offset"/>
+                                <field name="platform_constitution_id"/>
+                                
+                                <field name="platform_mark_id"/>
+                                <field name="platform_type"/>
+                                <field name="num_fabrication"/>
+                                <field name="alimentation"/>
+                            </group>
+                        </group>
+                        <group string="Caractéristiques module">
+                            <field name="platform_assembly_id"/>
+                        </group>
+                        <group string="Caractéristiques des mats">
+                            <field name="platform_assembly_mat_id"/>
+                            <field name="suspension_type"/>
+                            <field name="nb_mat"/>
+                            <field name="dimension_mat"/>
+                            <field name="hauteur_elevation"/>
+                            
+                            
+                        </group>
+                        
+                        <group string="Charge Maximale d'Utilisation (CMU)">
+                            <field name="constructeur_cmu"/>
+                            <field name="autorized_cmu"/>
+                        </group>
+                        <group>
+                            <field name="comment_cmu" nolabel="1" placeholder="Commentaire..."/>
+                        </group>
+                        
+                        
+                        
+                        
+                    </sheet>
+                    
+                    
+                    
+                </form>
+            </field>
+        </record>
+
+       
+
+  </data>
+</odoo>

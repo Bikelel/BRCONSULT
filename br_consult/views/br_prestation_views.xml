@@ -24,7 +24,7 @@
             <field name="priority" eval="100"/>
             <field name="arch" type="xml">
                 <kanban default_group_by="stage_id" class="o_kanban_mobile" archivable="false" sample="1">
-                    <field name="name" readonly="1"/>
+                    <field name="name"/>
                     <field name="partner_id"/>
                     <field name="inspection_type"/>
                     <field name="user_id"/>
@@ -96,7 +96,7 @@
                             <page name='fiche' string="Fiche" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
                                 <group>
                                     <group>
-                                        <field name="name" />
+                                        <field name="name" readonly="1"/>
                                         <field name="company_id" invisible="1"/>
                                         <field name="requested_date" />
                                         <field name="partner_id" required="1" domain="[('is_company', '=', True)]" options="{'no_create': True}" />
@@ -193,8 +193,15 @@
                                 </group>
                             </page>
                             <page name='characteristic_suspended_platform' string="Caractéristique de levage" attrs="{'invisible': ['|',('verification_type', 'not in', ['MS', 'RS', 'VP']), ('inspection_type', '!=', 'levage')]}">
-                                <group>
-                                    <field name="characteristic_suspended_platform_ids" nolabel="1" context="{'default_prestation_id':active_id}">
+                                <group attrs="{'invisible': [('installation_type', 'not in', ['PSM', 'PSE'])]}">
+                                    <field name="characteristic_suspended_platform_ids" nolabel="1" context="{'default_prestation_id':active_id}" >
+                                        <tree>
+                                            <field name="name"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group attrs="{'invisible': [('installation_type', 'not in', ['PWM', 'ASC', 'PTR', 'MMA'])]}">
+                                    <field name="characteristic_platform_ids" nolabel="1" context="{'default_prestation_id':active_id}" >
                                         <tree>
                                             <field name="name"/>
                                         </tree>
