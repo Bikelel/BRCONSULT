@@ -19,6 +19,8 @@
                         <group string="Caractéristiques de la plateforme">
                             <group>
                                 <field name="name"/>
+                                <field name="prestation_id" invisible="1"/>
+                                <field name="installation_type" invisible="1"/>
                                 <field name="height_platform"/>
                                 <field name="suspended_platform_location_id"/>
                                 
@@ -43,7 +45,7 @@
                             <group>
                                 <field name="suspended_platform_mark_treuil_id"/>
                                 <field name="type_treuil"/>
-                                <field name="alimentation"/>
+                                <field name="alimentation" attrs="{'invisible': [('installation_type', '!=', 'PSE')]}"/>
                             </group>
                             <group>
                                 <field name="numero_treuil"/>

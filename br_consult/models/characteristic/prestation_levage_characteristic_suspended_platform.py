@@ -9,6 +9,7 @@ class PrestationLevageCharacteristicSuspendedPlatform(models.Model):
 
     name = fields.Char("N° de la plateforme suspendue")
     prestation_id = fields.Many2one('prestation.prestation', 'Prestation')
+    installation_type = fields.Selection(related="prestation_id.installation_type")
     height_platform = fields.Float("Hauteur d'élévation (en mètre)")
     length_platform = fields.Float("Largeur plateforme")
     suspended_platform_location_id = fields.Many2one('prestation.suspended.platform.location', "Localisationde la plateforme suspendue")

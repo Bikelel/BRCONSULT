@@ -6,7 +6,13 @@
             <field name="model">prestation.prestation</field>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="name"/>
+                    <field name="name" decoration-bf="1"/>
+                    <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+                    <field name="create_date" string="Date de creation" widget="date" optional="hide"/>
+                    <field name="date" string="Date de creation" widget="date" optional="show"/>
+                    <field name="inspection_type" decoration-success="inspection_type == 'echafaudage'" decoration-info="inspection_type == 'levage'" widget="badge" optional="show"/>
+                    <field name="installation_type"/>
+                    <field name="verification_type"/>
                     <field name="partner_id"/>
                     <field name="company_id" invisible="1"/>
                 </tree>
@@ -18,7 +24,7 @@
             <field name="priority" eval="100"/>
             <field name="arch" type="xml">
                 <kanban default_group_by="stage_id" class="o_kanban_mobile" archivable="false" sample="1">
-                    <field name="name"/>
+                    <field name="name" readonly="1"/>
                     <field name="partner_id"/>
                     <field name="inspection_type"/>
                     <field name="user_id"/>
@@ -45,6 +51,18 @@
                 </kanban>
             </field>
         </record>
+        <record model="ir.ui.view" id="view_prestation_graph">
+            <field name="name">prestation.prestation.graph</field>
+            <field name="model">prestation.prestation</field>
+            <field name="arch" type="xml">
+                <graph string="Prestation" sample="1">
+                    <field name="user_id"/>
+                    <field name="inspection_type"/>
+                </graph>
+            </field>
+        </record>
+        
+
         
         <record id="view_prestation_prestation_form" model="ir.ui.view">
             <field name="name">prestation.prestation.form</field>
@@ -176,7 +194,7 @@
                             </page>
                             <page name='characteristic_suspended_platform' string="Caractéristique de levage" attrs="{'invisible': ['|',('verification_type', 'not in', ['MS', 'RS', 'VP']), ('inspection_type', '!=', 'levage')]}">
                                 <group>
-                                    <field name="characteristic_suspended_platform_ids" nolabel="1">
+                                    <field name="characteristic_suspended_platform_ids" nolabel="1" context="{'default_prestation_id':active_id}">
                                         <tree>
                                             <field name="name"/>
                                         </tree>
@@ -388,7 +406,7 @@
     <record id="action_prestation_prestation" model="ir.actions.act_window">
         <field name="name">Prestation</field>
         <field name="res_model">prestation.prestation</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,tree,form,graph</field>
     </record>
 
     <menuitem name="Prestation" 
