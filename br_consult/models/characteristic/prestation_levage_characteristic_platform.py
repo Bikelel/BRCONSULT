@@ -36,10 +36,15 @@ class PrestationLevageCharacteristicPlatform(models.Model):
         ('monomat', 'Monomât'),
         ('bimats', 'bimâts'),
     ], string="Type de suspension")
+    platform_section_mat_id = fields.Many2one('prestation.platform.section.mat', "Section des élément MAT(s)")
     nb_mat = fields.Integer("Nombre des éléments de MAT")
     dimension_mat = fields.Float("Dimension des éléments de MAT", default=1.5)
     hauteur_elevation = fields.Float(string="HAUTEUR ELEVATION", compute='_compute_hauteur_elevation', store=True)
-    
+    platform_fixation_mat_id = fields.Many2one('prestation.platform.fixation.mat', "Mode de fixation des élément de MAT(s)")
+    fixation_position = fields.Char("Positionnement des Fixations")
+    move_speed = fields.Float("Vitesse de déplacement vertical")
+    speed_unit_id = fields.Many2one('prestation.platform.speed.unit', "Unité de vitesse verticale")
+    wind_speed_max_id = fields.Many2one('prestation.platform.wind.speed.max', string="Vitesse maximale de vent autorisée")
     constructeur_cmu = fields.Char("CMU Constructeur")
     autorized_cmu = fields.Char("CMU autorisée")
     comment_cmu = fields.Html("Commentaire CMU")

@@ -47,9 +47,16 @@
                         <group string="Caractéristiques des mats">
                             <field name="platform_assembly_mat_id"/>
                             <field name="suspension_type"/>
+                            <field name="platform_section_mat_id"/>
                             <field name="nb_mat"/>
                             <field name="dimension_mat"/>
                             <field name="hauteur_elevation"/>
+                            <field name="platform_fixation_mat_id"/>
+                            <field name="fixation_position"/>
+                            <field name="move_speed"/>
+                            <field name="speed_unit_id"/>
+                            <field name="wind_speed_max_id"/>
+                            
                             
                             
                         </group>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record model="prestation.platform.section.mat" id="prestation_platform_section_mat1">
+        <field name="name">Section triangulaire</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.platform.section.mat" id="prestation_platform_section_mat2">
+        <field name="name">Section carrée</field>
+        <field name="sequence">2</field>
+    </record>
+</odoo>
