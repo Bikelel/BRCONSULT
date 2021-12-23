@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record model="prestation.platform.speed.unit" id="prestation_platform_speed_unit1">
+        <field name="name">m/min</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.platform.speed.unit" id="prestation_platform_speed_unit2">
+        <field name="name">m/s</field>
+        <field name="sequence">2</field>
+    </record>
+    
+</odoo>

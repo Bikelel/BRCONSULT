@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record model="prestation.platform.wind.speed.max" id="prestation_platform_wind_speed_max1">
+        <field name="name">56 km/h</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.platform.wind.speed.max" id="prestation_platform_wind_speed_max2">
+        <field name="name">72 km/h</field>
+        <field name="sequence">2</field>
+    </record>
+    
+</odoo>

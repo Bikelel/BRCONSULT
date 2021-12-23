@@ -15,3 +15,7 @@ from . import prestation_suspended_platform_suspension_mark
 from . import prestation_suspended_platform_cmu
 from . import prestation_platform_mark
 from . import prestation_platform_assembly_mat
+from . import prestation_platform_section_mat
+from . import prestation_platform_fixation_mat
+from . import prestation_platform_speed_unit
+from . import prestation_platform_wind_speed_max
