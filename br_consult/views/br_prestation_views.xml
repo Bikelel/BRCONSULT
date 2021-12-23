@@ -211,7 +211,8 @@
                             </page>
                             
                             <page name='exams' string="Examens" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
-                                <group string="Examen d'adéquation">
+                                <h1 class="headding_1">4.1- Examen d'adéquation</h1>
+                                <group>
                                     
                                     <field name="adequacy_exam_ids" nolabel="1">
                                         <tree editable='bottom'>
@@ -254,7 +255,8 @@
                                         </tree>
                                     </field>
                                 </group>
-                                <group string="Examen de montage et d'exploitation">
+                                <h1 class="headding_1">4.2- Examen de montage et d'exploitation</h1>
+                                <group>
                                     <field name="security_register"/>
                                 </group>
                                 <group string="Présentation du dossier du montage">
