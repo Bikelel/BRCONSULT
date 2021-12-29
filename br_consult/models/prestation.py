@@ -67,7 +67,7 @@ class Prestation(models.Model):
     site_localisation = fields.Char("Localisation")
     prensent_contact = fields.Char("Nom de la personne présente")
     scaffolding_surface = fields.Float("Surface d'échafaudage annoncée (m2)")
-    inspected_scaffolding_surface = fields.Float("Surface d'échafaudage inspectée (m2)")
+    inspected_scaffolding_surface = fields.Float("Surface d'échafaudage inspectée (m2)", digits="0", compute="_compute_inspected_surface", store=True)
     favorable_opinion = fields.Boolean('Avis favorable')
     opinion_with_observation = fields.Boolean('Avec observation')
     defavorable_opinion = fields.Boolean('Avis defavorable')
@@ -293,4 +293,10 @@ class Prestation(models.Model):
         for rec in self:
             if rec.inspection_type and rec.installation_type in ['PSE', 'PSM', 'PWM']:
                 rec.inspected_installation_number = len(rec.characteristic_suspended_platform_ids)
+    
+    @api.depends('scaffolding_mark_ids', 'scaffolding_mark_ids.inspected_surface')
+    def _compute_inspected_surface(self):
+        for rec in self:
+            if rec.scaffolding_mark_ids:
+                rec.inspected_scaffolding_surface = sum(rec.scaffolding_mark_ids.mapped('inspected_surface'))
             

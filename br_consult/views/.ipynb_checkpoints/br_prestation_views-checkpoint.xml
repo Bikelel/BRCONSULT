@@ -168,7 +168,7 @@
                                             <field name="height"/>
                                             <field name="height_max"/>
                                             <field name="linear"/>
-                                            <field name="inspected_surface"/>
+                                            <field name="inspected_surface" sum="Total"/>
                                         </tree>
                                     </field>
                                 </group>
@@ -294,8 +294,9 @@
                                 <group string="Données relatives à la nature du bâchage éventuel" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}">
                                     <field name="covering_nature_data" string="Choix"/>
                                 </group>
-                                <field name="comment_assembly_exam" string="Commentaires"/>
-                                
+                                <group string="Commentaire" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
+                                    <field name="comment_assembly_exam" string="Commentaires"/>
+                                </group>
                                 <group string="Constat (s)" attrs="{'invisible': [('inspection_type', '=', 'levage'), ('verification_type', '=', 'VP')]}">
                                     <field name="constat_assembly_exam_ids" nolabel="1">
                                         <tree editable='bottom' class="constat_class_table">
@@ -344,7 +345,7 @@
                                     </field>
                                 </group>
 
-                                <group string="Constat (s)">
+                                <group string="Constat (s)" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
                                     <field name="constat_good_functioning_exam_ids" nolabel="1">
                                         <tree editable='bottom' class="constat_class_table">
                                             <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'good_functioning')]"/>
