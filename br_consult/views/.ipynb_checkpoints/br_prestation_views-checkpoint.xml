@@ -207,6 +207,13 @@
                                         </tree>
                                     </field>
                                 </group>
+                                <group attrs="{'invisible': [('installation_type', 'not in', ['TRE', 'PAE', 'PAM'])]}">
+                                    <field name="characteristic_palan_ids" nolabel="1" context="{'default_prestation_id':active_id}" >
+                                        <tree>
+                                            <field name="name"/>
+                                        </tree>
+                                    </field>
+                                </group>
                                 
                             </page>
                             

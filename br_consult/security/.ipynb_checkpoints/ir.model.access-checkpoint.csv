@@ -48,3 +48,6 @@ access_prestation_platform_section_mat_admin,prestation.platform.section.mat,mod
 access_prestation_platform_fixation_mat_admin,prestation.platform.fixation.mat,model_prestation_platform_fixation_mat,base.group_user,1,1,1,1
 access_prestation_platform_speed_unit_admin,prestation.platform.speed.unit,model_prestation_platform_speed_unit,base.group_user,1,1,1,1
 access_prestation_platform_wind_speed_max_admin,prestation.platform.wind.speed.max,model_prestation_platform_wind_speed_max,base.group_user,1,1,1,1
+
+access_prestation_levage_characteristic_palan_admin,prestation.levage.characteristic.palan,model_prestation_levage_characteristic_palan,base.group_user,1,1,1,1
+

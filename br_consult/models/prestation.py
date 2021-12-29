@@ -157,6 +157,9 @@ class Prestation(models.Model):
     # travail sur mat
     characteristic_platform_ids = fields.One2many('prestation.levage.characteristic.platform', 'prestation_id', "Caractéristique de la plateforme")
     
+    # travail sur palan + treuil
+    characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de levage palan")
+    
     @api.model
     def create(self, vals):
         if 'company_id' in vals:

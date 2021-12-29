@@ -19,3 +19,4 @@ from . import prestation_platform_section_mat
 from . import prestation_platform_fixation_mat
 from . import prestation_platform_speed_unit
 from . import prestation_platform_wind_speed_max
+from . import prestation_levage_characteristic_palan
