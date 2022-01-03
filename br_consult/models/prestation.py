@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _, SUPERUSER_ID, tools
-
+import logging
+_logger = logging.getLogger(__name__)
 
 class Prestation(models.Model):
     _name = 'prestation.prestation'
@@ -67,7 +68,7 @@ class Prestation(models.Model):
     site_localisation = fields.Char("Localisation")
     prensent_contact = fields.Char("Nom de la personne présente")
     scaffolding_surface = fields.Float("Surface d'échafaudage annoncée (m2)")
-    inspected_scaffolding_surface = fields.Float("Surface d'échafaudage inspectée (m2)")
+    inspected_scaffolding_surface = fields.Float("Surface d'échafaudage inspectée (m2)", digits="0", compute="_compute_inspected_surface", store=True)
     favorable_opinion = fields.Boolean('Avis favorable')
     opinion_with_observation = fields.Boolean('Avec observation')
     defavorable_opinion = fields.Boolean('Avis defavorable')
@@ -157,6 +158,9 @@ class Prestation(models.Model):
     # travail sur mat
     characteristic_platform_ids = fields.One2many('prestation.levage.characteristic.platform', 'prestation_id', "Caractéristique de la plateforme")
     
+    # travail sur palan + treuil
+    characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de levage palan")
+    
     @api.model
     def create(self, vals):
         if 'company_id' in vals:
@@ -170,8 +174,10 @@ class Prestation(models.Model):
                 partner_ref = ''
             
         if vals.get('name') == 'New':
+            _logger.info("############ neww")
             if vals.get('inspection_type') == 'echafaudage':
                 code_installation_type = 'RTU'
+                _logger.info("############ RTU")
             elif vals.get('inspection_type') == 'levage':
                 if vals.get('installation_type'):
                     code_installation_type = vals.get('installation_type')
@@ -182,32 +188,33 @@ class Prestation(models.Model):
             else:
                 code_verification_type = ''
             vals['name'] = partner_ref + '-' +code_installation_type+ '-' + code_verification_type + '-' + self.env['ir.sequence'].next_by_code('prestation.prestation') or _('New')
-            attributes_good_functioning = None
-            if vals.get('inspection_type') == 'echafaudage':
-                attributes_conservation_state = self.env['prestation.conservation.state'].search([('inspection_type', '=', 'echafaudage')])
-            elif vals.get('inspection_type') == 'levage' and vals.get('installation_type'):
-                attributes_conservation_state = self.env['prestation.conservation.state'].search([('inspection_type', '=', 'levage'), ('installation_type', '=', vals.get('installation_type'))])
-                
-                attributes_good_functioning = self.env['prestation.good.functioning'].search([('inspection_type', '=', 'levage'), ('installation_type', '=', vals.get('installation_type'))])
-                
-            else:
-                attributes_conservation_state = None
-                
-            if attributes_conservation_state:
-                lines = []
-                for line in attributes_conservation_state:
-                    lines.append((0, 0, {'conservation_state_id': line.id,
-                                         'name': line.name}))
-                
-                vals.update({'conservation_state_exam_ids': lines})
-            if attributes_good_functioning:
-                lines = []
-                for line in attributes_good_functioning:
-                    lines.append((0, 0, {'good_functioning_id': line.id,
-                                         'name': line.name}))
-                
-                vals.update({'good_functioning_exam_ids': lines})
-                
+        
+        attributes_good_functioning = None
+        if vals.get('inspection_type') == 'echafaudage':
+            attributes_conservation_state = self.env['prestation.conservation.state'].search([('inspection_type', '=', 'echafaudage')])
+        elif vals.get('inspection_type') == 'levage' and vals.get('installation_type'):
+            attributes_conservation_state = self.env['prestation.conservation.state'].search([('inspection_type', '=', 'levage'), ('installation_type', '=', vals.get('installation_type'))])
+
+            attributes_good_functioning = self.env['prestation.good.functioning'].search([('inspection_type', '=', 'levage'), ('installation_type', '=', vals.get('installation_type'))])
+
+        else:
+            attributes_conservation_state = None
+
+        if attributes_conservation_state:
+            lines = []
+            for line in attributes_conservation_state:
+                lines.append((0, 0, {'conservation_state_id': line.id,
+                                     'name': line.name}))
+
+            vals.update({'conservation_state_exam_ids': lines})
+        if attributes_good_functioning:
+            lines = []
+            for line in attributes_good_functioning:
+                lines.append((0, 0, {'good_functioning_id': line.id,
+                                     'name': line.name}))
+
+            vals.update({'good_functioning_exam_ids': lines})
+
                 
         result = super(Prestation, self).create(vals)
         
@@ -293,4 +300,10 @@ class Prestation(models.Model):
         for rec in self:
             if rec.inspection_type and rec.installation_type in ['PSE', 'PSM', 'PWM']:
                 rec.inspected_installation_number = len(rec.characteristic_suspended_platform_ids)
+    
+    @api.depends('scaffolding_mark_ids', 'scaffolding_mark_ids.inspected_surface')
+    def _compute_inspected_surface(self):
+        for rec in self:
+            if rec.scaffolding_mark_ids:
+                rec.inspected_scaffolding_surface = sum(rec.scaffolding_mark_ids.mapped('inspected_surface'))
             

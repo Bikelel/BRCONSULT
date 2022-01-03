@@ -13,7 +13,7 @@
         <field name="sequence">3</field>
     </record>
     <record model="prestation.anchor.type" id="prestation_anchor_type4">
-        <field name="name">Autre stable</field>
+        <field name="name">Auto stable</field>
         <field name="sequence">4</field>
     </record>
 

@@ -97,6 +97,7 @@
         'views/characteristic/prestation_platform_speed_unit_views.xml',
         'data/characteristic/prestation_platform_wind_speed_max.xml',
         'views/characteristic/prestation_platform_wind_speed_max_views.xml',
+        'views/prestation_levage_characteristic_palan_views.xml',
     ],
     'installable': True,
     'auto_install': False,
