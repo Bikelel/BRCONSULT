@@ -25,11 +25,23 @@ class PrestationLevageCharacteristicPlatform(models.Model):
     
     platform_mark_id = fields.Many2one('prestation.platform.mark', "Marque de la plateforme")
     platform_type = fields.Char("Type de la plateforme")
+    modele = fields.Char("Modèle")
     num_fabrication = fields.Char("Numéro(s) de fabrication")
+    fabrication_year = fields.Char("Année de fabrication")
+    circulation_year = fields.Char("Année de mise en circulation")
+    level_service = fields.Char("Desserte des niveaux", placeholder="Préciser les niveaux, étages")
     alimentation = fields.Selection([
         ('triphase', 'Triphase'),
         ('monophase', 'Monophase'),
     ], string="Alimentation")
+    
+    open_close_doors = fields.Selection([
+        ('verticale', 'Verticale'),
+        ('horizontale', 'Horizontale'),
+        ('other', 'Autre'),
+    ], string="Ouverture/fermeture des portes")
+    other_open_close_doors = fields.Char("Autre")
+    
     platform_assembly_id = fields.Many2one('prestation.suspended.platform.assembly', "Assemblage des modules")
     platform_assembly_mat_id = fields.Many2one('prestation.platform.assembly.mat', "Assemblage des élément MAT(s)")
     suspension_type = fields.Selection([

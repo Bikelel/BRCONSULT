@@ -163,6 +163,7 @@ class Prestation(models.Model):
     
     # travail sur palan + treuil
     characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de levage palan")
+    comment_levage_characteristic = fields.Html("Commentaires Caractéristique de levage")
     
     @api.model
     def create(self, vals):

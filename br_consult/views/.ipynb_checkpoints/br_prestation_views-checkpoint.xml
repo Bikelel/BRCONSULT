@@ -215,6 +215,10 @@
                                     </field>
                                 </group>
                                 
+                                <group string="Commantaires">
+                                    <field name="comment_levage_characteristic" nolabel="1"/>
+                                </group>
+                                
                             </page>
                             
                             <page name='exams' string="Examens" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">

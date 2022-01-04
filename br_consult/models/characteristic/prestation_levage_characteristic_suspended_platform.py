@@ -39,6 +39,8 @@ class PrestationLevageCharacteristicSuspendedPlatform(models.Model):
     ], string="Suspension par")
     other_suspension_by = fields.Char("Autre Suspension par")
     suspended_platform_suspension_location_id = fields.Many2one('prestation.suspended.platform.suspension.location', "Localisation des suspensions")
+    suspended_platform_suspension_assembly_id = fields.Many2one('prestation.suspended.platform.assembly', "Assemblage des éléments de suspension")
+    
     suspended_platform_suspension_mark_id = fields.Many2one('prestation.suspended.platform.suspension.mark', "Marque des suspensions")
     vertical_guide = fields.Selection([
         ('cable', 'Cables'),

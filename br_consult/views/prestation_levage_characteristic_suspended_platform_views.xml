@@ -61,6 +61,7 @@
                             <field name="other_suspension_by" attrs="{'invisible': [('suspension_by', '!=', 'other')]}"/>
                             <field name="suspended_platform_suspension_location_id"/>
                             <field name="suspended_platform_suspension_mark_id"/>
+                            <field name="suspended_platform_suspension_assembly_id"/>
                             <field name="vertical_guide"/>
                         </group>
                         <group string="Calcul du lest" colspan="4" attrs="{'invisible': [('suspension_by', 'not in', ['p_lest', 'p_spit'])]}">
