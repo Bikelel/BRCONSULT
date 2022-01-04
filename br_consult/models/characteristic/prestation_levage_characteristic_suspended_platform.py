@@ -70,6 +70,8 @@ class PrestationLevageCharacteristicSuspendedPlatform(models.Model):
     suspended_platform_cmu_id = fields.Many2one('prestation.suspended.platform.cmu', "CMU (en kg)")
     nb_personne_max = fields.Integer("Nombre de personnes maximum", related="suspended_platform_cmu_id.nb_personne_max")
     comment_cmu = fields.Html("Commentaire CMU")
+    sign_difference_p1 = fields.Boolean("Signe de différence P1", compute="_compute_differenceLest", store=True)
+    sign_difference_p2 = fields.Boolean("Signe de différence P2", compute="_compute_differenceLest", store=True)
     
     @api.depends('f1', 'r1','is_taree','capacity_taree', 'capacity_treuil')
     def _compute_p1_lca(self):
@@ -113,4 +115,15 @@ class PrestationLevageCharacteristicSuspendedPlatform(models.Model):
     def _compute_differenceLest(self):
         for rec in self:
             rec.difference_p1 = rec.total_p1 - rec.p1_lca
-            rec.difference_p2 = rec.total_p2 - rec.p2_lca 
+            rec.difference_p2 = rec.total_p2 - rec.p2_lca
+            
+            if rec.difference_p1 >= 0:
+                rec.sign_difference_p1 = True
+            else:
+                rec.sign_difference_p1 = False
+            
+            if rec.difference_p2 >= 0:
+                rec.sign_difference_p2 = True
+            else:
+                rec.sign_difference_p2 = False
+                

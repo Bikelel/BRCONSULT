@@ -101,9 +101,13 @@
                             <group attrs="{'invisible': [('suspension_by', 'not in', ['p_lest'])]}">
                                 <h3 style="margin-top:50px;">Différence</h3>
                                 <br/>
+                                <field name="sign_difference_p1" invisible="1"/>
+                                <field name="sign_difference_p2" invisible="1"/>
                                 <ul>
                                     <li>Différence P1 = <field name="difference_p1" /> </li>
+                                    <div class="alert alert-info" role="alert" style="height: 50px; margin-bottom:0px;" attrs="{'invisible':[('sign_difference_p1', '=', True)]}">Différence P1 est négative.</div>
                                     <li>Différence P2 = <field name="difference_p2" /></li>
+                                    <div class="alert alert-info" role="alert" style="height: 50px; margin-bottom:0px;" attrs="{'invisible':[('sign_difference_p2', '=', True)]}">Différence P2 est négative.</div>
                                 </ul>
                                 <br/>
                             </group>

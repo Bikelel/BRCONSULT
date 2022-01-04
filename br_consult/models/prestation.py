@@ -217,6 +217,20 @@ class Prestation(models.Model):
                                      'name': line.name}))
 
             vals.update({'good_functioning_exam_ids': lines})
+        
+        if vals.get('announced_installation_number') > 0 and vals.get('inspection_type') == 'levage':
+            i = 0
+            lines = []
+            while i < vals.get('announced_installation_number'):
+                i += 1
+                lines.append((0, 0, {'name': i}))
+            if vals.get('installation_type') in ['PSE', 'PSM']:
+                vals.update({'characteristic_suspended_platform_ids': lines})
+            elif vals.get('installation_type') in ['PWM', 'ASC', 'PTR', 'MMA']:
+                vals.update({'characteristic_platform_ids': lines})
+            else:
+                vals.update({'characteristic_palan_ids': lines})
+                             
 
                 
         result = super(Prestation, self).create(vals)
@@ -309,4 +323,18 @@ class Prestation(models.Model):
         for rec in self:
             if rec.scaffolding_mark_ids:
                 rec.inspected_scaffolding_surface = sum(rec.scaffolding_mark_ids.mapped('inspected_surface'))
+    
+    @api.onchange('installation_type')
+    def _onchange_coefficient(self):
+        if self.installation_type:
+            self.coefficient_dynamique = 1.1
+            if self.installation_type in ['PSE', 'PWM', 'ASC', 'PTR', 'MMA', 'TRE', 'PAE']:
+                self.coefficient_statique = 1.25
+            else :
+                self.coefficient_statique = 1.5
+            
+        else:
+            self.coefficient_statique = 0
+            self.coefficient_dynamique = 0
+            
             

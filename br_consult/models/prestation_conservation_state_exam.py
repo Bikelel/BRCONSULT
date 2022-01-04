@@ -11,7 +11,7 @@ class PrestationConservationStateExam(models.Model):
     inspection_type = fields.Selection(related="conservation_state_id.inspection_type")
     installation_type = fields.Selection(related="conservation_state_id.installation_type")
     prestation_id = fields.Many2one("prestation.prestation", string="Prestation")
-    opinion = fields.Selection([('yes', 'Satisfait'), 
-                                ('no', 'Non satisfait'),
+    opinion = fields.Selection([('yes', 'Satisfaisant'), 
+                                ('no', 'Non Satisfaisant'),
                                 ('wo', 'Sans Objet')], string="Avis")
 
