@@ -217,6 +217,20 @@ class Prestation(models.Model):
                                      'name': line.name}))
 
             vals.update({'good_functioning_exam_ids': lines})
+        
+        if vals.get('announced_installation_number') > 0 and vals.get('inspection_type') == 'levage':
+            i = 0
+            lines = []
+            while i < vals.get('announced_installation_number'):
+                i += 1
+                lines.append((0, 0, {'name': i}))
+            if vals.get('installation_type') in ['PSE', 'PSM']:
+                vals.update({'characteristic_suspended_platform_ids': lines})
+            elif vals.get('installation_type') in ['PWM', 'ASC', 'PTR', 'MMA']:
+                vals.update({'characteristic_platform_ids': lines})
+            else:
+                vals.update({'characteristic_palan_ids': lines})
+                             
 
                 
         result = super(Prestation, self).create(vals)
