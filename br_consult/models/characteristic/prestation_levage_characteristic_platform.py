@@ -39,7 +39,7 @@ class PrestationLevageCharacteristicPlatform(models.Model):
     platform_section_mat_id = fields.Many2one('prestation.platform.section.mat', "Section des élément MAT(s)")
     nb_mat = fields.Integer("Nombre des éléments de MAT")
     dimension_mat = fields.Float("Dimension des éléments de MAT", default=1.5)
-    hauteur_elevation = fields.Float(string="HAUTEUR ELEVATION", compute='_compute_hauteur_elevation', store=True)
+    hauteur_elevation = fields.Float(string="Hauteur d'élévation (mètre)", compute='_compute_hauteur_elevation', store=True)
     platform_fixation_mat_id = fields.Many2one('prestation.platform.fixation.mat', "Mode de fixation des élément de MAT(s)")
     fixation_position = fields.Char("Positionnement des Fixations")
     move_speed = fields.Float("Vitesse de déplacement vertical")
