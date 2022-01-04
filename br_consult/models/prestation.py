@@ -9,6 +9,9 @@ class Prestation(models.Model):
     _description = 'Prestation'
     _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
     
+    def default_stage(self):
+        phase1 = self.env['prestation.stage'].search([('state', '=', 'phase1')], limit=1)
+        return phase1.id
     
     def get_default_characteristic(self):
         attributes = self.env['prestation.characteristic'].search([('is_default', '=', True)])
@@ -60,7 +63,7 @@ class Prestation(models.Model):
     partner_contact = fields.Char("Représentée par")
     user_id = fields.Many2one('res.users', 'Vérificateur', default=lambda self: self.env.user)
     stage_id = fields.Many2one(
-        'prestation.stage', string='Etape', index=True, tracking=True, readonly=False, store=True, copy=False, group_expand='_read_group_stage_ids', ondelete='restrict')
+        'prestation.stage', string='Etape', index=True, tracking=True, readonly=False, store=True, copy=False, group_expand='_read_group_stage_ids', ondelete='restrict', default=default_stage)
     state = fields.Selection(string='Status', readonly=True, copy=False, index=True, related='stage_id.state', default="phase1")
     title_label = fields.Text("Titre de prestation", store = True)
     message_label = fields.Text("Code de l'article", store = True)
