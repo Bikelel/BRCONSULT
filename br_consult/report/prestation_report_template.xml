@@ -130,8 +130,14 @@
                             </td>
                             <td>
                                 Nom de la personne présente lors de notre intervention : <span t-field="doc.prensent_contact"/><br/>
-                                Surface d’échafaudage annoncée (en m²) : <span t-field="doc.scaffolding_surface"/><br/>
-                                Surface d’échafaudage inspectée (en m²) = <span t-field="doc.inspected_scaffolding_surface"/>
+                                <t t-if="doc.inspection_type == 'echafaudage'">
+                                    Surface d’échafaudage annoncée (en m²) : <span t-field="doc.scaffolding_surface"/> <br/>
+                                    Surface d’échafaudage inspectée (en m²) = <span t-field="doc.inspected_scaffolding_surface"/>
+                                </t>
+                                <t t-if="doc.inspection_type == 'levage'">
+                                    Nombre d'installation annoncée(s) : <span t-field="doc.announced_installation_number"/> <br/>
+                                    Nombre d'installation inspectée(s) = <span t-field="doc.inspected_installation_number"/>
+                                </t>
 
                             </td>
                         </tr>
@@ -196,8 +202,11 @@ La présente mission est réalisée conformément au contrat référencé
                     <span t-field="doc.report_parameter_id.scope_mission" t-if="doc.report_parameter_id and doc.report_parameter_id.scope_mission"/>
                     
                 </div>
-                <div class="bloc_title">
+                <div class="bloc_title" t-if="doc.inspection_type == 'echafaudage'">
                     2) Localisation, schéma et photographies de l’échafaudage
+                </div>
+                <div class="bloc_title" t-if="doc.inspection_type == 'levage'">
+                    2) Localisation, schéma et photographies de levage
                 </div>
                 <div style="margin-top:30px;" t-if="doc.location_diagram">
                     <div class="bloc_sub_title2">
@@ -223,10 +232,10 @@ La présente mission est réalisée conformément au contrat référencé
                    </div>
                     
                 </div>
-                <div class="bloc_title">
+                <div class="bloc_title" t-if="doc.inspection_type == 'echafaudage'">
                     3) Caractéristiques de l’échafaudage
                 </div>
-                <table class='table' style="margin-top:30px;">
+                <table class='table' style="margin-top:30px;" t-if="doc.inspection_type == 'echafaudage'">
                     <tr>
                         <td>Marque</td>
                         <td>Type</td>
@@ -248,7 +257,7 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
-                <table class='table' style="margin-top:30px;">
+                <table class='table' style="margin-top:30px;" t-if="doc.inspection_type == 'echafaudage'">
                     <tr>
                         <td>Caractéristiques</td>
                         <td>Présence</td>
@@ -273,10 +282,40 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
-                <div style="border: 2px solid #5F5F5F; padding:10px">
+                <div style="border: 2px solid #5F5F5F; padding:10px" t-if="doc.inspection_type == 'echafaudage'">
                     Commentaires:<br/>
                     <span t-field="doc.comment_scaffolding_characteristic"/>
                 </div>
+                
+                <div class="bloc_title" t-if="doc.inspection_type == 'levage'">
+                    3) Caractéristiques de levage
+                </div>
+                <table class='table' style="margin-top:30px;" t-if="doc.inspection_type == 'levage'">
+                    <t t-if="doc.installation_type in ['PSM', 'PSE']">
+                        <tr>
+                            <td>Numéro de la plateforme</td>
+                            <td t-foreach="doc.characteristic_suspended_platform_ids" t-as="charac"><span t-field="charac.name"/></td>
+                        </tr>
+                        <tr>
+                            <td>Hauteur d'élévation (en mètre)</td>
+                            <td t-foreach="doc.characteristic_suspended_platform_ids" t-as="charac"><span t-field="charac.height_platform"/></td>
+                        </tr>
+                    </t>
+                    <t t-if="doc.installation_type in ['PWM', 'ASC', 'PTR', 'MMA']">
+                        <tr>
+                            <td>Numéro de la plateforme</td>
+                            <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.name"/></td>
+                        </tr>
+                        
+                    </t>
+                    <t t-if="doc.installation_type in ['TRE', 'PAE', 'PAM']">
+                        <tr>
+                            <td>Numéro de la plateforme</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.name"/></td>
+                        </tr>
+                        
+                    </t>
+                </table>
                 <div class="bloc_title">
                     4) Examens
                 </div>
@@ -498,7 +537,7 @@ La présente mission est réalisée conformément au contrat référencé
                                     </ol>
                                 </td>
                                 <td><span t-field="constat.precision"/></td>
-                                <td style="width: 40%;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 160px;"/>
+                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
                                     </td>
                                 <td><span t-field="constat.state"/></td>
                                 <td><span t-field="constat.date"/></td>
@@ -509,56 +548,19 @@ La présente mission est réalisée conformément au contrat référencé
                 <div class="bloc_sub_title">
                    • Examen de l'etat de conservation:
                 </div>
-<!--                 <table class='table' style="margin-top:20px;">
-                    <tr>
-                        <td style="width: 80%;">La présence et la bonne installation des dispositifs de protection collective et des moyens d'accès</td>
-                        <td><span t-field="doc.presence_correct_installation"/></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 80%;">L'absence de déformation permanente ou de corrosion des éléments constitutifs de l'échafaudage pouvant compromettre sa solidité</td>
-                        <td><span t-field="doc.permanent_deformation_absence"/></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 80%;">La présence de tous les éléments de fixation ou de liaison des constituants de l'échafaudage</td>
-                        <td><span t-field="doc.presence_fixing"/></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 80%;">L'absence de jeu décelable susceptible d'affecter ces éléments</td>
-                        <td><span t-field="doc.absence_detectable_play"/></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 80%;">La bonne tenue des éléments d'amarrage (ancrage, vérinage)</td>
-                        <td><span t-field="doc.good_behavior"/></td>
-                    </tr>
-                     <tr>
-                        <td style="width: 80%;">L'absence de désordre au niveau des appuis et des surfaces portantes</td>
-                        <td><span t-field="doc.absence_disorder"/></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 80%;">La présence de tous les éléments de calage et de stabilisation ou d'immobilisation</td>
-                        <td><span t-field="doc.presence_wedging"/></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 80%;">La bonne fixation des filets et des bâches sur l'échafaudage, ainsi que la continuité du bâchage sur toute la surface extérieure</td>
-                        <td><span t-field="doc.good_fixing"/></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 80%;">Le maintien de la continuité, de la planéité, de l'horizontalité et de la bonne tenue de chaque niveau de plancher</td>
-                        <td><span t-field="doc.maintaining_continuity"/></td>
-                    </tr>
-                     <tr>
-                        <td style="width: 80%;">La visibilité des indications sur l'échafaudage relatives aux charges admissibles</td>
-                        <td><span t-field="doc.visibility_indications"/></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 80%;">L'absence de charges dépassant ces limites admissibles</td>
-                        <td><span t-field="doc.absence_loads_exceeding"/></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 80%;">L'absence d'encombrement des planchers</td>
-                        <td><span t-field="doc.lack_floor_space"/></td>
-                    </tr>
-                </table> -->
+                <table class='table' style="margin-top:20px;">
+                    
+                    <tbody>
+                        <t t-foreach="doc.conservation_state_exam_ids" t-as="stat">
+                            <tr>
+                                <td style="width: 80%;"><span t-field="stat.name"/></td>
+                                
+                                <td><span t-field="stat.opinion"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
                 <div class="bloc_sub_title">
                    • Constat(s):
                 </div>
@@ -583,7 +585,7 @@ La présente mission est réalisée conformément au contrat référencé
                                     </ol>
                                 </td>
                                 <td><span t-field="constat.precision"/></td>
-                                <td style="width: 40%;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 160px;"/>
+                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
                                     </td>
                                 <td><span t-field="constat.state"/></td>
                                 <td><span t-field="constat.date"/></td>

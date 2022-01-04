@@ -370,7 +370,7 @@
                                 <separator string="5. Epreuves"/>
                                 <group string="Epreuve statique">
                                     <field name="coefficient_statique" string="Coefficient" />
-                                    <field name="autorised_cmu_statique" string="CMU Autorisée statique"/>
+                                    <field name="autorised_cmu_statique" string="CMU Autorisée"/>
                                     <field name="theoretical_test_load_statique" string="Charge d'épreuve théorique (en KG)"/>
                                     <field name="reel_test_load_statique" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}" string="Charge d'épreuve réelle (en KG)"/>
                                     <field name="test_duration_statique" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}" widget="float_time" string=""/>
@@ -392,11 +392,11 @@
                                 </group>
                                 <group string="Epreuve dynamique">
                                     <field name="coefficient_dynamique" string="Coefficient" />
-                                    <field name="autorised_cmu_dynamique" string="CMU Autorisée statique"/>
+                                    <field name="autorised_cmu_dynamique" string="CMU Autorisée"/>
                                     <field name="theoretical_test_load_dynamique" string="Charge d'épreuve théorique (en KG)"/>
                                     <field name="reel_test_load_dynamique" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}" string="Charge d'épreuve réelle (en KG)"/>
                                     
-                                    <field name="comment_epreuve_statique" string="Commentaire"/>
+                                    <field name="comment_epreuve_dynamique" string="Commentaire"/>
                                     
                                 </group>
                                 <group string="Constat (s)" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}">
