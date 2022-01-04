@@ -159,7 +159,7 @@
                                     <field name="comment_scaffolding_photographic_location" nolabel="1"/>
                                 </group>
                             </page>
-                            <page name='scaffolding_characteristic' string="Caractéristique de l'échafaudage" attrs="{'invisible': ['|',('verification_type', 'not in', ['MS', 'RS', 'VP']), ('inspection_type', '!=', 'echafaudage')]}">
+                            <page name='scaffolding_characteristic' string="Caractéristiques de l'échafaudage" attrs="{'invisible': ['|',('verification_type', 'not in', ['MS', 'RS', 'VP']), ('inspection_type', '!=', 'echafaudage')]}">
                                 <group string="Description générale">
                                     <field name="scaffolding_mark_ids" nolabel="1">
                                         <tree editable='bottom'>
@@ -192,7 +192,7 @@
                                     <field name="comment_scaffolding_characteristic" nolabel="1"/>
                                 </group>
                             </page>
-                            <page name='characteristic_suspended_platform' string="Caractéristique de levage" attrs="{'invisible': ['|',('verification_type', 'not in', ['MS', 'RS', 'VP']), ('inspection_type', '!=', 'levage')]}">
+                            <page name='characteristic_suspended_platform' string="Caractéristiques de levage" attrs="{'invisible': ['|',('verification_type', 'not in', ['MS', 'RS', 'VP']), ('inspection_type', '!=', 'levage')]}">
                                 <group attrs="{'invisible': [('installation_type', 'not in', ['PSM', 'PSE'])]}">
                                     <field name="characteristic_suspended_platform_ids" nolabel="1" context="{'default_prestation_id':active_id}" >
                                         <tree>
@@ -236,7 +236,7 @@
                                     <field name="protection_dispositif" attrs="{'invisible':[('inspection_type', '!=', 'levage')]}"/>
                                     <field name="levage_protection_dispositif" attrs="{'invisible':[('protection_dispositif', '!=', 'yes')]}"/>
                                 </group>
-                                <group attrs="{'invisible':[('inspection_type', '!=', 'levage')]}">
+                                <group attrs="{'invisible': [('installation_type', 'not in', [ 'ASC', 'PTR', 'MMA', 'TRE', 'PAE', 'PAM'])]}">
                                     <field name="installation_use_id"/>
                                 </group>
                                 <group string="Charge d'exploitation de l'échafaudage par défaut" attrs="{'invisible':[('inspection_type', '!=', 'echafaudage')]}">
@@ -366,7 +366,7 @@
                                 </group>
                                 
                             </page>
-                            <page name='epreuve' string="Epreuve" attrs="{'invisible': ['|',('verification_type', 'not in', ['MS', 'RS', 'VP']), ('inspection_type', '!=', 'levage')]}">
+                            <page name='epreuve' string="Epreuves" attrs="{'invisible': ['|',('verification_type', 'not in', ['MS', 'RS', 'VP']), ('inspection_type', '!=', 'levage')]}">
                                 <separator string="5. Epreuves"/>
                                 <group string="Epreuve statique">
                                     <field name="coefficient_statique" string="Coefficient" />
