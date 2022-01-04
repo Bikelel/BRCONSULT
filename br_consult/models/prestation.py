@@ -323,4 +323,18 @@ class Prestation(models.Model):
         for rec in self:
             if rec.scaffolding_mark_ids:
                 rec.inspected_scaffolding_surface = sum(rec.scaffolding_mark_ids.mapped('inspected_surface'))
+    
+    @api.onchange('installation_type')
+    def _onchange_coefficient(self):
+        if self.installation_type:
+            self.coefficient_dynamique = 1.1
+            if self.installation_type in ['PSE', 'PWM', 'ASC', 'PTR', 'MMA', 'TRE', 'PAE']:
+                self.coefficient_statique = 1.25
+            else :
+                self.coefficient_statique = 1.5
+            
+        else:
+            self.coefficient_statique = 0
+            self.coefficient_dynamique = 0
+            
             

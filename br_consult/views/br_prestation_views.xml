@@ -253,7 +253,7 @@
                                     <field name="constat_adequacy_exam_ids" nolabel="1" context="{'default_prestation_id':active_id}">
                                         <tree editable='bottom'>
                                             <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'adequacy_exam'), ('inspection_type', '=', inspection_type)]"/>
-                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" options="{'no_create': True}"/>
+                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" context = "{'default_verification_point_id':verification_point_id}"/>
                                             <field name="inspection_type" invisible="1"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
@@ -332,7 +332,7 @@
                                     <field name="constat_conservation_state_exam_ids" nolabel="1">
                                         <tree editable='bottom' class="constat_class_table">
                                             <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'conservation_state_exam'), ('inspection_type', '=', inspection_type)]"/>
-                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" options="{'no_create': True}"/>
+                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" context = "{'default_verification_point_id':verification_point_id}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
                                             <field name="state"/>
@@ -356,7 +356,7 @@
                                     <field name="constat_good_functioning_exam_ids" nolabel="1">
                                         <tree editable='bottom' class="constat_class_table">
                                             <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'good_functioning')]"/>
-                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" options="{'no_create': True}"/>
+                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" context = "{'default_verification_point_id':verification_point_id}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
                                             <field name="state"/>
@@ -382,7 +382,7 @@
                                     <field name="constat_epreuve_statique_ids" nolabel="1">
                                         <tree editable='bottom' style="max-width:90%;">
                                             <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'epreuve_statique')]"/>
-                                        
+                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" context = "{'default_verification_point_id':verification_point_id}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
                                             <field name="state"/>
@@ -403,7 +403,7 @@
                                     <field name="constat_epreuve_dynamique_ids" nolabel="1">
                                         <tree editable='bottom' style="max-width:90%;">
                                             <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'epreuve_dynamique')]"/>
-                                            
+                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" context = "{'default_verification_point_id':verification_point_id}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
                                             <field name="state"/>
