@@ -4,6 +4,7 @@ from odoo import models, fields, api, _, SUPERUSER_ID, tools
 import logging
 _logger = logging.getLogger(__name__)
 from odoo.exceptions import UserError
+from datetime import timedelta
 
 class Prestation(models.Model):
     _name = 'prestation.prestation'
@@ -61,6 +62,8 @@ class Prestation(models.Model):
     date = fields.Date(string="Date de saisie du rapport", default=fields.Date.today())
     requested_date = fields.Date('Date de la demande')
     verification_date = fields.Datetime('Date de vérification', default=fields.Datetime.now)
+    end_date_verification = fields.Datetime("Fin de la date de vérification", store=True, compute='_compute_end_date')
+    prestation_duration = fields.Float("Durée d'une prestation", store=True, related="company_id.prestation_duration")
     partner_contact = fields.Char("Représentée par")
     user_id = fields.Many2one('res.users', 'Vérificateur', default=lambda self: self.env.user)
     stage_id = fields.Many2one(
@@ -368,6 +371,14 @@ class Prestation(models.Model):
     def onchange_stage_id(self):
         user = self.env.user
         stages = user.stage_ids
-        if self.stage not in stages:
+        if self.stage_id not in stages:
             raise UserError(_('You don t have the privilege to change stage'))
+    
+    @api.depends('verification_date')
+    def _compute_end_date(self):
+        for rec in self:
+            company = rec.company_id
+            duration = company.prestation_duration
+            rec.end_date_verification = rec.verification_date + timedelta(hours=duration)
+            
     
