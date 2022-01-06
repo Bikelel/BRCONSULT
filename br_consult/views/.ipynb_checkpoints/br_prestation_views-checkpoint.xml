@@ -371,7 +371,7 @@
                                 
                             </page>
                             <page name='epreuve' string="Epreuves" attrs="{'invisible': ['|',('verification_type', 'not in', ['MS', 'RS', 'VP']), ('inspection_type', '!=', 'levage')]}">
-                                <separator string="5. Epreuves"/>
+                                
                                 <group string="Epreuve statique">
                                     <field name="coefficient_statique" string="Coefficient" />
                                     <field name="autorised_cmu_statique" string="CMU Autorisée"/>

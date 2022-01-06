@@ -30,7 +30,7 @@ class PrestationLevageCharacteristicPlatform(models.Model):
     num_fabrication = fields.Char("Numéro(s) de fabrication")
     fabrication_year = fields.Char("Année de fabrication")
     circulation_year = fields.Char("Année de mise en circulation")
-    level_service = fields.Char("Desserte des niveaux", placeholder="Préciser les niveaux, étages")
+    level_service = fields.Char("Desserte des niveaux")
     alimentation = fields.Selection([
         ('triphase', 'Triphase'),
         ('monophase', 'Monophase'),

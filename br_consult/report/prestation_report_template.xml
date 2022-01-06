@@ -722,10 +722,10 @@ La présente mission est réalisée conformément au contrat référencé
                    
                 </table>
                 
-                <div class="bloc_sub_title2">
+                <div class="bloc_sub_title2" t-if="doc.inspection_type == 'echafaudage'">
                    • Charges d’exploitation de l’échafaudage par défaut:
                 </div>
-                <table class='table' style="margin-top:20px;">
+                <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'echafaudage'">
                     <tr>
                         <td>Classe de l’échafaudage</td>
                         <td>Surcharge d’exploitation (en kg/m2)</td>
@@ -778,10 +778,11 @@ La présente mission est réalisée conformément au contrat référencé
                 <div class="bloc_sub_title">
                     4.2) Examen de montage et d'installation
                 </div>
-                <div>
-                Art. 3 – II- « L’examen de l’état de montage et d’installation d’un échafaudage » consiste à s’assurer qu’il est monté et installé de façon sûre, conformément à la notice d’instructions du fabricant ou, lorsque la configuration de montage ne correspond pas à un montage prévu dans la notice, en tenant compte de la note de calcul et conformément au plan de montage établi par une personne compétente »
-(Arrêté du 21 Décembre 2004).
+                
+                <div t-if="doc.report_parameter_id and doc.report_parameter_id.adequation_exam">
+                    <span t-field="doc.report_parameter_id.adequation_exam"/>
                 </div>
+                
                 <table class='borderless'>
                     <tr class='borderless'>
                         <td class='borderless' style="width:35%;">Présentation de registre de sécurité:</td>
@@ -803,8 +804,14 @@ La présente mission est réalisée conformément au contrat référencé
                         <tbody>
                             <tr class="text-center">
                                 
-                                <td><input type="checkbox" t-att-checked="'checked' if doc.execution_plan else None"/></td>
-                                <td><input type="checkbox" t-att-checked="'checked' if doc.calculation_notice else None"/></td>
+                                <td>
+                                    <t t-if="doc.execution_plan">Oui</t>
+                                    <t t-else="">Non</t>
+                                </td>
+                                <td>
+                                    <t t-if="doc.calculation_notice">Oui</t>
+                                    <t t-else="">Non</t>
+                                </td>
                             </tr>
                         </tbody>
                     </tbody>
@@ -832,10 +839,10 @@ La présente mission est réalisée conformément au contrat référencé
                         </td>
                     </tr>
                 </table>
-                <div class="bloc_sub_title">
+                <div class="bloc_sub_title" t-if="doc.inspection_type == 'echafaudage'">
                    • Données aux ancrages:
                 </div>
-                <table class='borderless'>
+                <table class='borderless' t-if="doc.inspection_type == 'echafaudage'">
                     <tr class='borderless'>
                         <td class='borderless' style="width:35%;">Type d'ancrage:</td>
                         <td class='borderless'><span t-field="doc.anchor_type_id"/></td>
@@ -907,6 +914,10 @@ La présente mission est réalisée conformément au contrat référencé
                 <div class="bloc_sub_title">
                    • Examen de l'etat de conservation:
                 </div>
+                
+                <div t-if="doc.report_parameter_id and doc.report_parameter_id.conservation_state">
+                    <span t-field="doc.report_parameter_id.conservation_state"/>
+                </div>
                 <table class='table' style="margin-top:20px;">
                     
                     <tbody>
@@ -952,6 +963,190 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
+                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage'">
+                    4.3) Examen de bon fonctionnement
+                </div>
+                <div t-if="doc.report_parameter_id and doc.inspection_type == 'levage'">
+                    <span t-field="doc.report_parameter_id.good_functionning" t-if="doc.report_parameter_id.good_functionning"/>
+                </div>
+                <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage'">
+                    
+                    <tbody>
+                        <t t-foreach="doc.good_functioning_exam_ids" t-as="stat">
+                            <tr>
+                                <td style="width: 80%;"><span t-field="stat.name"/></td>
+                                
+                                <td><span t-field="stat.opinion"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage'">
+                   • Constat(s):
+                </div>
+                <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage'">
+                    <tr>
+                        <td>Points de vérification</td>
+                        <td>Observations/Réserves </td>
+                        <td>Précisions </td>
+                        <td class="text-center">Photos </td>
+                        <td>Statut </td>
+                        <td>Date </td>
+                    </tr>
+                    <tbody>
+                        <t t-foreach="doc.constat_good_functioning_exam_ids" t-as="constat">
+                            <tr>
+                                <td ><span t-field="constat.verification_point_id"/></td>
+                                <td>
+                                    <ol>
+                                        <t t-foreach="constat.observation_ids" t-as="observation">
+                                            <li><span t-field="observation.name"/></li>
+                                        </t>
+                                    </ol>
+                                </td>
+                                <td><span t-field="constat.precision"/></td>
+                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                    </td>
+                                <td><span t-field="constat.state"/></td>
+                                <td><span t-field="constat.date"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+                <div class="bloc_title" t-if="doc.inspection_type == 'levage'">
+                    5) Epreuves
+                </div>
+                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage'">
+                    5.1) Epreuves statiques
+                </div>
+                <div t-if="doc.report_parameter_id and doc.report_parameter_id.epreuve_statique and doc.inspection_type == 'levage'">
+                    <span t-field="doc.report_parameter_id.epreuve_statique"/>
+                </div>
+                <table class='table' style="margin-top:20px;"  t-if="doc.inspection_type == 'levage'">
+                    <tr>
+                        <td>Coefficient</td>
+                        <td><span t-field="doc.coefficient_statique"/></td>
+                    </tr>
+                    <tr>
+                        <td>CMU Autorisée</td>
+                        <td><span t-field="doc.autorised_cmu_statique"/></td>
+                    </tr>
+                    <tr>
+                        <td>Charge d'épreuve théorique (en KG)</td>
+                        <td><span t-field="doc.theoretical_test_load_statique"/></td>
+                    </tr>
+                    <tr t-if="doc.verification_type in ['MS', 'RS']">
+                        <td>Charge d'épreuve réelle (en KG)</td>
+                        <td><span t-field="doc.reel_test_load_statique"/></td>
+                    </tr>
+                    <tr t-if="doc.verification_type in ['MS', 'RS']">
+                        <td>Durée d’épreuve statique (en minutes)</td>
+                        <td><span t-field="doc.test_duration_statique" t-options="{'widget': 'duration', 'digital': True, 'unit': 'hour', 'round': 'minute'}" /></td>
+                    </tr>
+                    <tr t-if="doc.verification_type in ['MS', 'RS']">
+                        <td>Hauteur d'élévation (en m)</td>
+                        <td><span t-field="doc.elevation_height_statique"/></td>
+                    </tr>
+                    <tr>
+                        <td>Commentaires</td>
+                        <td><span t-field="doc.comment_epreuve_statique"/></td>
+                    </tr>
+                </table>
+                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage'">
+                   • Constat(s):
+                </div>
+                <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.verification_type in ['MS', 'RS']">
+                    <tr>
+                        <td>Points de vérification</td>
+                        <td>Observations/Réserves </td>
+                        <td>Précisions </td>
+                        <td class="text-center">Photos </td>
+                        <td>Statut </td>
+                        <td>Date </td>
+                    </tr>
+                    <tbody>
+                        <t t-foreach="doc.constat_epreuve_statique_ids" t-as="constat">
+                            <tr>
+                                <td ><span t-field="constat.verification_point_id"/></td>
+                                <td>
+                                    <ol>
+                                        <t t-foreach="constat.observation_ids" t-as="observation">
+                                            <li><span t-field="observation.name"/></li>
+                                        </t>
+                                    </ol>
+                                </td>
+                                <td><span t-field="constat.precision"/></td>
+                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                    </td>
+                                <td><span t-field="constat.state"/></td>
+                                <td><span t-field="constat.date"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage'">
+                    5.2) Epreuves dynamiques
+                </div>
+                <div t-if="doc.report_parameter_id and doc.report_parameter_id.epreuve_dynamique and doc.inspection_type == 'levage'">
+                    <span t-field="doc.report_parameter_id.epreuve_dynamique"/>
+                </div>
+                <table class='table' style="margin-top:20px;"  t-if="doc.inspection_type == 'levage'">
+                    <tr>
+                        <td>Coefficient</td>
+                        <td><span t-field="doc.coefficient_dynamique"/></td>
+                    </tr>
+                    <tr>
+                        <td>CMU Autorisée</td>
+                        <td><span t-field="doc.autorised_cmu_statique"/></td>
+                    </tr>
+                    <tr>
+                        <td>Charge d'épreuve théorique (en KG)</td>
+                        <td><span t-field="doc.theoretical_test_load_dynamique"/></td>
+                    </tr>
+                    <tr t-if="doc.verification_type in ['MS', 'RS']">
+                        <td>Charge d'épreuve réelle (en KG)</td>
+                        <td><span t-field="doc.reel_test_load_dynamique"/></td>
+                    </tr>
+                    
+                    
+                    <tr>
+                        <td>Commentaires</td>
+                        <td><span t-field="doc.comment_epreuve_dynamique"/></td>
+                    </tr>
+                </table>
+                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage'">
+                   • Constat(s):
+                </div>
+                <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.verification_type in ['MS', 'RS']">
+                    <tr>
+                        <td>Points de vérification</td>
+                        <td>Observations/Réserves </td>
+                        <td>Précisions </td>
+                        <td class="text-center">Photos </td>
+                        <td>Statut </td>
+                        <td>Date </td>
+                    </tr>
+                    <tbody>
+                        <t t-foreach="doc.constat_epreuve_dynamique_ids" t-as="constat">
+                            <tr>
+                                <td ><span t-field="constat.verification_point_id"/></td>
+                                <td>
+                                    <ol>
+                                        <t t-foreach="constat.observation_ids" t-as="observation">
+                                            <li><span t-field="observation.name"/></li>
+                                        </t>
+                                    </ol>
+                                </td>
+                                <td><span t-field="constat.precision"/></td>
+                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                    </td>
+                                <td><span t-field="constat.state"/></td>
+                                <td><span t-field="constat.date"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
             </div>
         </t>
     </template>

@@ -34,7 +34,7 @@ class Prestation(models.Model):
             return False
 
     name = fields.Char("N° Rapport", default=lambda self: 'New', copy=False)
-    report_parameter_id = fields.Many2one('prestation.report.parameter',string="Parametre du rapport", default=get_default_report_parameter)
+    report_parameter_id = fields.Many2one('prestation.report.parameter',string="Parametre du rapport")
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
     partner_id = fields.Many2one('res.partner', string="Entreprise")
     inspection_type = fields.Selection([
@@ -337,5 +337,19 @@ class Prestation(models.Model):
         else:
             self.coefficient_statique = 0
             self.coefficient_dynamique = 0
+    
+    @api.onchange('installation_type', 'inspection_type')
+    def _onchange_report_parameter_id(self):
+        report_parameter_ids = self.env['prestation.report.parameter'].search([('installation_type', '=', self.installation_type)])
+        if report_parameter_ids:
+            if self.installation_type == 'echafaudage':
+                self.report_parameter_id = report_parameter_ids[0]
+            elif self.installation_type == 'levage':
+                if self.inspection_type:
+                    report_parameter_id = report_parameter_ids.filtered(lambda r: r.inspection_type == self.inspection_type)
+                    if report_parameter_id:
+                        self.report_parameter_id = report_parameter_id[0]
+            else:
+                self.report_parameter_id = None
             
             

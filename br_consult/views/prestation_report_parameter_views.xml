@@ -17,8 +17,15 @@
                 <form string="Report parameter">
                     <sheet>
                         <group>
-                            <field name="name"/>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                            <group>
+                                <field name="inspection_type" required="1"/>
+                                <field name="installation_type" attrs="{'invisible': [('inspection_type', '!=', 'levage')], 'required': [('inspection_type', '=', 'levage')]}"/>
+                            </group>
                         </group>
+                        
                         <group>
                             <field name="installation_compliance"/>
                         </group>
@@ -28,6 +35,23 @@
                         <group>
                             <field name="adequation_exam"/>
                         </group>
+                        <group>
+                            <field name="assembly_exam"/>
+                        </group>
+                        <group>
+                            <field name="conservation_state"/>
+                        </group>
+                        <group>
+                            <field name="good_functionning" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                        </group>
+                        <group>
+                            <field name="epreuve_statique" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                        </group>
+                        <group>
+                            <field name="epreuve_dynamique" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                        </group>
+                        
+                        
                     </sheet>
                     
                 </form>
