@@ -602,10 +602,72 @@ La présente mission est réalisée conformément au contrat référencé
                     </t>
                     <t t-if="doc.installation_type in ['TRE', 'PAE', 'PAM']">
                         <tr>
-                            <td>Numéro de la plateforme</td>
+                            <td>Numéro</td>
                             <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.name"/></td>
                         </tr>
-                        
+                        <tr>
+                            <td>Localisation</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.palan_location_id"/></td>
+                        </tr>
+                        <tr>
+                            <td>Accès</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.palan_access_id"/></td>
+                        </tr>
+                        <tr>
+                            <td>Mode de suspension</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac">
+                                <t t-if="charac.suspension_mode == 'other'"><span t-field="charac.other_suspension_mode"/></t>
+                                <t t-else=""><span t-field="charac.suspension_mode"/></t>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Hauteur d’élévation (en mètre)</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.height"/></td>
+                        </tr>
+                        <tr>
+                            <td>Marque</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.palan_mark_id"/></td>
+                        </tr>
+                        <tr>
+                            <td>Modèle</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.modele"/></td>
+                        </tr>
+                        <tr>
+                            <td>Numéro(s) de fabrication</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.num_fabrication"/></td>
+                        </tr>
+                        <tr>
+                            <td>Année de mise en circulation</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.circulation_year"/></td>
+                        </tr>
+                        <tr>
+                            <td>Capacité nominale</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.capacity_nominale"/></td>
+                        </tr>
+                        <tr>
+                            <td>Capacité tarée</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.capacity_taree"/></td>
+                        </tr>
+                        <tr>
+                            <td>Alimentation</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.alimentation"/></td>
+                        </tr>
+                        <tr>
+                            <td>Vitesse de déplacement vertical (m/min)</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.move_speed"/></td>
+                        </tr>
+                        <tr>
+                            <td>Vitesse maximale du vent autorisée en service</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.wind_speed_max_id"/></td>
+                        </tr>
+                        <tr>
+                            <td>Diamètre du câble constructeur (en mm)</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.number_brins_builder"/></td>
+                        </tr>
+                        <tr>
+                            <td>Diamètre du câble mesuré (en mm)</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.number_brins_noted"/></td>
+                        </tr>
                     </t>
                     
                 </table>
