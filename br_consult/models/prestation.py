@@ -3,6 +3,7 @@
 from odoo import models, fields, api, _, SUPERUSER_ID, tools
 import logging
 _logger = logging.getLogger(__name__)
+from odoo.exceptions import UserError
 
 class Prestation(models.Model):
     _name = 'prestation.prestation'
@@ -237,7 +238,18 @@ class Prestation(models.Model):
         result = super(Prestation, self).create(vals)
         
         return result
-    
+
+    def write(self, vals):
+        user = self.env.user
+        stages = user.stage_ids
+        if 'stage_id' in vals:
+            stage_id = vals.get('stage_id')
+            if stage_id not in stages.ids:
+                raise UserError(_('You don t have the privilege to change stage'))
+        result = super(Prestation, self).write(vals)
+        
+        return result
+        
     @api.model
     def _read_group_stage_ids(self, stages, domain, order):
         stages = self.env['prestation.stage'].search([])
@@ -351,5 +363,11 @@ class Prestation(models.Model):
                         self.report_parameter_id = report_parameter_id[0]
             else:
                 self.report_parameter_id = None
-            
-            
+
+    @api.onchange('stage_id', 'state')
+    def onchange_stage_id(self):
+        user = self.env.user
+        stages = user.stage_ids
+        if self.stage not in stages:
+            raise UserError(_('You don t have the privilege to change stage'))
+    
