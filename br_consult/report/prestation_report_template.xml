@@ -417,24 +417,44 @@ La présente mission est réalisée conformément au contrat référencé
                     
                     <t t-if="doc.installation_type in ['PWM', 'ASC', 'PTR', 'MMA']">
                         <tr>
-                            <td>Numéro de la plateforme</td>
+                            <td>
+                                <t t-if="doc.installation_type == 'PWM'">Numéro de la plateforme</t>
+                                <t t-if="doc.installation_type in ['ASC', 'PTR', 'MMA']">Numéro</t>
+                            </td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.name"/></td>
                         </tr>
                         <tr>
-                            <td>Localisation de la plateforme</td>
+                            <td>
+                                <t t-if="doc.installation_type == 'PWM'">Localisation de la plateforme</t>
+                                <t t-if="doc.installation_type in ['ASC', 'PTR', 'MMA']">Localisation</t>
+                            </td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.platform_location_id"/></td>
                         </tr>
                         <tr>
-                            <td>Accès à la plateforme</td>
+                            <td>
+                                <t t-if="doc.installation_type == 'PWM'">Accès à la plateforme</t>
+                                <t t-if="doc.installation_type in ['ASC', 'PTR', 'MMA']">Accès</t>
+                            </td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.platform_access_id"/></td>
                         </tr>
-                        <tr>
+                        <tr t-if="doc.installation_type == 'PWM'">
                             <td>Longueur de la plate-forme (en m)</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.length_platform"/></td>
                         </tr>
-                        <tr>
+                        <tr t-if="doc.installation_type == 'PWM'">
                             <td>Largeur de la plate-forme (en m)</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.width_platform"/></td>
+                        </tr>
+                        <tr t-if="doc.installation_type in ['ASC', 'PTR', 'MMA']">
+                            <td>Dimension</td>
+                            <td t-foreach="doc.characteristic_platform_ids" t-as="charac">
+                                <div class='row'>
+                                    <div class='col-4'>Longeur: <span t-field="charac.length_platform"/></div>
+                                    <div class='col-4'>Largeur: <span t-field="charac.width_platform"/></div>
+                                    <div class='col-4'>Hauteur: <span t-field="charac.hauteur_platform"/></div>
+                                </div>
+                                <span t-field="charac.width_platform"/>
+                            </td>
                         </tr>
                         <t t-set="presence_extention" t-value="False" />
                         <tr t-if="doc.installation_type in ['PWM']">
@@ -463,14 +483,17 @@ La présente mission est réalisée conformément au contrat référencé
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.platform_constitution_id"/></td>
                         </tr>
                         <tr>
-                            <td>Marque de la plate-forme</td>
+                            <td>
+                                <t t-if="doc.installation_type == 'PWM'">Marque de la plate-forme</t>
+                                <t t-if="doc.installation_type in ['ASC', 'PTR', 'MMA']">Marque</t>
+                            </td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.platform_mark_id"/></td>
                         </tr>
                         <tr t-if="doc.installation_type in ['PWM']">
                             <td>Type de la plate-forme</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.platform_type"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['ASC']">
+                        <tr t-if="doc.installation_type in ['ASC', 'PTR']">
                             <td>Modèle</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.modele"/></td>
                         </tr>
@@ -478,11 +501,11 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Numéro(s) de fabrication</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.num_fabrication"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['ASC']">
+                        <tr t-if="doc.installation_type in ['ASC', 'PTR']">
                             <td>Année de fabrication</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.fabrication_year"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['ASC']">
+                        <tr t-if="doc.installation_type in ['ASC', 'PTR']">
                             <td>Année de mise en circulation </td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.circulation_year"/></td>
                         </tr>
@@ -491,7 +514,7 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Alimentation électrique</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.alimentation"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['ASC']">
+                        <tr t-if="doc.installation_type in ['ASC', 'PTR']">
                             <td>Desserte des niveaux</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.level_service"/></td>
                         </tr>
@@ -508,8 +531,16 @@ La présente mission est réalisée conformément au contrat référencé
                         </tr>
                         
                         <tr>
-                            <td>Assemblage des modules</td>
+                            <td>
+                                <t t-if="doc.installation_type == 'PWM'">Assemblage des modules</t>
+                                <t t-if="doc.installation_type in ['ASC', 'PTR']">Assemblage de la cabine</t>
+                                <t t-if="doc.installation_type in ['MMA']">Assemblage de la plateforme</t>
+                            </td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.platform_assembly_id"/></td>
+                        </tr>
+                        <tr t-if="doc.installation_type in ['PTR']">
+                            <td>Présence d'un toit</td>
+                            <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.presence_roof"/></td>
                         </tr>
                         <tr>
                             <td>Assemblage des éléments de mât(s)</td>

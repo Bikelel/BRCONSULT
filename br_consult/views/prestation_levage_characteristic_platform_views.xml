@@ -28,6 +28,7 @@
                                 <field name="platform_access_id"/>
                                 <field name="length_platform"/>
                                 <field name="width_platform"/>
+                                <field name="hauteur_platform" attrs="{'invisible': [('installation_type', 'not in', ['ASC','PTR'])]}"/>
                                 
                                 <field name="presence_extention" attrs="{'invisible': [('installation_type', 'not in', ['PWM'])]}"/>
                                 <field name="width_extention" attrs="{'invisible': [('presence_extention', '!=', 'yes')]}"/>
@@ -47,6 +48,9 @@
                                 <field name="level_service" attrs="{'invisible': [('installation_type', 'not in', ['ASC'])]}"/>
                                 <field name="open_close_doors" attrs="{'invisible': [('installation_type', 'not in', ['ASC'])]}"/>
                                 <field name="other_open_close_doors" attrs="{'invisible': [('open_close_doors', 'not in', ['other'])]}"/>
+                                <field name="presence_roof" attrs="{'invisible': [('installation_type', 'not in', ['PTR'])]}"/>
+                                
+                                
                             </group>
                         </group>
                         <group string="Caractéristiques module">
