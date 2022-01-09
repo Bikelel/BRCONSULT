@@ -32,13 +32,14 @@
                         <t t-name="kanban-box">
                             <div t-attf-class="oe_kanban_content oe_kanban_global_click">
                                 <div>
-                                    <strong class="o_kanban_record_title"><span><field name="name"/></span></strong>
+                                   <strong class="o_kanban_record_title"><span> Numéro de rapport : <field name="name"/></span></strong>
                                 </div>
                                 <div>
-                                    <span class="o_kanban_record_subtitle"><field name="partner_id"/></span>
+                                <span class="o_kanban_record_subtitle"> <strong> Entreprise : </strong> <field name="partner_id"/></span>
                                 </div>
                                 <div>
-                                    <span class="o_kanban_record_subtitle"><field name="inspection_type"/></span>
+                                   <span class="o_kanban_record_subtitle"> <strong> Type de prestation : </strong><field     name="inspection_type"/></span>
+                             <span class="o_kanban_record_subtitle"> <strong> Adresse du chantier : </strong><field name="site_address"/></span>
                                 </div>
                                 <div class="o_kanban_record_bottom">
                                     <div class="oe_kanban_bottom_right">
@@ -108,6 +109,7 @@
                 <form string="Prestation">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="phase1,phase2,phase3,phase4" force_save="1"/>
+                        <button name="button_send_report" string="Envoyer le rapport" type="object" attrs="{'invisible': [('state', '!=', 'phase4')]}" class="btn-primary" data-hotkey="g"/>
                     </header>
                     <sheet>
                         <div class="prestation_sheet_header">
@@ -123,6 +125,7 @@
                             <group>
                                 <field name="inspection_type" required="1" />
                                 <field name="report_parameter_id" invisible="1" />
+                                <field name="is_report_sent" invisible="1" />
                             </group>
                             <group>
                                 <field name="installation_type" attrs="{'invisible': [('inspection_type', '!=', 'levage')], 'required': [('inspection_type', '=', 'levage')]}"/>
@@ -144,7 +147,7 @@
                                     <group>
                                         <field name="date" />
                                         <field name="verification_date"/>
-                                        <field name="end_date_verification"/>
+                                        <field name="end_date_verification" invisible="1"/>
                                         <field name="user_id" domain="[('is_inspector', '=', True)]"/>
                                         <field name="prensent_contact" />
                                         <field name="scaffolding_surface" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
@@ -187,11 +190,29 @@
                                     <field name="location_diagram" nolabel="1" options='{"size":[0,90]}' widget='image'/>
                                 </group>
                                 <group string="Photographies">
-                                    <field name="image_ids" nolabel="1">
+<!--                                     <field name="image_ids" nolabel="1">
                                         <tree>
                                             <field name="image" nolabel="1" options='{"size":[0,90]}' widget='image'/>
                                         </tree>
-                                    </field>
+                                    </field> -->
+                                    <group>
+                                        <field name="image1" nolabel="1" options='{"size":[0,90]}' widget='image'/>
+                                    </group>
+                                    <group>
+                                        <field name="image2" nolabel="1" options='{"size":[0,90]}' widget='image'/>
+                                    </group>
+                                    <group>
+                                        <field name="image3" nolabel="1" options='{"size":[0,90]}' widget='image'/>
+                                    </group>
+                                    <group>
+                                        <field name="image4" nolabel="1" options='{"size":[0,90]}' widget='image'/>
+                                    </group>
+                                    <group>
+                                        <field name="image5" nolabel="1" options='{"size":[0,90]}' widget='image'/>
+                                    </group>
+                                    <group>
+                                        <field name="image6" nolabel="1" options='{"size":[0,90]}' widget='image'/>
+                                    </group>
                                 </group>
                                 <group string="Commantaires">
                                     <field name="comment_scaffolding_photographic_location" nolabel="1"/>
@@ -215,10 +236,10 @@
                                         <tree editable='bottom'>
                                             <field name="characteristic_id"/>
                                             <field name="is_presence"/>
-                                            <field name="length" attrs="{'readonly': [('is_length', '=', False)]}"/>
-                                            <field name="width" attrs="{'readonly': [('is_width', '=', False)]}"/>
-                                            <field name="height" attrs="{'readonly': [('is_height', '=', False)]}"/>
-                                            <field name="surface" attrs="{'readonly': [('is_surface', '=', False)]}"/>
+                                            <field name="length" attrs="{'readonly': ['|',('is_length', '=', False), ('is_presence', '=', 'no')]}" force_save="1"/>
+                                            <field name="width" attrs="{'readonly': ['|',('is_width', '=', False),('is_presence', '=', 'no')]}" force_save="1"/>
+                                            <field name="height" attrs="{'readonly': ['|',('is_height', '=', False),('is_presence', '=', 'no')]}" force_save="1"/>
+                                            <field name="surface" attrs="{'readonly': ['|', ('is_surface', '=', False), ('is_presence', '=', 'no')]}" force_save="1"/>
                                             <field name="localisation_id"/>
                                             <field name="is_length" invisible="1"/>
                                             <field name="is_width" invisible="1"/>
@@ -457,16 +478,20 @@
                             
                         </notebook>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
                 </form>
             </field>
         </record>
     
-        
-
     <record id="action_prestation_prestation" model="ir.actions.act_window">
         <field name="name">Prestation</field>
         <field name="res_model">prestation.prestation</field>
         <field name="context">{}</field>
+        <field name="domain">[('is_report_sent', '=', False)]</field>
         <field name="view_mode">kanban,tree,form,graph,calendar</field>
     </record>
 
@@ -475,9 +500,47 @@
               parent="br_consult_menu_root"
               action="action_prestation_prestation"/>
     
+    <record id="action_prestation_prestation_planning" model="ir.actions.act_window">
+        <field name="name">Prestation</field>
+        <field name="res_model">prestation.prestation</field>
+        <field name="context">{}</field>
+        <field name="domain">[('is_report_sent', '=', False)]</field>
+        <field name="view_mode">calendar</field>
+    </record>
     
+    <menuitem id="br_consult_planning_menu"
+        name="Planning"
+        parent="br_consult_menu_root"
+        action="action_prestation_prestation_planning"
+        sequence="30"/>
     
-
+    <record id="action_prestation_prestation_stat" model="ir.actions.act_window">
+        <field name="name">Prestation</field>
+        <field name="res_model">prestation.prestation</field>
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+        <field name="view_mode">graph,tree</field>
+    </record>
+    
+    <menuitem id="br_consult_stat_menu"
+        name="Statistique"
+        parent="br_consult_menu_root"
+        action="action_prestation_prestation_stat"
+        sequence="35"/>
+    
+    <record id="action_prestation_prestation_archive" model="ir.actions.act_window">
+        <field name="name">Prestations archivées</field>
+        <field name="res_model">prestation.prestation</field>
+        <field name="context">{}</field>
+        <field name="domain">[('is_report_sent', '=', True)]</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    
+    <menuitem id="br_consult_archive_menu"
+        name="Archive"
+        parent="br_consult_menu_root"
+        action="action_prestation_prestation_archive"
+        sequence="40"/>
 
   </data>
 </odoo>

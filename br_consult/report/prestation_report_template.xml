@@ -57,6 +57,7 @@
                     margin-top: 10px;
                     page-break-inside:avoid;
                     }
+                    
                     table {
                     margin-top: 15px;
                     border: 2px solid #5F5F5F;
@@ -214,24 +215,39 @@ La présente mission est réalisée conformément au contrat référencé
                     </div>
                     <img t-if="doc.location_diagram" t-att-src="image_data_uri(doc.location_diagram)" style="max-height: 350px;"  class='text-center'/>
                 </div>
-                <div style="margin-top:30px;" t-if="doc.image_ids">
+                <div style="margin-top:30px;">
+                    <div style="page-break-inside: avoid;">
                     <div class="bloc_sub_title2">
                     Photos
                     </div>
-                    <div class='row'>
-<!--                         <t t-set="i" t-attr-value="{len(doc.image_ids)}" /> -->
-                        <t t-foreach="doc.image_ids" t-as="image">
-                            
-                        
-                            <div style="padding:15px;" class="col-6 text-center">
-<!--                                 <img t-if="image.image" t-att-src="image_data_uri(image.image)" style="max-height: 200px;"/> -->
-                                txt
-                            </div>
-                        
-                        </t>
-                   </div>
+                    <table class="text-center"> 
+                        <tr>
+                            <td style="width: 50%;"><img t-if="doc.image1" t-att-src="image_data_uri(doc.image1)" style="max-height: 300px; max-width: 400px;"  class='text-center'/>
+                            </td>
+                            <td style="width: 50%;"><img t-if="doc.image2" t-att-src="image_data_uri(doc.image2)" style="max-height: 300px; max-width: 400px;"  class='text-center'/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 50%;"><img t-if="doc.image3" t-att-src="image_data_uri(doc.image3)" style="max-height: 300px; max-width: 400px;"  class='text-center'/>
+                            </td>
+                            <td style="width: 50%;"><img t-if="doc.image4" t-att-src="image_data_uri(doc.image4)" style="max-height: 300px; max-width: 400px;"  class='text-center'/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 50%;"><img t-if="doc.image5" t-att-src="image_data_uri(doc.image5)" style="max-height: 300px; max-width: 400px;"  class='text-center'/>
+                            </td>
+                            <td style="width: 50%;"><img t-if="doc.image6" t-att-src="image_data_uri(doc.image6)" style="max-height: 300px; max-width: 400px;"  class='text-center'/>
+                            </td>
+                        </tr>
+                    
+                     
+                    </table>
+                    </div>
+                    
+                    
                     
                 </div>
+                <div style="page-break-inside: avoid;">
                 <div class="bloc_title" t-if="doc.inspection_type == 'echafaudage'">
                     3) Caractéristiques de l’échafaudage
                 </div>
@@ -257,6 +273,7 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
+                </div>
                 <table class='table' style="margin-top:30px;" t-if="doc.inspection_type == 'echafaudage'">
                     <tr>
                         <td>Caractéristiques</td>
@@ -272,10 +289,14 @@ La présente mission est réalisée conformément au contrat référencé
                             <tr>
                                 <td><span t-field="charac.characteristic_id"/></td>
                                 <td><span t-field="charac.is_presence"/></td>
-                                <td><span t-field="charac.length"/></td>
-                                <td><span t-field="charac.width"/></td>
-                                <td><span t-field="charac.height"/></td>
-                                <td><span t-field="charac.surface"/></td>
+                                <t t-if="charac.length == 0"><td style="background-color:#DCDCDC;"/></t>
+                                <t t-else=""><td><span t-field="charac.length"/></td></t>
+                                <t t-if="charac.width == 0"><td style="background-color: #DCDCDC;"/></t>
+                                <t t-else=""><td><span t-field="charac.width"/></td></t>
+                                <t t-if="charac.height == 0"><td style="background-color: #DCDCDC;"/></t>
+                                <t t-else=""><td><span t-field="charac.height"/></td></t>
+                                <t t-if="charac.surface == 0"><td style="background-color: #DCDCDC;"/></t>
+                                <t t-else=""><td><span t-field="charac.surface"/></td></t>
                                 <td><span t-field="charac.localisation_id"/></td>
                                 
                             </tr>

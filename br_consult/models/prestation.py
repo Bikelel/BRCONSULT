@@ -129,6 +129,12 @@ class Prestation(models.Model):
     
     location_diagram = fields.Binary("Schéma de l’emplacement")
     image_ids = fields.One2many('prestation.image', 'prestation_id' ,"Photographies")
+    image1 = fields.Binary("Image 1")
+    image2 = fields.Binary("Image 2")
+    image3 = fields.Binary("Image 3")
+    image4 = fields.Binary("Image 4")
+    image5 = fields.Binary("Image 5")
+    image6 = fields.Binary("Image 6")
     comment_scaffolding_photographic_location = fields.Html("Commentaires localisation photographique de l'échafaudage")
     
     constat_adequacy_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'adéquation", domain=[('type', '=', 'adequacy_exam')])
@@ -168,6 +174,7 @@ class Prestation(models.Model):
     # travail sur palan + treuil
     characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de levage palan")
     comment_levage_characteristic = fields.Html("Commentaires Caractéristique de levage")
+    is_report_sent = fields.Boolean("Rapport envoyé")
     
     @api.model
     def create(self, vals):
@@ -182,10 +189,8 @@ class Prestation(models.Model):
                 partner_ref = ''
             
         if vals.get('name') == 'New':
-            _logger.info("############ neww")
             if vals.get('inspection_type') == 'echafaudage':
                 code_installation_type = 'RTU'
-                _logger.info("############ RTU")
             elif vals.get('inspection_type') == 'levage':
                 if vals.get('installation_type'):
                     code_installation_type = vals.get('installation_type')
@@ -380,5 +385,16 @@ class Prestation(models.Model):
             company = rec.company_id
             duration = company.prestation_duration
             rec.end_date_verification = rec.verification_date + timedelta(hours=duration)
-            
+    
+    def button_send_report(self):
+        for prestation in self:
+            if prestation.partner_id and prestation.partner_id.email:
+                template = self.env.ref('br_consult.email_notification_prestation')
+                template.send_mail(prestation.user_id.id, force_send=True)
+                prestation.is_report_sent = True
+    
+    def cron_send_report_prestation(self):
+        prestations = self.search([('state', '=', 'phase4'), ('is_report_sent', '=', False)])
+        for prestation in prestations:
+            prestation.button_send_report()
     
