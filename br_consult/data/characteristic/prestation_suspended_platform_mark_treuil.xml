@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.suspended.platform.mark.treuil" id="prestation_suspended_platform_mark_treuil1">
+        <field name="name">Tractel</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.suspended.platform.mark.treuil" id="prestation_suspended_platform_mark_treuil2">
+        <field name="name">Fixator</field>
+        <field name="sequence">2</field>
+    </record>
+    <record model="prestation.suspended.platform.mark.treuil" id="prestation_suspended_platform_mark_treuil3">
+        <field name="name">Powerclimber</field>
+        <field name="sequence">3</field>
+    </record>
+
+</odoo>

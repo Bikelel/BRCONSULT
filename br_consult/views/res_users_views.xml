@@ -8,6 +8,8 @@
                 <xpath expr="//group[@name='preferences']" position="after">
                     <group>
                         <field name="visa_user" widget='image' options='{"size":[0,90]}'/>
+                        <field name="is_inspector"/>
+                        <field name="stage_ids" widget="many2many_tags"/>
                     </group>
                 </xpath>
                 

@@ -2,7 +2,7 @@
 <odoo>    
     <template id="external_layout_standard_br_consult" inherit_id="web.external_layout_standard">
         <xpath expr="//div[hasclass('row')]" position="replace">
-            <div class='row'>
+            <div class='row not-first-page' style="font-size:11px;">
                 <div class="col-4 mb4">
                     <t t-if='report_name_brconsult'>
                         <span t-esc='report_name_brconsult' />
@@ -19,10 +19,24 @@
                     </t>
                 </div>
             </div>
+            
         </xpath>
         <xpath expr="//div[@name='company_address']" position="attributes">
             <attribute name="t-if">1==0</attribute>
         </xpath>
+        <xpath expr="//div[hasclass('zero_min_height')]" position="attributes">
+            <attribute name="class">row zero_min_height not-first-page</attribute>
+        </xpath>
+<!--         <xpath expr="//div[@name='image_logo']" position="inside">
+            <img src="/br_consult/static/src/img/ISO-9001-1.png" style="max-height: 30px;" alt="iso_9001"/>
+            <img src="br_consult/static/src/img/Logo-Mileezim.png" style="max-height: 30px;" alt="Mileezim"/>
+        </xpath> -->
+
+
+        
+        
+        
+        
 
     </template>
 </odoo>

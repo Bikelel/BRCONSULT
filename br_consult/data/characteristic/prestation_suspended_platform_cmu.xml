@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.suspended.platform.cmu" id="prestation_suspended_platform_cmu1">
+        <field name="name">120 kg</field>
+        <field name="nb_personne_max">1</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.suspended.platform.cmu" id="prestation_suspended_platform_cmu2">
+        <field name="name">240 kg</field>
+        <field name="nb_personne_max">2</field>
+        <field name="sequence">2</field>
+    </record>
+    <record model="prestation.suspended.platform.cmu" id="prestation_suspended_platform_cmu3">
+        <field name="name">320 kg</field>
+        <field name="nb_personne_max">3</field>
+        <field name="sequence">3</field>
+    </record>
+    <record model="prestation.suspended.platform.cmu" id="prestation_suspended_platform_cmu4">
+        <field name="name">400 kg</field>
+        <field name="nb_personne_max">4</field>
+        <field name="sequence">4</field>
+    </record>
+    <record model="prestation.suspended.platform.cmu" id="prestation_suspended_platform_cmu5">
+        <field name="name">480 kg</field>
+        <field name="nb_personne_max">5</field>
+        <field name="sequence">5</field>
+    </record>
+</odoo>

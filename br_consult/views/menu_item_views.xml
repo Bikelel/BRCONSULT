@@ -10,9 +10,28 @@
     
     <menuitem
         id="br_consult_settings_menu"
-        name="Settings"
+        name="Configuration"
         parent="br_consult_menu_root"
+        groups="base.group_system"
         sequence="50"/>
+    
+    <menuitem
+        id="br_consult_settings_general_data_menu"
+        name="Données générales"
+        parent="br_consult_settings_menu"
+        sequence="100"/>
+    
+    <menuitem
+        id="br_consult_settings_echafaudage_data_menu"
+        name="Données d'échafaudage"
+        parent="br_consult_settings_menu"
+        sequence="200"/>
+    
+    <menuitem
+        id="br_consult_settings_levage_data_menu"
+        name="Données de levage"
+        parent="br_consult_settings_menu"
+        sequence="300"/>
 
     </data>
 </odoo>
