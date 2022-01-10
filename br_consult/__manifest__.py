@@ -17,7 +17,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'portal', 'contacts', 'report_qweb_element_page_visibility'],
+    'depends': ['base', 'portal', 'contacts', 'report_qweb_element_page_visibility', 'project'],
 
     # always loaded
     'data': [
@@ -32,6 +32,7 @@
         'data/prestation_scaffolding_class.xml',
         'views/prestation_image_views.xml',
         'views/res_partner_views.xml',
+        'views/res_company_views.xml',
         'views/res_users_views.xml',
         'views/prestation_observation_views.xml',
         'views/prestation_verification_point_views.xml',
@@ -98,6 +99,8 @@
         'data/characteristic/prestation_platform_wind_speed_max.xml',
         'views/characteristic/prestation_platform_wind_speed_max_views.xml',
         'views/prestation_levage_characteristic_palan_views.xml',
+        'data/mail_template_data.xml',
+        'data/ir_cron_data.xml',
     ],
     'installable': True,
     'auto_install': False,

@@ -14,6 +14,7 @@ class PrestationLevageCharacteristicPlatform(models.Model):
     platform_access_id = fields.Many2one('prestation.suspended.platform.access', "Acces à la plateforme")
     length_platform = fields.Float("Longeur de la plateforme")
     width_platform = fields.Float("Largeur de la plateforme")
+    hauteur_platform = fields.Float("Hauteur")
     presence_extention = fields.Selection([
         ('yes', 'Oui'),
         ('no', 'Non'),
@@ -25,11 +26,27 @@ class PrestationLevageCharacteristicPlatform(models.Model):
     
     platform_mark_id = fields.Many2one('prestation.platform.mark', "Marque de la plateforme")
     platform_type = fields.Char("Type de la plateforme")
+    modele = fields.Char("Modèle")
     num_fabrication = fields.Char("Numéro(s) de fabrication")
+    fabrication_year = fields.Char("Année de fabrication")
+    circulation_year = fields.Char("Année de mise en circulation")
+    level_service = fields.Char("Desserte des niveaux")
     alimentation = fields.Selection([
         ('triphase', 'Triphase'),
         ('monophase', 'Monophase'),
     ], string="Alimentation")
+    
+    open_close_doors = fields.Selection([
+        ('verticale', 'Verticale'),
+        ('horizontale', 'Horizontale'),
+        ('other', 'Autre'),
+    ], string="Ouverture/fermeture des portes")
+    other_open_close_doors = fields.Char("Autre")
+    presence_roof = fields.Selection([
+        ('yes', 'Oui'),
+        ('no', 'Non'),
+    ], string="Présence d'un toit")
+    
     platform_assembly_id = fields.Many2one('prestation.suspended.platform.assembly', "Assemblage des modules")
     platform_assembly_mat_id = fields.Many2one('prestation.platform.assembly.mat', "Assemblage des élément MAT(s)")
     suspension_type = fields.Selection([

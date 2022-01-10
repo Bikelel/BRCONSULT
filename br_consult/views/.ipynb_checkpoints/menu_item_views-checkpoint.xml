@@ -10,8 +10,9 @@
     
     <menuitem
         id="br_consult_settings_menu"
-        name="Settings"
+        name="Configuration"
         parent="br_consult_menu_root"
+        groups="base.group_system"
         sequence="50"/>
     
     <menuitem

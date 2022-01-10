@@ -3,6 +3,8 @@
 from odoo import models, fields, api, _, SUPERUSER_ID, tools
 import logging
 _logger = logging.getLogger(__name__)
+from odoo.exceptions import UserError
+from datetime import timedelta
 
 class Prestation(models.Model):
     _name = 'prestation.prestation'
@@ -34,7 +36,7 @@ class Prestation(models.Model):
             return False
 
     name = fields.Char("N° Rapport", default=lambda self: 'New', copy=False)
-    report_parameter_id = fields.Many2one('prestation.report.parameter',string="Parametre du rapport", default=get_default_report_parameter)
+    report_parameter_id = fields.Many2one('prestation.report.parameter',string="Parametre du rapport")
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
     partner_id = fields.Many2one('res.partner', string="Entreprise")
     inspection_type = fields.Selection([
@@ -60,8 +62,10 @@ class Prestation(models.Model):
     date = fields.Date(string="Date de saisie du rapport", default=fields.Date.today())
     requested_date = fields.Date('Date de la demande')
     verification_date = fields.Datetime('Date de vérification', default=fields.Datetime.now)
+    end_date_verification = fields.Datetime("Fin de la date de vérification", store=True, compute='_compute_end_date')
+    prestation_duration = fields.Float("Durée d'une prestation", store=True, related="company_id.prestation_duration")
     partner_contact = fields.Char("Représentée par")
-    user_id = fields.Many2one('res.users', 'Vérificateur', default=lambda self: self.env.user)
+    user_id = fields.Many2one('res.users', 'Inspecteur', default=lambda self: self.env.user)
     stage_id = fields.Many2one(
         'prestation.stage', string='Etape', index=True, tracking=True, readonly=False, store=True, copy=False, group_expand='_read_group_stage_ids', ondelete='restrict', default=default_stage)
     state = fields.Selection(string='Status', readonly=True, copy=False, index=True, related='stage_id.state', default="phase1")
@@ -92,9 +96,9 @@ class Prestation(models.Model):
     scaffolding_operating_load_ids = fields.One2many('prestation.scaffolding.operating.load', 'prestation_id', "Charge d'exploitation de l'échafaudage par défaut")
     security_register = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Registre de sécurité")
     assembly_file = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition du dossier de montage")
-    manufacturer_instructions = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition du notice constructeur")
+    manufacturer_instructions = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition de la notice du constructeur")
     execution_plan = fields.Boolean("Plan d'exécution (PE)")
-    calculation_notice = fields.Boolean("Notice de calcul (NDC)")
+    calculation_notice = fields.Boolean("Note de calcul (NDC)")
     maintenance_log = fields.Boolean("Carnet de maintenance")
     soil_support_data_ids = fields.Many2many('prestation.soil.support.data', string="Données relatives au sol ou de support d'implantation")
     anchor_support_data_ids = fields.Many2many('prestation.anchor.support.data', string="Nature des supports d’ancrage")
@@ -125,6 +129,12 @@ class Prestation(models.Model):
     
     location_diagram = fields.Binary("Schéma de l’emplacement")
     image_ids = fields.One2many('prestation.image', 'prestation_id' ,"Photographies")
+    image1 = fields.Binary("Image 1")
+    image2 = fields.Binary("Image 2")
+    image3 = fields.Binary("Image 3")
+    image4 = fields.Binary("Image 4")
+    image5 = fields.Binary("Image 5")
+    image6 = fields.Binary("Image 6")
     comment_scaffolding_photographic_location = fields.Html("Commentaires localisation photographique de l'échafaudage")
     
     constat_adequacy_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'adéquation", domain=[('type', '=', 'adequacy_exam')])
@@ -163,6 +173,8 @@ class Prestation(models.Model):
     
     # travail sur palan + treuil
     characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de levage palan")
+    comment_levage_characteristic = fields.Html("Commentaires Caractéristique de levage")
+    is_report_sent = fields.Boolean("Rapport envoyé")
     
     @api.model
     def create(self, vals):
@@ -177,10 +189,8 @@ class Prestation(models.Model):
                 partner_ref = ''
             
         if vals.get('name') == 'New':
-            _logger.info("############ neww")
             if vals.get('inspection_type') == 'echafaudage':
                 code_installation_type = 'RTU'
-                _logger.info("############ RTU")
             elif vals.get('inspection_type') == 'levage':
                 if vals.get('installation_type'):
                     code_installation_type = vals.get('installation_type')
@@ -236,7 +246,18 @@ class Prestation(models.Model):
         result = super(Prestation, self).create(vals)
         
         return result
-    
+
+    def write(self, vals):
+        user = self.env.user
+        stages = user.stage_ids
+        if 'stage_id' in vals:
+            stage_id = vals.get('stage_id')
+            if stage_id not in stages.ids:
+                raise UserError(_('You don t have the privilege to change stage'))
+        result = super(Prestation, self).write(vals)
+        
+        return result
+        
     @api.model
     def _read_group_stage_ids(self, stages, domain, order):
         stages = self.env['prestation.stage'].search([])
@@ -336,5 +357,44 @@ class Prestation(models.Model):
         else:
             self.coefficient_statique = 0
             self.coefficient_dynamique = 0
-            
-            
+    
+    @api.onchange('installation_type', 'inspection_type')
+    def _onchange_report_parameter_id(self):
+        report_parameter_ids = self.env['prestation.report.parameter'].search([('installation_type', '=', self.installation_type)])
+        if report_parameter_ids:
+            if self.installation_type == 'echafaudage':
+                self.report_parameter_id = report_parameter_ids[0]
+            elif self.installation_type == 'levage':
+                if self.inspection_type:
+                    report_parameter_id = report_parameter_ids.filtered(lambda r: r.inspection_type == self.inspection_type)
+                    if report_parameter_id:
+                        self.report_parameter_id = report_parameter_id[0]
+            else:
+                self.report_parameter_id = None
+
+    @api.onchange('stage_id', 'state')
+    def onchange_stage_id(self):
+        user = self.env.user
+        stages = user.stage_ids
+        if self.stage_id not in stages:
+            raise UserError(_('You don t have the privilege to change stage'))
+    
+    @api.depends('verification_date')
+    def _compute_end_date(self):
+        for rec in self:
+            company = rec.company_id
+            duration = company.prestation_duration
+            rec.end_date_verification = rec.verification_date + timedelta(hours=duration)
+    
+    def button_send_report(self):
+        for prestation in self:
+            if prestation.partner_id and prestation.partner_id.email:
+                template = self.env.ref('br_consult.email_notification_prestation')
+                template.send_mail(prestation.user_id.id, force_send=True)
+                prestation.is_report_sent = True
+    
+    def cron_send_report_prestation(self):
+        prestations = self.search([('state', '=', 'phase4'), ('is_report_sent', '=', False)])
+        for prestation in prestations:
+            prestation.button_send_report()
+    

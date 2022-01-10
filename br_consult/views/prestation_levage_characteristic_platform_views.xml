@@ -28,17 +28,29 @@
                                 <field name="platform_access_id"/>
                                 <field name="length_platform"/>
                                 <field name="width_platform"/>
+                                <field name="hauteur_platform" attrs="{'invisible': [('installation_type', 'not in', ['ASC','PTR'])]}"/>
                                 
-                                <field name="presence_extention"/>
+                                <field name="presence_extention" attrs="{'invisible': [('installation_type', 'not in', ['PWM'])]}"/>
                                 <field name="width_extention" attrs="{'invisible': [('presence_extention', '!=', 'yes')]}"/>
-                                <field name="maximum_range"/>
-                                <field name="maximum_offset"/>
+                                <field name="maximum_range" attrs="{'invisible': [('installation_type', 'not in', ['PWM'])]}"/>
+                                <field name="maximum_offset" attrs="{'invisible': [('installation_type', 'not in', ['PWM'])]}"/>
                                 <field name="platform_constitution_id"/>
                                 
                                 <field name="platform_mark_id"/>
-                                <field name="platform_type"/>
+                                
+                                <field name="platform_type" attrs="{'invisible': [('installation_type', 'not in', ['PWM'])]}"/>
+                                <field name="modele" attrs="{'invisible': [('installation_type', 'not in', ['ASC'])]}"/>
+                                
                                 <field name="num_fabrication"/>
+                                <field name="fabrication_year" attrs="{'invisible': [('installation_type', 'not in', ['ASC'])]}"/>
+                                <field name="circulation_year" attrs="{'invisible': [('installation_type', 'not in', ['ASC'])]}"/>
                                 <field name="alimentation"/>
+                                <field name="level_service" attrs="{'invisible': [('installation_type', 'not in', ['ASC'])]}"/>
+                                <field name="open_close_doors" attrs="{'invisible': [('installation_type', 'not in', ['ASC'])]}"/>
+                                <field name="other_open_close_doors" attrs="{'invisible': [('open_close_doors', 'not in', ['other'])]}"/>
+                                <field name="presence_roof" attrs="{'invisible': [('installation_type', 'not in', ['PTR'])]}"/>
+                                
+                                
                             </group>
                         </group>
                         <group string="Caractéristiques module">
@@ -46,7 +58,7 @@
                         </group>
                         <group string="Caractéristiques des mats">
                             <field name="platform_assembly_mat_id"/>
-                            <field name="suspension_type"/>
+                            <field name="suspension_type" attrs="{'invisible': [('installation_type', 'not in', ['PWM'])]}"/>
                             <field name="platform_section_mat_id"/>
                             <field name="nb_mat"/>
                             <field name="dimension_mat"/>

@@ -33,3 +33,11 @@ class PrestationScaffoldingCharacteristic(models.Model):
             self.is_width = self.characteristic_id.is_width
             self.is_height = self.characteristic_id.is_height
             self.is_surface = self.characteristic_id.is_surface
+    
+    @api.onchange('is_presence')
+    def _onchange_is_presence(self):
+        if self.is_presence == 'no':
+            self.length = 0
+            self.width = 0
+            self.height = 0
+            self.surface = 0
