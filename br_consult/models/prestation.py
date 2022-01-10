@@ -65,7 +65,7 @@ class Prestation(models.Model):
     end_date_verification = fields.Datetime("Fin de la date de vérification", store=True, compute='_compute_end_date')
     prestation_duration = fields.Float("Durée d'une prestation", store=True, related="company_id.prestation_duration")
     partner_contact = fields.Char("Représentée par")
-    user_id = fields.Many2one('res.users', 'Vérificateur', default=lambda self: self.env.user)
+    user_id = fields.Many2one('res.users', 'Inspecteur', default=lambda self: self.env.user)
     stage_id = fields.Many2one(
         'prestation.stage', string='Etape', index=True, tracking=True, readonly=False, store=True, copy=False, group_expand='_read_group_stage_ids', ondelete='restrict', default=default_stage)
     state = fields.Selection(string='Status', readonly=True, copy=False, index=True, related='stage_id.state', default="phase1")
