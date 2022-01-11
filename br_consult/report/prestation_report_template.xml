@@ -14,7 +14,7 @@
                     <div class='col-2'>
                         <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" style="max-height: 130px;"/>
                     </div>
-                    <div class='col-10 text-center' style="border-radius:10px;border: 3px solid black; background-color:#D3D3D3; min-height:130px; max-height: 130px;">
+                    <div class='col-10 text-center' style="border-radius:10px;border: 3px solid black; background-color:#D3D3D3; min-height:130px; max-height: 130px; margin-right:30px;">
                         <div style="color:#5F5F5F;font-weight:bold;font-size:16px;"> <span>RAPPORT D’INSPECTION</span></div>
                         <div style="color:#C00000;font-weight:bold;font-size:20px;"><span t-esc="doc.title_label"/></div>
                         <div style="color:#5F5F5F;font-weight:bold;font-size:16px;">
@@ -37,25 +37,29 @@
                     background-color: #D8D8D8;
                     border-radius: 10px;
                     margin-bottom: 10px;
-                    margin-top: 50px;
+                    margin-top: 40px;
                     page-break-inside:avoid;
+                    font-weight: bold;
+                    font-size: 14px;
                     }
                     .bloc_sub_title {
                     
                     padding: 20px;
-                    background-color: #F1F1F1;
+                   
                     border-radius: 10px;
-                    margin-bottom: 20px;
-                    margin-top: 20px;
+                    margin-bottom: 10px;
+                    margin-top: 10px;
+                    font-weight: bold;
                     page-break-inside:avoid;
                     }
                     .bloc_sub_title2 {
                     padding: 10px;
-                    background-color: #F3F3F3;
+                    
                     border-radius: 5px;
                     margin-bottom: 10px;
                     margin-top: 10px;
                     page-break-inside:avoid;
+                    font-weight: bold;
                     }
                     
                     table {
@@ -121,7 +125,7 @@
                                 Représenté par : <span t-field="doc.partner_contact"/>
                             </td>
                             <td>
-                                Vérificateur : <span t-field="doc.user_id"/>
+                                Inspecteur : <span t-field="doc.user_id"/>
                             </td>
                         </tr>
                         <tr>
@@ -146,7 +150,7 @@
                 </table>
 
                 <div name="conformite_installation" class="text-center" style="margin-top:50px;" t-if="doc.report_parameter_id and doc.report_parameter_id.installation_compliance">
-                    <div style="font-weight:bold;font-size:16px;">CONFORMITE DE L’INSTALLATION</div>
+                    <div style="font-weight:bold;font-size:20px;">CONFORMITE DE L’INSTALLATION</div>
                     <div>
                        <span t-field="doc.report_parameter_id.installation_compliance" />
                     </div>
@@ -161,31 +165,33 @@
                                 <td style="width: 50%; border: none; padding-top:40px; padding-bottom:40px;">
                                     <div style="margin-bottom:20px;">
                                         <input type="checkbox" t-att-checked="'checked' if doc.opinion_with_observation else None"/> Avec observation(s)
+                                        <div t-if="doc.opinion_with_observation">
+                                            (Levée d’observations recommandée)
+                                        </div>
                                     </div>
-                                    <div t-if="doc.opinion_with_observation">
-                                    Levée d’observations recommandée
-                                    </div>
+                                    
                                     <div style="margin-bottom:20px;">
                                         <input type="checkbox" t-att-checked="'checked' if doc.defavorable_opinion else None"/> AVIS DEFAVORABLE
+                                        <div t-if="doc.defavorable_opinion">
+                                            (Levée de reserves recommandée)
+                                        </div>
                                     </div>
-                                    <div t-if="doc.defavorable_opinion">
-                                    Levée de reserves recommandée
-                                    </div>
+                                   
                                 </td>
                             </tr>
                         </tbody>
 
                     </table>
                 </div>
-                <div name="visa" style="margin-top:50px; min-height:300px; max-height: 300px; border: 2px solid #5F5F5F;">
+                <div name="visa" style="margin-top:50px; min-height:250px; max-height: 250px; border: 2px solid #5F5F5F;">
                     <div class='row'>
                         <div class='col-7' style="padding:20px;">
-                            Commentaires:<br/>
+                            <strong >Commentaires:</strong><br/>
                             <span t-field="doc.comment_observation_fiche"/>
                         </div>
                         <div class='col-5 text-center' style="padding:20px;">
-                            
-                            <img t-if="doc.user_id.visa_user" t-att-src="image_data_uri(doc.user_id.visa_user)" style="max-height: 270px;"/>
+                            <strong >Visa de l'inspecteur</strong><br/>
+                            <img t-if="doc.user_id.visa_user" t-att-src="image_data_uri(doc.user_id.visa_user)" style="max-height: 200px;"/>
                             
                         </div>
                     </div>
@@ -198,7 +204,13 @@
                 
 La présente mission est réalisée conformément au contrat référencé
                     <span t-field="doc.contrat_ref"/>
- Il s’agit d’une mission de <span t-field="doc.verification_type"/> (automatiquement) limitée à la vérification visuelle des zones de l’échafaudage accessibles en sécurité. <br/>
+ Il s’agit d’une mission de <span t-field="doc.verification_type"/> limitée à la vérification visuelle des zones de 
+                    <t t-if="inspection_type=='echafaudage'"> 
+                        l’échafaudage 
+                    </t>
+                    <t t-else=""> <span t-field="doc.installation_type"/> </t>
+                    accessibles en sécurité. 
+                    <br/>
                     
                     <span t-field="doc.report_parameter_id.scope_mission" t-if="doc.report_parameter_id and doc.report_parameter_id.scope_mission"/>
                     
@@ -210,30 +222,30 @@ La présente mission est réalisée conformément au contrat référencé
                     2) Localisation, schéma et photographies de levage
                 </div>
                 <div style="margin-top:30px;" t-if="doc.location_diagram">
-                    <div class="bloc_sub_title2">
-                    Schéma
+                    <div style="text-decoration: underline; font-weight: bold;">
+                    2.1) Schéma
                     </div>
                     <img t-if="doc.location_diagram" t-att-src="image_data_uri(doc.location_diagram)" style="max-height: 350px;"  class='text-center'/>
                 </div>
                 <div style="margin-top:30px;">
                     <div style="page-break-inside: avoid;">
-                    <div class="bloc_sub_title2">
-                    Photos
+                    <div style="text-decoration: underline; font-weight: bold;">
+                    2.2) Photos
                     </div>
-                    <table class="text-center"> 
-                        <tr>
+                    <table class="text-center" t-if="doc.image1 or doc.image2 or doc.image3"> 
+                        <tr t-if="doc.image1 or doc.image2">
                             <td style="width: 50%;"><img t-if="doc.image1" t-att-src="image_data_uri(doc.image1)" style="max-height: 300px; max-width: 400px;"  class='text-center'/>
                             </td>
                             <td style="width: 50%;"><img t-if="doc.image2" t-att-src="image_data_uri(doc.image2)" style="max-height: 300px; max-width: 400px;"  class='text-center'/>
                             </td>
                         </tr>
-                        <tr>
+                        <tr t-if="doc.image3 or doc.image4">
                             <td style="width: 50%;"><img t-if="doc.image3" t-att-src="image_data_uri(doc.image3)" style="max-height: 300px; max-width: 400px;"  class='text-center'/>
                             </td>
                             <td style="width: 50%;"><img t-if="doc.image4" t-att-src="image_data_uri(doc.image4)" style="max-height: 300px; max-width: 400px;"  class='text-center'/>
                             </td>
                         </tr>
-                        <tr>
+                        <tr t-if="doc.image5 or doc.image6">
                             <td style="width: 50%;"><img t-if="doc.image5" t-att-src="image_data_uri(doc.image5)" style="max-height: 300px; max-width: 400px;"  class='text-center'/>
                             </td>
                             <td style="width: 50%;"><img t-if="doc.image6" t-att-src="image_data_uri(doc.image6)" style="max-height: 300px; max-width: 400px;"  class='text-center'/>
@@ -243,10 +255,10 @@ La présente mission est réalisée conformément au contrat référencé
                      
                     </table>
                     </div>
-                    
-                    
-                    
                 </div>
+                <t t-if='doc.image5 or doc.image6' >
+                    <br/><br/><br/><br/><br/>
+                </t>
                 <div style="page-break-inside: avoid;">
                 <div class="bloc_title" t-if="doc.inspection_type == 'echafaudage'">
                     3) Caractéristiques de l’échafaudage
@@ -311,7 +323,7 @@ La présente mission est réalisée conformément au contrat référencé
                 <div class="bloc_title" t-if="doc.inspection_type == 'levage'">
                     3) Caractéristiques de levage
                 </div>
-                <table class='table' style="margin-top:30px;" t-if="doc.inspection_type == 'levage'">
+                <table class='table table-sm' style="margin-top:30px;" t-if="doc.inspection_type == 'levage'">
                     <t t-if="doc.installation_type in ['PSM', 'PSE']">
                         <tr>
                             <td>Numéro de la plateforme suspendue</td>
@@ -696,6 +708,7 @@ La présente mission est réalisée conformément au contrat référencé
                     Commentaires:<br/>
                     <span t-field="doc.comment_levage_characteristic"/>
                 </div>
+                <div style="page-break-inside: avoid;">
                 <div class="bloc_title">
                     4) Examens
                 </div>
@@ -705,7 +718,9 @@ La présente mission est réalisée conformément au contrat référencé
                 <div t-if="doc.report_parameter_id and doc.report_parameter_id.adequation_exam">
                     <span t-field="doc.report_parameter_id.adequation_exam"/>
                 </div>
-                <div class="bloc_sub_title2">
+                </div>
+                <div style="page-break-inside: avoid;">
+                <div class="bloc_sub_title2" style="text-decoration: underline;">
                    • Nature des travaux :
                 </div>
                 <table class='table' style="margin-top:20px;">
@@ -724,7 +739,9 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
-                <div class="bloc_sub_title2">
+                </div>
+                <div style="page-break-inside: avoid;">
+                <div class="bloc_sub_title2" style="text-decoration: underline;">
                    • Dispositif de protection :
                 </div>
                 <table class='borderless'>
@@ -742,7 +759,8 @@ La présente mission est réalisée conformément au contrat référencé
                     </tr>
                    
                 </table>
-                
+                </div>
+                <div style="page-break-inside: avoid;">
                 <div class="bloc_sub_title2" t-if="doc.inspection_type == 'echafaudage'">
                    • Charges d’exploitation de l’échafaudage par défaut:
                 </div>
@@ -763,8 +781,10 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
-                <div class="bloc_sub_title2">
-                   • Constat(s):
+                </div>
+                <div style="page-break-inside: avoid;">
+                <div class="bloc_sub_title2" style="background-color: #F3F3F3;">
+                   Constat(s):
                 </div>
                 <table class='table' style="margin-top:20px;">
                     <tr>
@@ -795,7 +815,8 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
-                
+                </div>
+                <div style="page-break-inside: avoid;">
                 <div class="bloc_sub_title">
                     4.2) Examen de montage et d'installation
                 </div>
@@ -814,7 +835,7 @@ La présente mission est réalisée conformément au contrat référencé
                         <td class='borderless'><span t-field="doc.assembly_file"/></td>
                     </tr>
                 </table>
- 
+                </div>
                 <table t-if="doc.assembly_file=='yes'" class="table">
                     <tr class="text-center">
                         
@@ -860,6 +881,7 @@ La présente mission est réalisée conformément au contrat référencé
                         </td>
                     </tr>
                 </table>
+                <div style="page-break-inside: avoid;">
                 <div class="bloc_sub_title" t-if="doc.inspection_type == 'echafaudage'">
                    • Données aux ancrages:
                 </div>
@@ -897,10 +919,11 @@ La présente mission est réalisée conformément au contrat référencé
                         <td class='borderless'><span t-field="doc.covering_nature_data"/></td>
                     </tr>
                 </table>
-   
-
-                <div class="bloc_sub_title">
-                   • Constat(s):
+                </div>
+                
+                <div style="page-break-inside: avoid;">
+                <div class="bloc_sub_title" style="background-color: #F3F3F3;">
+                   Constat(s):
                 </div>
                 
                 <table class='table' style="margin-top:20px;">
@@ -932,8 +955,10 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
+                </div>
+                <div style="page-break-inside: avoid;">
                 <div class="bloc_sub_title">
-                   • Examen de l'etat de conservation:
+                   4.3) Examen de l'etat de conservation:
                 </div>
                 
                 <div t-if="doc.report_parameter_id and doc.report_parameter_id.conservation_state">
@@ -951,9 +976,10 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
-
-                <div class="bloc_sub_title">
-                   • Constat(s):
+                </div>
+                <div style="page-break-inside: avoid;">
+                <div class="bloc_sub_title" style="background-color: #F3F3F3;">
+                   Constat(s):
                 </div>
                 <table class='table' style="margin-top:20px;">
                     <tr>
@@ -984,8 +1010,10 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
+                </div>
+                <div style="page-break-inside: avoid;">
                 <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage'">
-                    4.3) Examen de bon fonctionnement
+                    4.4) Examen de bon fonctionnement
                 </div>
                 <div t-if="doc.report_parameter_id and doc.inspection_type == 'levage'">
                     <span t-field="doc.report_parameter_id.good_functionning" t-if="doc.report_parameter_id.good_functionning"/>
@@ -1002,8 +1030,10 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
-                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage'">
-                   • Constat(s):
+                </div>
+                <div style="page-break-inside: avoid;">
+                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage'" style="background-color: #F3F3F3;">
+                   Constat(s):
                 </div>
                 <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage'">
                     <tr>
@@ -1034,6 +1064,8 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
+                </div>
+                <div style="page-break-inside: avoid;">
                 <div class="bloc_title" t-if="doc.inspection_type == 'levage'">
                     5) Epreuves
                 </div>
@@ -1073,8 +1105,10 @@ La présente mission est réalisée conformément au contrat référencé
                         <td><span t-field="doc.comment_epreuve_statique"/></td>
                     </tr>
                 </table>
-                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage'">
-                   • Constat(s):
+                </div>
+                <div style="page-break-inside: avoid;">
+                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage'" style="background-color: #F3F3F3;">
+                   Constat(s):
                 </div>
                 <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.verification_type in ['MS', 'RS']">
                     <tr>
@@ -1105,6 +1139,8 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
+                </div>
+                <div style="page-break-inside: avoid;">
                 <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage'">
                     5.2) Epreuves dynamiques
                 </div>
@@ -1135,8 +1171,10 @@ La présente mission est réalisée conformément au contrat référencé
                         <td><span t-field="doc.comment_epreuve_dynamique"/></td>
                     </tr>
                 </table>
-                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage'">
-                   • Constat(s):
+                </div>
+                <div style="page-break-inside: avoid;">
+                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage'" style="background-color: #F3F3F3;">
+                   Constat(s):
                 </div>
                 <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.verification_type in ['MS', 'RS']">
                     <tr>
@@ -1167,6 +1205,7 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
+                </div>
 
             </div>
         </t>
