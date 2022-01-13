@@ -49,6 +49,7 @@
                     margin-bottom: 10px;
                     margin-top: 10px;
                     font-weight: bold;
+                    font-size: 16px;
                     page-break-inside:avoid;
                     }
                     .bloc_sub_title2 {
@@ -56,6 +57,7 @@
                     border-radius: 5px;
                     margin-bottom: 10px;
                     margin-top: 10px;
+                    font-weight: bold;
                     page-break-inside:avoid;
                     }
                     
@@ -200,7 +202,7 @@
                 <div style="margin-top:30px;">
                 
 La présente mission est réalisée conformément au contrat référencé
-                    <span t-field="doc.contrat_ref"/> 
+                    <span t-field="doc.contrat_ref"/>. 
  Il s’agit d’une mission de <span t-field="doc.verification_type"/> limitée à la vérification visuelle des zones de 
                     <t t-if="inspection_type=='echafaudage'"> 
                         l’échafaudage 
@@ -220,14 +222,14 @@ La présente mission est réalisée conformément au contrat référencé
                 </div>
                 <div style="margin-top:30px;" t-if="doc.location_diagram">
                     <div style="text-decoration: underline;">
-                    2.1) Schéma
+                        <strong> 2.1) Schéma </strong>
                     </div>
                     <img t-if="doc.location_diagram" t-att-src="image_data_uri(doc.location_diagram)" style="max-height: 350px; margin-top:10px;"  class='text-center'/>
                 </div>
                 <div style="margin-top:30px;">
                     <div style="page-break-inside: avoid;">
                     <div style="text-decoration: underline;">
-                    2.2) Photos
+                        <strong>   2.2) Photos </strong>
                     </div>
                     <table class="text-center" t-if="doc.image1 or doc.image2 or doc.image3"> 
                         <tr t-if="doc.image1 or doc.image2">
@@ -757,7 +759,7 @@ La présente mission est réalisée conformément au contrat référencé
                    
                 </table>
                 </div>
-                <div style="page-break-inside: avoid;">
+                <div style="page-break-inside: avoid; text-decoration: underline;">
         <div class="bloc_sub_title2" t-if="doc.inspection_type == 'echafaudage'">
                    Charges d’exploitation de l’échafaudage par défaut:
                 </div>
@@ -878,7 +880,7 @@ La présente mission est réalisée conformément au contrat référencé
                         </td>
                     </tr>
                 </table>
-                <div style="page-break-inside: avoid;">
+                <div style="page-break-inside: avoid; text-decoration: underline;">
             <div class="bloc_sub_title" t-if="doc.inspection_type == 'echafaudage'">
                     Données aux ancrages:
                 </div>
