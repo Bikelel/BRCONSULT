@@ -9,6 +9,7 @@ from datetime import timedelta
 class Prestation(models.Model):
     _name = 'prestation.prestation'
     _description = 'Prestation'
+    _order = 'id desc'
     _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
     
     def default_stage(self):
@@ -360,13 +361,13 @@ class Prestation(models.Model):
     
     @api.onchange('installation_type', 'inspection_type')
     def _onchange_report_parameter_id(self):
-        report_parameter_ids = self.env['prestation.report.parameter'].search([('installation_type', '=', self.installation_type)])
+        report_parameter_ids = self.env['prestation.report.parameter'].search([('inspection_type', '=', self.inspection_type)])
         if report_parameter_ids:
-            if self.installation_type == 'echafaudage':
+            if self.inspection_type == 'echafaudage':
                 self.report_parameter_id = report_parameter_ids[0]
-            elif self.installation_type == 'levage':
-                if self.inspection_type:
-                    report_parameter_id = report_parameter_ids.filtered(lambda r: r.inspection_type == self.inspection_type)
+            elif self.inspection_type == 'levage':
+                if self.installation_type:
+                    report_parameter_id = report_parameter_ids.filtered(lambda r: r.installation_type == self.installation_type)
                     if report_parameter_id:
                         self.report_parameter_id = report_parameter_id[0]
             else:
