@@ -25,7 +25,7 @@ class PrestationStage(models.Model):
     sequence = fields.Integer('Séquence', default=1)
     state = fields.Selection([
         ('phase1', 'Phase I - Création'),
-        ('phase2', 'Phase II - Validation'),
-        ('phase3', 'Phase III - Exploitation'),
+        ('phase2', 'Phase II - Exploitation'),
+        ('phase3', 'Phase III - Validation'),
         ('phase4', 'Phase IV - Envoi'),
         ], string='Status', readonly=True, copy=False, index=True)
