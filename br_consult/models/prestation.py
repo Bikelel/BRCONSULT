@@ -409,3 +409,21 @@ class Prestation(models.Model):
         for prestation in prestations:
             prestation.button_send_report()
     
+    def button_phase2(self):
+        for prestation in self:
+            stage_id = self.env['prestation.stage'].search([('state', '=', 'phase2')], limit=1)
+            if stage_id:
+                prestation.update({'stage_id': stage_id.id})
+    
+    def button_phase3(self):
+        for prestation in self:
+            stage_id = self.env['prestation.stage'].search([('state', '=', 'phase3')], limit=1)
+            if stage_id:
+                prestation.update({'stage_id': stage_id.id})
+                
+    def button_phase4(self):
+        for prestation in self:
+            stage_id = self.env['prestation.stage'].search([('state', '=', 'phase4')], limit=1)
+            if stage_id:
+                prestation.update({'stage_id': stage_id.id})
+                
