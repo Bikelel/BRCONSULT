@@ -137,6 +137,9 @@
                 <form string="Prestation">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="phase1,phase2,phase3,phase4" force_save="1"/>
+                        <button name="button_phase2" string="Envoyer vers Phase 2" type="object" attrs="{'invisible': [('state', '!=', 'phase1')]}" class="btn-primary" />
+                       <button name="button_phase3" string="Envoyer vers Phase 3" type="object" attrs="{'invisible': [('state', '!=', 'phase2')]}" class="btn-primary" />
+                        <button name="button_phase4" string="Envoyer vers Phase 4" type="object" attrs="{'invisible': [('state', '!=', 'phase3')]}" class="btn-primary"/>
                         <button name="button_send_report" string="Envoyer le rapport" type="object" attrs="{'invisible': [('state', '!=', 'phase4')]}" class="btn-primary" data-hotkey="g"/>
                     </header>
                     <sheet>
