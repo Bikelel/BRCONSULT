@@ -62,11 +62,11 @@ class Prestation(models.Model):
     ], string="Type de vérification")
     date = fields.Date(string="Date de saisie du rapport", default=fields.Date.today())
     requested_date = fields.Date('Date de la demande')
-    verification_date = fields.Datetime('Date de vérification', default=fields.Datetime.now)
+    verification_date = fields.Datetime('Date de vérification', default=fields.Datetime.now, tracking=True)
     end_date_verification = fields.Datetime("Fin de la date de vérification", store=True, compute='_compute_end_date')
     prestation_duration = fields.Float("Durée d'une prestation", store=True, related="company_id.prestation_duration")
     partner_contact = fields.Char("Représentée par")
-    user_id = fields.Many2one('res.users', 'Inspecteur', default=lambda self: self.env.user)
+    user_id = fields.Many2one('res.users', 'Inspecteur', default=lambda self: self.env.user, tracking=True)
     stage_id = fields.Many2one(
         'prestation.stage', string='Etape', index=True, tracking=True, readonly=False, store=True, copy=False, group_expand='_read_group_stage_ids', ondelete='restrict', default=default_stage)
     state = fields.Selection(string='Status', readonly=True, copy=False, index=True, related='stage_id.state', default="phase1")
@@ -77,9 +77,9 @@ class Prestation(models.Model):
     prensent_contact = fields.Char("Nom de la personne présente")
     scaffolding_surface = fields.Float("Surface d'échafaudage annoncée (m2)")
     inspected_scaffolding_surface = fields.Float("Surface d'échafaudage inspectée (m2)", digits="0", compute="_compute_inspected_surface", store=True)
-    favorable_opinion = fields.Boolean('Avis favorable')
-    opinion_with_observation = fields.Boolean('Avec observation')
-    defavorable_opinion = fields.Boolean('Avis defavorable')
+    favorable_opinion = fields.Boolean('Avis favorable', tracking=True)
+    opinion_with_observation = fields.Boolean('Avec observation', tracking=True,)
+    defavorable_opinion = fields.Boolean('Avis defavorable', tracking=True)
     comment_observation_fiche = fields.Html("Commentaires Observation")
     visa_user = fields.Binary('Visa inspecteur', related='user_id.visa_user')
     contrat_ref = fields.Char('Contrat réf')
@@ -344,11 +344,19 @@ class Prestation(models.Model):
             self.comment_epreuve_statique = ""
             self.comment_epreuve_dynamique = ""
         
-    @api.depends('characteristic_suspended_platform_ids', 'inspection_type', 'installation_type')
+    @api.depends('characteristic_suspended_platform_ids', 'inspection_type', 'installation_type', 'characteristic_palan_ids', 'characteristic_platform_ids')
     def _compute_inspected_installation_number(self):
         for rec in self:
-            if rec.inspection_type and rec.installation_type in ['PSE', 'PSM', 'PWM']:
+            if rec.inspection_type and rec.installation_type in ['PSE', 'PSM']:
                 rec.inspected_installation_number = len(rec.characteristic_suspended_platform_ids)
+            elif rec.inspection_type and rec.installation_type in ['PWM','ASC', 'PTR', 'MMA']:
+                rec.inspected_installation_number = len(rec.characteristic_platform_ids)
+            elif rec.inspection_type and rec.installation_type in ['TRE','PAE', 'PAM']:
+                rec.inspected_installation_number = len(rec.characteristic_palan_ids)
+            else:
+                rec.inspected_installation_number = 0
+                
+            
     
     @api.depends('scaffolding_mark_ids', 'scaffolding_mark_ids.inspected_surface')
     def _compute_inspected_surface(self):
