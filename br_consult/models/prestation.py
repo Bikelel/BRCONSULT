@@ -43,7 +43,7 @@ class Prestation(models.Model):
     inspection_type = fields.Selection([
         ('echafaudage', 'Echafaudage'),
         ('levage', 'Levage'),
-    ], copy=False, string="Type d'inspection")
+    ], string="Type d'inspection")
     installation_type = fields.Selection([
         ('PSE', 'Plateforme suspendue électrique'),
         ('PSM', 'Plateforme suspendue manuelle'),
@@ -54,12 +54,12 @@ class Prestation(models.Model):
         ('TRE', 'Treuil'),
         ('PAE', 'Palan motorisé'),
         ('PAM', 'Palan manuel'),
-    ], copy=False, string="Type d'installation")
+    ], string="Type d'installation")
     verification_type = fields.Selection([
         ('MS', 'Mise en service'),
         ('RS', 'Remise en service'),
         ('VP', 'Vérification périodique'),
-    ], copy=False, string="Type de vérification")
+    ], string="Type de vérification")
     date = fields.Date(string="Date de saisie du rapport", default=fields.Date.today())
     requested_date = fields.Date('Date de la demande')
     verification_date = fields.Datetime('Date de vérification', default=fields.Datetime.now)
@@ -189,19 +189,24 @@ class Prestation(models.Model):
             else:
                 partner_ref = ''
             
-        if vals.get('name') == 'New':
-            if vals.get('inspection_type') == 'echafaudage':
-                code_installation_type = 'RTU'
-            elif vals.get('inspection_type') == 'levage':
-                if vals.get('installation_type'):
-                    code_installation_type = vals.get('installation_type')
-            else:
-                code_installation_type = ''
-            if vals.get('verification_type'):
-                code_verification_type = vals.get('verification_type')
-            else:
-                code_verification_type = ''
-            vals['name'] = partner_ref + '-' +code_installation_type+ '-' + code_verification_type + '-' + self.env['ir.sequence'].next_by_code('prestation.prestation') or _('New')
+        #if vals.get('name') == 'New':
+        if vals.get('name', _('New')) == _('New'):
+            seq_date = None
+            if 'date' in vals:
+                seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(vals['date']))
+                
+                if vals.get('inspection_type') == 'echafaudage':
+                    code_installation_type = 'RTU'
+                elif vals.get('inspection_type') == 'levage':
+                    if vals.get('installation_type'):
+                        code_installation_type = vals.get('installation_type')
+                else:
+                    code_installation_type = ''
+                if vals.get('verification_type'):
+                    code_verification_type = vals.get('verification_type')
+                else:
+                    code_verification_type = ''
+                vals['name'] = partner_ref + '-' +code_installation_type+ '-' + code_verification_type + '-' + self.env['ir.sequence'].next_by_code('prestation.prestation') or _('New')
         
         attributes_good_functioning = None
         if vals.get('inspection_type') == 'echafaudage':
@@ -255,6 +260,11 @@ class Prestation(models.Model):
             stage_id = vals.get('stage_id')
             if stage_id not in stages.ids:
                 raise UserError(_('You don t have the privilege to change stage'))
+                
+                
+        if 'partner_id' in vals or 'inspection_type' in vals or 'installation_type' in vals:
+            _logger.info("################## %s", vals.get('name'))
+        
         result = super(Prestation, self).write(vals)
         
         return result
