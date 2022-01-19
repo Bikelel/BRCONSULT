@@ -36,6 +36,13 @@ class Prestation(models.Model):
         else:
             return False
 
+    def default_user(self):
+        user = self.env.user
+        if user.is_inspector:
+            return user.id
+        else:
+            return False
+
     name = fields.Char("N° Rapport", default=lambda self: 'New', copy=False)
     report_parameter_id = fields.Many2one('prestation.report.parameter',string="Parametre du rapport")
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
@@ -62,11 +69,11 @@ class Prestation(models.Model):
     ], string="Type de vérification")
     date = fields.Date(string="Date de saisie du rapport", default=fields.Date.today())
     requested_date = fields.Date('Date de la demande')
-    verification_date = fields.Datetime('Date de vérification', default=fields.Datetime.now)
+    verification_date = fields.Datetime('Date de vérification', default=fields.Datetime.now, tracking=True)
     end_date_verification = fields.Datetime("Fin de la date de vérification", store=True, compute='_compute_end_date')
     prestation_duration = fields.Float("Durée d'une prestation", store=True, related="company_id.prestation_duration")
     partner_contact = fields.Char("Représentée par")
-    user_id = fields.Many2one('res.users', 'Inspecteur', default=lambda self: self.env.user)
+    user_id = fields.Many2one('res.users', 'Inspecteur', default=default_user, tracking=True)
     stage_id = fields.Many2one(
         'prestation.stage', string='Etape', index=True, tracking=True, readonly=False, store=True, copy=False, group_expand='_read_group_stage_ids', ondelete='restrict', default=default_stage)
     state = fields.Selection(string='Status', readonly=True, copy=False, index=True, related='stage_id.state', default="phase1")
@@ -77,9 +84,9 @@ class Prestation(models.Model):
     prensent_contact = fields.Char("Nom de la personne présente")
     scaffolding_surface = fields.Float("Surface d'échafaudage annoncée (m2)")
     inspected_scaffolding_surface = fields.Float("Surface d'échafaudage inspectée (m2)", digits="0", compute="_compute_inspected_surface", store=True)
-    favorable_opinion = fields.Boolean('Avis favorable')
-    opinion_with_observation = fields.Boolean('Avec observation')
-    defavorable_opinion = fields.Boolean('Avis defavorable')
+    favorable_opinion = fields.Boolean('Avis favorable', tracking=True)
+    opinion_with_observation = fields.Boolean('Avec observation', tracking=True)
+    defavorable_opinion = fields.Boolean('Avis defavorable', tracking=True)
     comment_observation_fiche = fields.Html("Commentaires Observation")
     visa_user = fields.Binary('Visa inspecteur', related='user_id.visa_user')
     contrat_ref = fields.Char('Contrat réf')
