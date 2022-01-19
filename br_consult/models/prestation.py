@@ -183,6 +183,7 @@ class Prestation(models.Model):
     characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de levage palan")
     comment_levage_characteristic = fields.Html("Commentaires Caractéristique de levage")
     is_report_sent = fields.Boolean("Rapport envoyé")
+    kanban_color = fields.Integer('Color Index', compute="change_colore_on_kanban", store=True)
     
     @api.model
     def create(self, vals):
@@ -433,4 +434,16 @@ class Prestation(models.Model):
             stage_id = self.env['prestation.stage'].search([('state', '=', 'phase4')], limit=1)
             if stage_id:
                 prestation.update({'stage_id': stage_id.id})
+    
+    @api.depends('inspection_type')
+    def change_colore_on_kanban(self):   
+        for record in self:
+             color = 0
+             if record.inspection_type == 'echafaudage':
+                 color = 10
+             elif record.inspection_type == 'levage':
+                 color = 6
+             else:
+                 color=0
+             record.kanban_color = color
                 
