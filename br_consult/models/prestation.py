@@ -74,6 +74,7 @@ class Prestation(models.Model):
     prestation_duration = fields.Float("Durée d'une prestation", store=True, related="company_id.prestation_duration")
     partner_contact = fields.Char("Représentée par")
     user_id = fields.Many2one('res.users', 'Inspecteur', default=default_user, tracking=True)
+
     stage_id = fields.Many2one(
         'prestation.stage', string='Etape', index=True, tracking=True, readonly=False, store=True, copy=False, group_expand='_read_group_stage_ids', ondelete='restrict', default=default_stage)
     state = fields.Selection(string='Status', readonly=True, copy=False, index=True, related='stage_id.state', default="phase1")
@@ -352,11 +353,19 @@ class Prestation(models.Model):
             self.comment_epreuve_statique = ""
             self.comment_epreuve_dynamique = ""
         
-    @api.depends('characteristic_suspended_platform_ids', 'inspection_type', 'installation_type')
+    @api.depends('characteristic_suspended_platform_ids', 'inspection_type', 'installation_type', 'characteristic_palan_ids', 'characteristic_platform_ids')
     def _compute_inspected_installation_number(self):
         for rec in self:
-            if rec.inspection_type and rec.installation_type in ['PSE', 'PSM', 'PWM']:
+            if rec.inspection_type and rec.installation_type in ['PSE', 'PSM']:
                 rec.inspected_installation_number = len(rec.characteristic_suspended_platform_ids)
+            elif rec.inspection_type and rec.installation_type in ['PWM','ASC', 'PTR', 'MMA']:
+                rec.inspected_installation_number = len(rec.characteristic_platform_ids)
+            elif rec.inspection_type and rec.installation_type in ['TRE','PAE', 'PAM']:
+                rec.inspected_installation_number = len(rec.characteristic_palan_ids)
+            else:
+                rec.inspected_installation_number = 0
+                
+            
     
     @api.depends('scaffolding_mark_ids', 'scaffolding_mark_ids.inspected_surface')
     def _compute_inspected_surface(self):
