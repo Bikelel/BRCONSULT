@@ -36,6 +36,13 @@ class Prestation(models.Model):
         else:
             return False
 
+    def default_user(self):
+        user = self.env.user
+        if user.is_inspector:
+            return user.id
+        else:
+            return False
+
     name = fields.Char("N° Rapport", default=lambda self: 'New', copy=False)
     report_parameter_id = fields.Many2one('prestation.report.parameter',string="Parametre du rapport")
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
@@ -66,7 +73,8 @@ class Prestation(models.Model):
     end_date_verification = fields.Datetime("Fin de la date de vérification", store=True, compute='_compute_end_date')
     prestation_duration = fields.Float("Durée d'une prestation", store=True, related="company_id.prestation_duration")
     partner_contact = fields.Char("Représentée par")
-    user_id = fields.Many2one('res.users', 'Inspecteur', default=lambda self: self.env.user, tracking=True)
+    user_id = fields.Many2one('res.users', 'Inspecteur', default=default_user, tracking=True)
+
     stage_id = fields.Many2one(
         'prestation.stage', string='Etape', index=True, tracking=True, readonly=False, store=True, copy=False, group_expand='_read_group_stage_ids', ondelete='restrict', default=default_stage)
     state = fields.Selection(string='Status', readonly=True, copy=False, index=True, related='stage_id.state', default="phase1")
@@ -78,7 +86,7 @@ class Prestation(models.Model):
     scaffolding_surface = fields.Float("Surface d'échafaudage annoncée (m2)")
     inspected_scaffolding_surface = fields.Float("Surface d'échafaudage inspectée (m2)", digits="0", compute="_compute_inspected_surface", store=True)
     favorable_opinion = fields.Boolean('Avis favorable', tracking=True)
-    opinion_with_observation = fields.Boolean('Avec observation', tracking=True,)
+    opinion_with_observation = fields.Boolean('Avec observation', tracking=True)
     defavorable_opinion = fields.Boolean('Avis defavorable', tracking=True)
     comment_observation_fiche = fields.Html("Commentaires Observation")
     visa_user = fields.Binary('Visa inspecteur', related='user_id.visa_user')
@@ -176,6 +184,7 @@ class Prestation(models.Model):
     characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de levage palan")
     comment_levage_characteristic = fields.Html("Commentaires Caractéristique de levage")
     is_report_sent = fields.Boolean("Rapport envoyé")
+    kanban_color = fields.Integer('Color Index', compute="change_colore_on_kanban", store=True)
     
     @api.model
     def create(self, vals):
@@ -434,4 +443,16 @@ class Prestation(models.Model):
             stage_id = self.env['prestation.stage'].search([('state', '=', 'phase4')], limit=1)
             if stage_id:
                 prestation.update({'stage_id': stage_id.id})
+    
+    @api.depends('inspection_type')
+    def change_colore_on_kanban(self):   
+        for record in self:
+             color = 0
+             if record.inspection_type == 'echafaudage':
+                 color = 10
+             elif record.inspection_type == 'levage':
+                 color = 6
+             else:
+                 color=0
+             record.kanban_color = color
                 
