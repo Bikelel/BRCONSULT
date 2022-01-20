@@ -782,10 +782,10 @@ La présente mission est réalisée conformément au contrat référencé
                 </table>
                 </div>
                 <div style="page-break-inside: avoid;">
-                <div class="bloc_sub_title2" style="background-color: #F3F3F3;">
+                <div class="bloc_sub_title2" style="background-color: #F3F3F3;" t-if="doc.constat_adequacy_exam_ids">
                    Constat(s):
                 </div>
-                <table class='table' style="margin-top:20px;">
+                <table class='table' style="margin-top:20px;" t-if="doc.constat_adequacy_exam_ids">
                     <tr>
                         <td>Points de vérification</td>
                         <td>Observations/Réserves </td>
@@ -921,11 +921,11 @@ La présente mission est réalisée conformément au contrat référencé
                 </div>
                 
                 <div style="page-break-inside: avoid;">
-                <div class="bloc_sub_title" style="background-color: #F3F3F3;">
+                <div class="bloc_sub_title" style="background-color: #F3F3F3;" t-if="doc.constat_assembly_exam_ids">
                    Constat(s):
                 </div>
                 
-                <table class='table' style="margin-top:20px;">
+                <table class='table' style="margin-top:20px;" t-if="doc.constat_assembly_exam_ids">
                     <tr>
                         <td>Points de vérification</td>
                         <td>Observations/Réserves </td>
@@ -977,10 +977,10 @@ La présente mission est réalisée conformément au contrat référencé
                 </table>
                 </div>
                 <div style="page-break-inside: avoid;">
-                <div class="bloc_sub_title" style="background-color: #F3F3F3;">
+                <div class="bloc_sub_title" style="background-color: #F3F3F3;" t-if="doc.constat_conservation_state_exam_ids">
                    Constat(s):
                 </div>
-                <table class='table' style="margin-top:20px;">
+                <table class='table' style="margin-top:20px;" t-if="doc.constat_conservation_state_exam_ids">
                     <tr>
                         <td>Points de vérification</td>
                         <td>Observations/Réserves </td>
@@ -1031,10 +1031,10 @@ La présente mission est réalisée conformément au contrat référencé
                 </table>
                 </div>
                 <div style="page-break-inside: avoid;">
-                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage'" style="background-color: #F3F3F3;">
+                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage' and doc.constat_good_functioning_exam_ids" style="background-color: #F3F3F3;">
                    Constat(s):
                 </div>
-                <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage'">
+                <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.constat_good_functioning_exam_ids">
                     <tr>
                         <td>Points de vérification</td>
                         <td>Observations/Réserves </td>
@@ -1106,10 +1106,10 @@ La présente mission est réalisée conformément au contrat référencé
                 </table>
                 </div>
                 <div style="page-break-inside: avoid;">
-                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage'" style="background-color: #F3F3F3;">
+                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage' and doc.constat_epreuve_statique_ids" style="background-color: #F3F3F3;">
                    Constat(s):
                 </div>
-                <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.verification_type in ['MS', 'RS']">
+                <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.verification_type in ['MS', 'RS'] and doc.constat_epreuve_statique_ids">
                     <tr>
                         <td>Points de vérification</td>
                         <td>Observations/Réserves </td>
@@ -1172,10 +1172,10 @@ La présente mission est réalisée conformément au contrat référencé
                 </table>
                 </div>
                 <div style="page-break-inside: avoid;">
-                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage'" style="background-color: #F3F3F3;">
+                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage' and doc.constat_epreuve_dynamique_ids" style="background-color: #F3F3F3;">
                    Constat(s):
                 </div>
-                <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.verification_type in ['MS', 'RS']">
+                <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.verification_type in ['MS', 'RS'] and doc.constat_epreuve_dynamique_ids">
                     <tr>
                         <td>Points de vérification</td>
                         <td>Observations/Réserves </td>
