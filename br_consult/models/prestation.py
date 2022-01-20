@@ -43,7 +43,7 @@ class Prestation(models.Model):
         else:
             return False
 
-    name = fields.Char("N° Rapport", default=lambda self: 'New', copy=False)
+    name = fields.Char("N° Rapport", default=lambda self: _('New'), copy=False)
     report_parameter_id = fields.Many2one('prestation.report.parameter',string="Parametre du rapport")
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
     partner_id = fields.Many2one('res.partner', string="Entreprise")
