@@ -14,9 +14,9 @@
             <field name="name">prestation.levage.characteristic.platform.form</field>
             <field name="model">prestation.levage.characteristic.platform</field>
             <field name="arch" type="xml">
-                <form string="Caractéristique de la plateforme">
+                <form string="Caractéristique de l'installation">
                     <sheet>
-                        <group string="Caractéristiques de la plateforme">
+                        <group string="Caractéristiques de l'installatione">
                             <group>
                                 <field name="name"/>
                                 <field name="prestation_id" invisible="1"/>

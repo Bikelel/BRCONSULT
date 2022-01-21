@@ -11,7 +11,7 @@ class PrestationGoodFunctioningExam(models.Model):
     inspection_type = fields.Selection(related="good_functioning_id.inspection_type")
     installation_type = fields.Selection(related="good_functioning_id.installation_type")
     prestation_id = fields.Many2one("prestation.prestation", string="Prestation")
-    opinion = fields.Selection([('yes', 'Satisfait'), 
-                                ('no', 'Non satisfait'),
+    opinion = fields.Selection([('yes', 'Satisfaisant'), 
+                                ('no', 'Non satisfaisant'),
                                 ('wo', 'Sans Objet')], string="Avis")
 
