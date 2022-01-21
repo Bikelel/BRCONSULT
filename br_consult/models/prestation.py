@@ -106,6 +106,7 @@ class Prestation(models.Model):
     security_register = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Registre de sécurité")
     assembly_file = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition du dossier de montage")
     manufacturer_instructions = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition de la notice du constructeur")
+    notice_constructeur = fields.Boolean("Notice constructeur")
     execution_plan = fields.Boolean("Plan d'exécution (PE)")
     calculation_notice = fields.Boolean("Note de calcul (NDC)")
     maintenance_log = fields.Boolean("Carnet de maintenance")

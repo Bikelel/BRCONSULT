@@ -319,10 +319,10 @@
                                     <field name="is_other_device" attrs="{'invisible':[('inspection_type', '!=', 'echafaudage')]}"/>
                                     <field name="other_device_id" attrs="{'invisible':[('is_other_device', '!=', 'yes')]}"/>
                                     <field name="protection_dispositif" attrs="{'invisible':[('inspection_type', '!=', 'levage')]}"/>
-                                    <field name="levage_protection_dispositif" attrs="{'invisible':[('protection_dispositif', '!=', 'yes')]}"/>
+                                    <field name="levage_protection_dispositif" attrs="{'invisible':[('protection_dispositif', '!=', 'yes')]}" string="Dispositif de protection"/>
                                 </group>
                                 <group attrs="{'invisible': [('installation_type', 'not in', [ 'ASC', 'PTR', 'MMA', 'TRE', 'PAE', 'PAM'])]}">
-                                    <field name="installation_use_id"/>
+                                    <field name="installation_use_id" domain="[('installation_type', '=', installation_type)]" context = "{'default_installation_type':installation_type}"/>
                                 </group>
                                 <group string="Charge d'exploitation de l'échafaudage par défaut" attrs="{'invisible':[('inspection_type', '!=', 'echafaudage')]}">
                                     <field name="scaffolding_operating_load_ids" nolabel="1">
@@ -347,19 +347,22 @@
                                         </tree>
                                     </field>
                                 </group>
-                                <h1 class="headding_1">4.2- Examen de montage et d'exploitation</h1>
+                                <h1 class="headding_1" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}">4.2- Examen de montage et d'exploitation</h1>
+                                <h1 class="headding_1" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">4.2- Examen de montage et d'installation</h1>
                                 <group>
                                     <field name="security_register"/>
                                 </group>
                                 <group string="Présentation du dossier du montage">
                                     <field name="assembly_file"/>
                                     
-                                    
+                                    <field name="notice_constructeur"/>
                                     <field name="execution_plan" attrs="{'invisible': [('assembly_file', '!=', 'yes')]}"/>
                                     <field name="calculation_notice" attrs="{'invisible': [('assembly_file', '!=', 'yes')]}"/>
                                     
-                                    <field name="maintenance_log" invisible="1"/>
-                                    <field name="manufacturer_instructions"/>
+                                    <field name="maintenance_log"/>
+                                    
+                                    
+                                    <field name="manufacturer_instructions" invisible="1"/>
                                     
                                 </group>
                                 <group string="Données relatives au sol ou de support d'implantation">

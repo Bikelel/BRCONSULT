@@ -485,7 +485,7 @@ La présente mission est réalisée conformément au contrat référencé
                                     <div class='col-4'>Largeur: <span t-field="charac.width_platform"/></div>
                                     <div class='col-4'>Hauteur: <span t-field="charac.hauteur_platform"/></div>
                                 </div>
-                                <span t-field="charac.width_platform"/>
+                                
                             </td>
                         </tr>
                         <t t-set="presence_extention" t-value="False" />
@@ -525,7 +525,7 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Type de la plate-forme</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.platform_type"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['ASC', 'PTR']">
+                        <tr t-if="doc.installation_type in ['ASC', 'MMA']">
                             <td>Modèle</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.modele"/></td>
                         </tr>
@@ -533,11 +533,11 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Numéro(s) de fabrication</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.num_fabrication"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['ASC', 'PTR']">
+                        <tr t-if="doc.installation_type in ['ASC', 'MMA']">
                             <td>Année de fabrication</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.fabrication_year"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['ASC', 'PTR']">
+                        <tr t-if="doc.installation_type in ['ASC', 'MMA']">
                             <td>Année de mise en circulation </td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.circulation_year"/></td>
                         </tr>
@@ -546,7 +546,7 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Alimentation électrique</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.alimentation"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['ASC', 'PTR']">
+                        <tr t-if="doc.installation_type in ['ASC', 'MMA']">
                             <td>Desserte des niveaux</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.level_service"/></td>
                         </tr>
@@ -626,10 +626,10 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>CMU autorisée (en kg)</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.autorized_cmu"/></td>
                         </tr>
-                        <tr>
+<!--                         <tr>
                             <td>Commentaire</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.comment_cmu"/></td>
-                        </tr>
+                        </tr> -->
                         
                     </t>
                     <t t-if="doc.installation_type in ['TRE', 'PAE', 'PAM']">
@@ -837,20 +837,28 @@ La présente mission est réalisée conformément au contrat référencé
                 </div>
                 <table t-if="doc.assembly_file=='yes'" class="table">
                     <tr class="text-center">
-                        
+                        <td>Notice constructeur</td>
                         <td>Plans d’exécution (PE)</td>
                         <td>Note de calcul</td>
+                        <td>Carnet de maintenance</td>
                     </tr>
                     <tbody>
                         <tbody>
                             <tr class="text-center">
-                                
+                                <td>
+                                    <t t-if="doc.notice_constructeur">Oui</t>
+                                    <t t-else="">Non</t>
+                                </td>
                                 <td>
                                     <t t-if="doc.execution_plan">Oui</t>
                                     <t t-else="">Non</t>
                                 </td>
                                 <td>
                                     <t t-if="doc.calculation_notice">Oui</t>
+                                    <t t-else="">Non</t>
+                                </td>
+                                <td>
+                                    <t t-if="doc.maintenance_log">Oui</t>
                                     <t t-else="">Non</t>
                                 </td>
                             </tr>
