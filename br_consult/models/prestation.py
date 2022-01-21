@@ -205,7 +205,7 @@ class Prestation(models.Model):
                 seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(vals['date']))
                 
                 if vals.get('inspection_type') == 'echafaudage':
-                    code_installation_type = 'RTU'
+                    code_installation_type = 'TUB'
                 elif vals.get('inspection_type') == 'levage':
                     if vals.get('installation_type'):
                         code_installation_type = vals.get('installation_type')
