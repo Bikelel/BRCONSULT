@@ -43,7 +43,7 @@ class Prestation(models.Model):
         else:
             return False
 
-    name = fields.Char("N° Rapport", default=lambda self: 'New', copy=False)
+    name = fields.Char("N° Rapport", default=lambda self: _('New'), copy=False)
     report_parameter_id = fields.Many2one('prestation.report.parameter',string="Parametre du rapport")
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
     partner_id = fields.Many2one('res.partner', string="Entreprise")
@@ -205,7 +205,7 @@ class Prestation(models.Model):
                 seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(vals['date']))
                 
                 if vals.get('inspection_type') == 'echafaudage':
-                    code_installation_type = 'RTU'
+                    code_installation_type = 'TUB'
                 elif vals.get('inspection_type') == 'levage':
                     if vals.get('installation_type'):
                         code_installation_type = vals.get('installation_type')
