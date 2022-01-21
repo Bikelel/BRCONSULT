@@ -179,10 +179,10 @@ class Prestation(models.Model):
     characteristic_suspended_platform_ids = fields.One2many('prestation.levage.characteristic.suspended.platform', 'prestation_id', "Caractéristique de la plateforme suspendue")
     
     # travail sur mat
-    characteristic_platform_ids = fields.One2many('prestation.levage.characteristic.platform', 'prestation_id', "Caractéristique de la plateforme")
+    characteristic_platform_ids = fields.One2many('prestation.levage.characteristic.platform', 'prestation_id', "Caractéristique de l'installation")
     
     # travail sur palan + treuil
-    characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de levage palan")
+    characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de l'installation")
     comment_levage_characteristic = fields.Html("Commentaires Caractéristique de levage")
     is_report_sent = fields.Boolean("Rapport envoyé")
     kanban_color = fields.Integer('Color Index', compute="change_colore_on_kanban", store=True)

@@ -210,7 +210,13 @@ La présente mission est réalisée conformément au contrat référencé
                     <t t-else=""> <span t-field="doc.installation_type"/> </t>
                     accessibles en sécurité. 
                     <br/>
+                    <t t-if="doc.verification_type=='RS'">Motif de remise en service: <span t-field="doc.motif_rs_id"/><br/>
+                        <div class="row">
+                            <div class="col-6">Référence du rapport de (re)mise en service : <span t-field="doc.contrat_ref"/></div>
+                            <div class="col-6">Date : <span t-field="doc.scope_mission_date"/></div>
+                        </div>
                     
+                    </t>
                     <span t-field="doc.report_parameter_id.scope_mission" t-if="doc.report_parameter_id and doc.report_parameter_id.scope_mission"/>
                     
                 </div>
