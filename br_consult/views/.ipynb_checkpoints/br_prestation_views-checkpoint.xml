@@ -173,7 +173,7 @@
                                         <field name="user_id" domain="[('is_inspector', '=', True)]"/>
                                         <field name="prensent_contact" />
                                         <field name="scaffolding_surface" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
-                                        <field name="inspected_scaffolding_surface" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}"/>
+                                        <field name="inspected_scaffolding_surface" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}" widget="integer"/>
                                         <field name="announced_installation_number" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
                                         <field name="inspected_installation_number" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
                                     </group>

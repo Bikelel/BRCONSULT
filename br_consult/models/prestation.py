@@ -5,6 +5,7 @@ import logging
 _logger = logging.getLogger(__name__)
 from odoo.exceptions import UserError
 from datetime import timedelta
+from odoo.tools import float_round
 
 class Prestation(models.Model):
     _name = 'prestation.prestation'
@@ -84,7 +85,7 @@ class Prestation(models.Model):
     site_localisation = fields.Char("Localisation")
     prensent_contact = fields.Char("Nom de la personne présente")
     scaffolding_surface = fields.Float("Surface d'échafaudage annoncée (m2)")
-    inspected_scaffolding_surface = fields.Float("Surface d'échafaudage inspectée (m2)", digits="0", compute="_compute_inspected_surface", store=True)
+    inspected_scaffolding_surface = fields.Float("Surface d'échafaudage inspectée (m2)", compute="_compute_inspected_surface", store=True)
     favorable_opinion = fields.Boolean('Avis favorable', tracking=True)
     opinion_with_observation = fields.Boolean('Avec observation', tracking=True)
     defavorable_opinion = fields.Boolean('Avis defavorable', tracking=True)
@@ -372,7 +373,8 @@ class Prestation(models.Model):
     def _compute_inspected_surface(self):
         for rec in self:
             if rec.scaffolding_mark_ids:
-                rec.inspected_scaffolding_surface = sum(rec.scaffolding_mark_ids.mapped('inspected_surface'))
+                inspected_scaffolding_surface = sum(rec.scaffolding_mark_ids.mapped('inspected_surface'))
+                rec.inspected_scaffolding_surface = round(inspected_scaffolding_surface)
     
     @api.onchange('installation_type')
     def _onchange_coefficient(self):
