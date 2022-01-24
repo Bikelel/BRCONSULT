@@ -136,11 +136,11 @@
                               <strong>  Nom de la personne présente lors de notre intervention : </strong> <span t-field="doc.prensent_contact"/><br/>
                                 <t t-if="doc.inspection_type == 'echafaudage'">
                                     <strong>  Surface d’échafaudage annoncée (en m²) : </strong> <span t-field="doc.scaffolding_surface"/> <br/>
-                                    <strong> Surface d’échafaudage inspectée (en m²) = </strong> <span t-field="doc.inspected_scaffolding_surface"/>
+                                    <strong> Surface d’échafaudage inspectée (en m²) : </strong> <span t-field="doc.inspected_scaffolding_surface"/>
                                 </t>
                                 <t t-if="doc.inspection_type == 'levage'">
                                     <strong> Nombre d'installation annoncée(s) : </strong> <span t-field="doc.announced_installation_number"/> <br/>
-                                    <strong>  Nombre d'installation inspectée(s) = </strong> <span t-field="doc.inspected_installation_number"/>
+                                    <strong>  Nombre d'installation inspectée(s) : </strong> <span t-field="doc.inspected_installation_number"/>
                                 </t>
 
                             </td>
@@ -160,21 +160,35 @@
                             <tr>
                                 <td style="width: 50%; border: none; padding-top:40px;padding-bottom:40px;" >
                                     <div style="margin-bottom:20px;">
-                                        <input type="checkbox" t-att-checked="'checked' if doc.favorable_opinion else None"/> AVIS FAVORABLE
+                                        <input type="checkbox" t-att-checked="'checked' if doc.favorable_opinion else None"/> 
+                                        <t t-if="doc.favorable_opinion" >
+                                            <span style="color:green;">AVIS FAVORABLE</span>
+                                        </t>
+                                        <t t-else="">
+                                            AVIS FAVORABLE
+                                        </t>
                                     </div>
                                     <div style="margin-bottom:20px;">
-                                        <input type="checkbox" t-att-checked="'checked' if doc.defavorable_opinion else None"/> AVIS DEFAVORABLE
-                                        <div t-if="doc.defavorable_opinion">
-                                            (Levée de reserves recommandée)
-                                        </div>
+                                        <input type="checkbox" t-att-checked="'checked' if doc.opinion_with_observation else None"/> Avec observation(s)
+<!--                                         <div t-if="doc.opinion_with_observation">
+                                            (Levée d’observations recommandée)
+                                        </div> -->
                                     </div>
                                 </td>
                                 <td style="width: 50%; border: none; padding-top:40px; padding-bottom:40px;">
+                                    
                                     <div style="margin-bottom:20px;">
-                                        <input type="checkbox" t-att-checked="'checked' if doc.opinion_with_observation else None"/> Avec observation(s)
-                                        <div t-if="doc.opinion_with_observation">
-                                            (Levée d’observations recommandée)
-                                        </div>
+                                        <input type="checkbox" t-att-checked="'checked' if doc.defavorable_opinion else None"/> 
+                                         <t t-if="doc.defavorable_opinion" >
+                                            <span style="color:red;">AVIS DEFAVORABLE</span>
+                                        </t>
+                                        <t t-else="">
+                                            AVIS DEFAVORABLE
+                                        </t>
+                                        
+<!--                                         <div t-if="doc.defavorable_opinion">
+                                            (Levée de reserves recommandée)
+                                        </div> -->
                                     </div>
                                    
                                 </td>
@@ -221,17 +235,19 @@ La présente mission est réalisée conformément au contrat référencé
                     <span t-field="doc.report_parameter_id.scope_mission" t-if="doc.report_parameter_id and doc.report_parameter_id.scope_mission"/>
                     
                 </div>
-                <div class="bloc_title" t-if="doc.inspection_type == 'echafaudage'">
-                    2) Localisation, schéma et photographies de l’échafaudage
-                </div>
-                <div class="bloc_title" t-if="doc.inspection_type == 'levage'">
-                    2) Localisation, schéma et photographies de levage
-                </div>
-                <div style="margin-top:30px;" t-if="doc.location_diagram">
-                    <div style="text-decoration: underline;">
-                        <strong> 2.1) Schéma </strong>
+                <div style="page-break-inside: avoid;">
+                    <div class="bloc_title" t-if="doc.inspection_type == 'echafaudage'">
+                        2) Localisation, schéma et photographies de l’échafaudage
                     </div>
-                    <img t-if="doc.location_diagram" t-att-src="image_data_uri(doc.location_diagram)" style="max-height: 350px; margin-top:10px;"  class='text-center'/>
+                    <div class="bloc_title" t-if="doc.inspection_type == 'levage'">
+                        2) Localisation, schéma et photographies de levage
+                    </div>
+                    <div style="margin-top:30px;" t-if="doc.location_diagram">
+                        <div style="text-decoration: underline;">
+                            <strong> 2.1) Schéma </strong>
+                        </div>
+                        <img t-if="doc.location_diagram" t-att-src="image_data_uri(doc.location_diagram)" style="max-height: 350px; margin-top:10px;"  class='text-center'/>
+                    </div>
                 </div>
                 <div style="margin-top:30px;">
                     <div style="page-break-inside: avoid;">
@@ -886,7 +902,7 @@ La présente mission est réalisée conformément au contrat référencé
                 
                 <table class='borderless'>
                     <tr class='borderless'>
-                        <td class='borderless' style="width:35%;">Mise à disposition du dossier de montage:</td>
+                        <td class='borderless' style="width:35%;">Données relatives au sol ou au support d'implantation:</td>
                         <td class='borderless'>
                                 <t t-foreach="doc.soil_support_data_ids" t-as="soil">
                                     - <span t-field="soil.name"/><br/>
@@ -894,7 +910,7 @@ La présente mission est réalisée conformément au contrat référencé
                         </td>
                     </tr>
                     <tr class='borderless'>
-                        <td class='borderless'>Nature du sol/support d’implantation:</td>
+                        <td class='borderless'>Données relatives à la nature d'ancrage:</td>
                         <td class='borderless'>
                             <t t-foreach="doc.anchor_support_data_ids" t-as="anchor">
                                 - <span t-field="anchor.name"/><br/>

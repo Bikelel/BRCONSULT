@@ -427,7 +427,7 @@ class Prestation(models.Model):
     def cron_send_report_prestation(self):
         prestations = self.search([('state', '=', 'phase4'), ('is_report_sent', '=', False)])
         for prestation in prestations:
-            prestation.button_send_report()
+            prestation.sudo().button_send_report()
     
     def button_phase2(self):
         for prestation in self:
