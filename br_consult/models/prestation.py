@@ -320,8 +320,8 @@ class Prestation(models.Model):
                 else:
                     anchor_data_theoretical_number = 0.0
                 
-                rec.anchor_data_theoretical_number = anchor_data_theoretical_number
-                rec.anchor_data_difference_number = rec.anchor_data_number - anchor_data_theoretical_number
+                rec.anchor_data_theoretical_number = round(anchor_data_theoretical_number)
+                rec.anchor_data_difference_number = round(rec.anchor_data_number - anchor_data_theoretical_number)
 
     @api.onchange('assembly_file')
     def onchange_assembly_file(self):
@@ -418,11 +418,12 @@ class Prestation(models.Model):
             rec.end_date_verification = rec.verification_date + timedelta(hours=duration)
     
     def button_send_report(self):
-        for prestation in self:
-            if prestation.partner_id and prestation.partner_id.email:
-                template = self.env.ref('br_consult.email_notification_prestation')
-                template.send_mail(prestation.user_id.id, force_send=True)
-                prestation.is_report_sent = True
+        #for prestation in self:
+        if self.partner_id and self.partner_id.email:
+            _logger.info("########## presta %s", self)
+            template = self.env.ref('br_consult.email_notification_prestation')
+            #template.sudo().send_mail(self.user_id.id, force_send=True)
+            self.is_report_sent = True
     
     def cron_send_report_prestation(self):
         prestations = self.search([('state', '=', 'phase4'), ('is_report_sent', '=', False)])

@@ -146,7 +146,7 @@
                         <group>
                             <group>
                                 <field name="inspection_type" required="1" />
-                                <field name="report_parameter_id" invisible="0" />
+                                <field name="report_parameter_id" invisible="1" />
                                 <field name="is_report_sent" invisible="1" />
                             </group>
                             <group>
@@ -192,7 +192,7 @@
                                 </group>
                                 <group string="Visa de l’inspecteur technique">
                                     <group>
-                                        <field name='visa_user' widget='image'/>
+                                        <field name='visa_user' widget='image' options='{"size":[0,180]}'/>
                                     </group>
                                 </group>
                             </page>
@@ -212,11 +212,7 @@
                                     <field name="location_diagram" nolabel="1" options='{"size":[0,90]}' widget='image'/>
                                 </group>
                                 <group string="Photographies">
-<!--                                     <field name="image_ids" nolabel="1">
-                                        <tree>
-                                            <field name="image" nolabel="1" options='{"size":[0,90]}' widget='image'/>
-                                        </tree>
-                                    </field> -->
+
                                     <group>
                                         <field name="image1" nolabel="1" options='{"size":[0,90]}' widget='image'/>
                                     </group>
@@ -377,9 +373,9 @@
                                 <group string="Données aux ancrages" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}">
                                     <field name="anchor_type_id"/>
                                     <field name="ankles_type" attrs="{'invisible':[('anchor_type_id', '!=', 1)]}"/>
-                                    <field name="anchor_data_number"/>
-                                    <field name="anchor_data_theoretical_number"/>
-                                    <field name="anchor_data_difference_number"/>
+                                    <field name="anchor_data_number" widget='integer'/>
+                                    <field name="anchor_data_theoretical_number" widget='integer'/>
+                                    <field name="anchor_data_difference_number" widget='integer'/>
                                 </group>
                                 <group string="Données relatives aux réactions d'appuis au sol ou au support d’accueil" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}">
                                     <field name="ground_support_data" string="Choix"/>
@@ -407,7 +403,8 @@
                                         </tree>
                                     </field>
                                 </group>
-                                <group string="Examen de l'etat de conservation" >
+                                <h1 class="headding_1">4.3- Examen de l'etat de conservation</h1>
+                                <group>
                                     <field name="conservation_state_exam_ids" nolabel="1">
                                         <tree editable="bottom" delete="false" create="false">
                                             <field name="conservation_state_id" invisible="1"/>
@@ -432,7 +429,8 @@
                                         </tree>
                                     </field>
                                 </group>
-                                <group string="Examen du bon fonctionenement" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
+                                <h1 class="headding_1" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">4.4- Examen du bon fonctionenement</h1>
+                                <group attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
                                     <field name="good_functioning_exam_ids" nolabel="1">
                                         <tree editable="bottom" delete="false" create="false">
                                             <field name="good_functioning_id" invisible="1"/>
@@ -460,7 +458,8 @@
                             </page>
                             <page name='epreuve' string="Epreuves" attrs="{'invisible': ['|',('verification_type', 'not in', ['MS', 'RS', 'VP']), ('inspection_type', '!=', 'levage')]}">
                                 
-                                <group string="Epreuve statique">
+                                <h1 class="headding_1">5.1- Epreuve statique</h1>
+                                <group>
                                     <field name="coefficient_statique" string="Coefficient" />
                                     <field name="autorised_cmu_statique" string="CMU Autorisée"/>
                                     <field name="theoretical_test_load_statique" string="Charge d'épreuve théorique (en KG)"/>
@@ -483,7 +482,8 @@
                                         </tree>
                                     </field>
                                 </group>
-                                <group string="Epreuve dynamique">
+                                <h1 class="headding_1">5.2- Epreuve dynamique</h1>
+                                <group>
                                     <field name="coefficient_dynamique" string="Coefficient" />
                                     <field name="autorised_cmu_dynamique" string="CMU Autorisée"/>
                                     <field name="theoretical_test_load_dynamique" string="Charge d'épreuve théorique (en KG)"/>

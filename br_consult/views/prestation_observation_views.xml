@@ -8,7 +8,26 @@
                 <tree string="Observation" multi_edit="1" editable="top">
                     <field name="name"/>
                     <field name="type"/>
+                    <field name="reserve"/>
+                    <field name="temp_save"/>
                 </tree>
+            </field>
+        </record>
+        <record id="view_prestation_observation_form" model="ir.ui.view">
+            <field name="name">prestation.observation.list</field>
+            <field name="model">prestation.observation</field>
+            <field name="arch" type="xml">
+                <form string="Observation">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="reserve"/>
+                            <field name="temp_save"/>
+                        </group>
+                        
+                    </sheet>
+                    
+                </form>
             </field>
         </record>
 

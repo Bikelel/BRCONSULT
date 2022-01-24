@@ -835,7 +835,11 @@ La présente mission est réalisée conformément au contrat référencé
                                 <td>
                                     <ol>
                                         <t t-foreach="constat.observation_ids" t-as="observation">
-                                            <li><span t-field="observation.name"/></li>
+                                            <li><t t-if="observation.reserve">
+                                                    <span style="font-weight:bold;" t-field="observation.name"/>
+                                                 </t>
+                                                <t t-else=""><span t-field="observation.name"/></t>
+                                            </li>
                                         </t>
                                     </ol>
                                 </td>
@@ -983,7 +987,11 @@ La présente mission est réalisée conformément au contrat référencé
                                     <td>
                                         <ol>
                                             <t t-foreach="constat.observation_ids" t-as="observation">
-                                                <li><span t-field="observation.name"/></li>
+                                                <li><t t-if="observation.reserve">
+                                                    <span style="font-weight:bold;" t-field="observation.name"/>
+                                                     </t>
+                                                    <t t-else=""><span t-field="observation.name"/></t>
+                                                </li>
                                             </t>
                                         </ol>
                                     </td>
@@ -1010,7 +1018,7 @@ La présente mission est réalisée conformément au contrat référencé
                     <tbody>
                         <t t-foreach="doc.conservation_state_exam_ids" t-as="stat">
                             <tr>
-                                <td style="width: 80%;"><span t-field="stat.name"/></td>
+                                <td style="width: 80%;"><span t-raw="stat.name" /></td>
                                 
                                 <td><span t-field="stat.opinion"/></td>
                             </tr>
@@ -1038,7 +1046,11 @@ La présente mission est réalisée conformément au contrat référencé
                                 <td>
                                     <ol>
                                         <t t-foreach="constat.observation_ids" t-as="observation">
-                                            <li><span t-field="observation.name"/></li>
+                                            <li><t t-if="observation.reserve">
+                                                    <span style="font-weight:bold;" t-field="observation.name"/>
+                                                 </t>
+                                                <t t-else=""><span t-field="observation.name"/></t>
+                                            </li>
                                         </t>
                                     </ol>
                                 </td>
@@ -1092,7 +1104,11 @@ La présente mission est réalisée conformément au contrat référencé
                                 <td>
                                     <ol>
                                         <t t-foreach="constat.observation_ids" t-as="observation">
-                                            <li><span t-field="observation.name"/></li>
+                                            <li><t t-if="observation.reserve">
+                                                    <span style="font-weight:bold;" t-field="observation.name"/>
+                                                 </t>
+                                                <t t-else=""><span t-field="observation.name"/></t>
+                                            </li>
                                         </t>
                                     </ol>
                                 </td>
@@ -1167,7 +1183,11 @@ La présente mission est réalisée conformément au contrat référencé
                                 <td>
                                     <ol>
                                         <t t-foreach="constat.observation_ids" t-as="observation">
-                                            <li><span t-field="observation.name"/></li>
+                                            <li><t t-if="observation.reserve">
+                                                    <span style="font-weight:bold;" t-field="observation.name"/>
+                                                 </t>
+                                                <t t-else=""><span t-field="observation.name"/></t>
+                                            </li>
                                         </t>
                                     </ol>
                                 </td>
@@ -1233,7 +1253,11 @@ La présente mission est réalisée conformément au contrat référencé
                                 <td>
                                     <ol>
                                         <t t-foreach="constat.observation_ids" t-as="observation">
-                                            <li><span t-field="observation.name"/></li>
+                                            <li><t t-if="observation.reserve">
+                                                    <span style="font-weight:bold;" t-field="observation.name"/>
+                                                 </t>
+                                                <t t-else=""><span t-field="observation.name"/></t>
+                                            </li>
                                         </t>
                                     </ol>
                                 </td>
