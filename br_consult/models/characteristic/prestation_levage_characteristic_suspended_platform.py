@@ -43,8 +43,8 @@ class PrestationLevageCharacteristicSuspendedPlatform(models.Model):
     
     suspended_platform_suspension_mark_id = fields.Many2one('prestation.suspended.platform.suspension.mark', "Marque des suspensions")
     vertical_guide = fields.Selection([
-        ('cable', 'Cables'),
-        ('mat', 'Mat(s)'),
+        ('cable', 'Câbles'),
+        ('mat', 'Mât(s)'),
         ('sans_objet', 'Sans objet'),
     ], string="Guidage vertical")
     

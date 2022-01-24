@@ -217,7 +217,7 @@
                 <div style="margin-top:30px;">
                 
 La présente mission est réalisée conformément au contrat référencé
-                    <span t-field="doc.contrat_ref"/>. 
+                    <span t-field="doc.partner_id.ref"/>. 
  Il s’agit d’une mission de <span t-field="doc.verification_type"/> limitée à la vérification visuelle des zones de 
                     <t t-if="inspection_type=='echafaudage'"> 
                         l’échafaudage 
@@ -227,8 +227,8 @@ La présente mission est réalisée conformément au contrat référencé
                     <br/>
                     <t t-if="doc.verification_type=='RS'">Motif de remise en service: <span t-field="doc.motif_rs_id"/><br/>
                         <div class="row">
-                            <div class="col-6">Référence du rapport de (re)mise en service : <span t-field="doc.contrat_ref"/></div>
-                            <div class="col-6">Date : <span t-field="doc.scope_mission_date"/></div>
+                            <div class="col-6">Référence du rapport précédent : <span t-field="doc.prestation_id.name"/></div>
+                            <div class="col-6">Date du rapport précédent : <span t-field="doc.scope_mission_date"/></div>
                         </div>
                     
                     </t>
@@ -337,7 +337,7 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
-                <div style="border: 2px solid #5F5F5F; padding:10px" t-if="doc.inspection_type == 'echafaudage'">
+                <div style="border: 2px solid #5F5F5F; padding:10px; page-break-inside: avoid;" t-if="doc.inspection_type == 'echafaudage'">
                     Commentaires:<br/>
                     <span t-field="doc.comment_scaffolding_characteristic"/>
                 </div>
@@ -508,7 +508,7 @@ La présente mission est réalisée conformément au contrat référencé
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.width_platform"/></td>
                         </tr>
                         <tr t-if="doc.installation_type in ['ASC', 'PTR', 'MMA']">
-                            <td>Dimension</td>
+                            <td>Dimension (en mètre)</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac">
                                 <div class='row'>
                                     <div class='col-4'>Longeur: <span t-field="charac.length_platform"/></div>
@@ -621,11 +621,11 @@ La présente mission est réalisée conformément au contrat référencé
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.nb_mat"/></td>
                         </tr>
                         <tr>
-                            <td>Dimension des éléments du mât (en m)</td>
+                            <td>Dimension des éléments du mât (en mètre)</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.dimension_mat"/></td>
                         </tr>
                         <tr>
-                            <td>Hauteur d'élévation (en m)</td>
+                            <td>Hauteur d'élévation (en mètre)</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.hauteur_elevation"/></td>
                         </tr>
                         <tr>
@@ -733,7 +733,7 @@ La présente mission est réalisée conformément au contrat référencé
                     </t>
                     
                 </table>
-                <div style="border: 2px solid #5F5F5F; padding:10px" t-if="doc.inspection_type == 'levage'">
+                <div style="border: 2px solid #5F5F5F; padding:10px; page-break-inside: avoid;" t-if="doc.inspection_type == 'levage'">
                     Commentaires:<br/>
                     <span t-field="doc.comment_levage_characteristic"/>
                 </div>
@@ -790,7 +790,7 @@ La présente mission est réalisée conformément au contrat référencé
                     </table>
                     <div t-if="doc.inspection_type == 'levage'">
                         Présence d'un dispositif de protection : <span t-field="doc.protection_dispositif"/>
-                        <div t-if="doc.protection_dispositif =='yes' and doc.protection_dispositif">Dispositif de protection : <span t-field="doc.protection_dispositif"/></div>
+                        <div t-if="doc.protection_dispositif =='yes' and doc.protection_dispositif">Dispositif de protection : <span t-field="doc.levage_protection_dispositif"/></div>
                     </div>
                 </div>
                 <div style="page-break-inside: avoid; text-decoration: underline;">
@@ -962,7 +962,8 @@ La présente mission est réalisée conformément au contrat référencé
                         </tr>
                     </table>
                 </div>
-                <div style="border: 2px solid #5F5F5F; padding:10px" t-if="doc.inspection_type == 'levage'">
+                <div style="border: 2px solid #5F5F5F; padding:10px; page-break-inside: avoid;" t-if="doc.inspection_type == 'levage'">
+                    
                     Commentaires:<br/>
                     <span t-field="doc.comment_assembly_exam"/>
                 </div>

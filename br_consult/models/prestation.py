@@ -93,7 +93,7 @@ class Prestation(models.Model):
     visa_user = fields.Binary('Visa inspecteur', related='user_id.visa_user')
     contrat_ref = fields.Char('Contrat réf')
     motif_rs_id = fields.Many2one('prestation.motif.rs', string="Motif de remise en service")
-    scope_mission_date = fields.Date(string="Date du contrat")
+    scope_mission_date = fields.Date(string="Date du rapport précédent")
     comment_scope_mission = fields.Html("Commentaires Périmètre de la mission")
     scaffolding_mark_ids = fields.One2many('prestation.scaffolding.mark', 'prestation_id', 'Marques')
     scaffolding_characteristic_ids = fields.One2many('prestation.scaffolding.characteristic', 'prestation_id', string="Caracteristiques", default=get_default_characteristic)
@@ -155,7 +155,7 @@ class Prestation(models.Model):
     announced_installation_number = fields.Integer("Nombre d'installation annoncée(s)")
     inspected_installation_number = fields.Integer("Nombre d'installation inspectée(s)", compute="_compute_inspected_installation_number", store=True)
     protection_dispositif = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Présence d'un dispositif de protection")
-    levage_protection_dispositif = fields.Char("Dispositif de protection de levage")
+    levage_protection_dispositif = fields.Many2one('prestation.other.device' ,"Dispositif de protection de levage")
     comment_protection_dispositif = fields.Html("Commentaires dispositif de protection")
     comment_assembly_exam = fields.Html("Commentaires examen de montage")
     
@@ -187,7 +187,14 @@ class Prestation(models.Model):
     comment_levage_characteristic = fields.Html("Commentaires Caractéristique de levage")
     is_report_sent = fields.Boolean("Rapport envoyé")
     kanban_color = fields.Integer('Color Index', compute="change_colore_on_kanban", store=True)
+    prestation_id = fields.Many2one('prestation.prestation', string="Référence du rapport précédent")
     
+    @api.onchange('prestation_id')
+    def onchange_prestation(self):
+        for presta in self:
+            presta.scope_mission_date = presta.prestation_id.verification_date
+            
+
     @api.model
     def create(self, vals):
         if 'company_id' in vals:
@@ -422,8 +429,9 @@ class Prestation(models.Model):
         if self.partner_id and self.partner_id.email:
             _logger.info("########## presta %s", self)
             template = self.env.ref('br_consult.email_notification_prestation')
-            #template.sudo().send_mail(self.user_id.id, force_send=True)
-            self.is_report_sent = True
+            if template:
+                template.sudo().send_mail(self.user_id.id, force_send=True)
+                self.is_report_sent = True
     
     def cron_send_report_prestation(self):
         prestations = self.search([('state', '=', 'phase4'), ('is_report_sent', '=', False)])

@@ -9,3 +9,7 @@ class PrestationOtherDevice(models.Model):
 
     name = fields.Char("Name")
     sequence = fields.Integer('Séquence', default=10)
+    inspection_type = fields.Selection([
+        ('echafaudage', 'Echafaudage'),
+        ('levage', 'Levage'),
+    ], string="Type d'inspection")

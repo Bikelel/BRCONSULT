@@ -198,10 +198,11 @@
                             </page>
                             <page name='scope_mission' string="Périmètre de la mission" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
                                 <group>
-                                    <field name="motif_rs_id" attrs="{'invisible': [('verification_type', 'not in', ['RS'])]}"/>
+                                    <field name="motif_rs_id" attrs="{'invisible': [('verification_type', 'not in', ['RS'])]}" domain="[('inspection_type', '=', inspection_type)]"/>
                                     
                                     <field name="contrat_ref" string="La mission est réalisée conformément au contrat réf"/>
-                                    <field name="scope_mission_date" />
+                                    <field name="prestation_id" attrs="{'invisible': [('verification_type', 'not in', ['RS'])]}" domain="[('inspection_type', '=', inspection_type), ('installation_type', '=', installation_type), ('is_report_sent', '=', True)]" options="{'no_create': True}"/>
+                                    <field name="scope_mission_date" attrs="{'invisible': [('prestation_id', '=', False)]}"/>
                                 </group>
                                 <group string="Commantaires">
                                     <field name="comment_scope_mission" nolabel="1"/>
@@ -313,9 +314,9 @@
                                 <group string="Dispositif de protection" >
                                     <field name="is_pare_gravats" attrs="{'invisible':[('inspection_type', '!=', 'echafaudage')]}"/>
                                     <field name="is_other_device" attrs="{'invisible':[('inspection_type', '!=', 'echafaudage')]}"/>
-                                    <field name="other_device_id" attrs="{'invisible':[('is_other_device', '!=', 'yes')]}"/>
+                                    <field name="other_device_id" attrs="{'invisible':[('is_other_device', '!=', 'yes')]}" domain="[('inspection_type', '=', inspection_type)]"/>
                                     <field name="protection_dispositif" attrs="{'invisible':[('inspection_type', '!=', 'levage')]}"/>
-                                    <field name="levage_protection_dispositif" attrs="{'invisible':[('protection_dispositif', '!=', 'yes')]}" string="Dispositif de protection"/>
+                                    <field name="levage_protection_dispositif" attrs="{'invisible':[('protection_dispositif', '!=', 'yes')]}" string="Dispositif de protection" domain="[('inspection_type', '=', inspection_type)]" context = "{'default_inspection_type':inspection_type}"/>
                                 </group>
                                 <group attrs="{'invisible': [('installation_type', 'not in', [ 'ASC', 'PTR', 'MMA', 'TRE', 'PAE', 'PAM'])]}">
                                     <field name="installation_use_id" domain="[('installation_type', '=', installation_type)]" context = "{'default_installation_type':installation_type}"/>
@@ -408,7 +409,7 @@
                                     <field name="conservation_state_exam_ids" nolabel="1">
                                         <tree editable="bottom" delete="false" create="false">
                                             <field name="conservation_state_id" invisible="1"/>
-                                            <field name="name" readonly="1" widget='html'/>
+                                            <field name="name" readonly="1" widget="html"/>
                                             <field name="opinion"/>
                                             
                                         </tree>
