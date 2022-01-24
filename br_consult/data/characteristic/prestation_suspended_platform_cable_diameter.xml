@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.suspended.platform.cable.diameter" id="prestation_suspended_platform_cable_diameter1">
+        <field name="name">8.0 mm</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.suspended.platform.cable.diameter" id="prestation_suspended_platform_cable_diameter2">
+        <field name="name">8.3 mm</field>
+        <field name="sequence">2</field>
+    </record>
+    <record model="prestation.suspended.platform.cable.diameter" id="prestation_suspended_platform_cable_diameter3">
+        <field name="name">9.0 mm</field>
+        <field name="sequence">3</field>
+    </record>
+
+</odoo>

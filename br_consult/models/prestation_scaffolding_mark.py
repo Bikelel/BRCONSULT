@@ -11,12 +11,12 @@ class PrestationScaffoldingMark(models.Model):
     prestation_id = fields.Many2one('prestation.prestation', 'Prestation')
     mark_id = fields.Many2one('prestation.mark', 'Marque')
     type = fields.Char("Type")
-    height = fields.Float("Hauteur de niveau 1 (m)")
+    height = fields.Float("Hauteur de 1er niveau (m)")
     height_max = fields.Float("Hauteur maxi (m)")
     linear = fields.Float("Linéaire (m)")
-    inspected_surface = fields.Float("Surface inspectée (m2)", store=True, compute='_compute_inspected_surface')
+    inspected_surface = fields.Float("Surface inspectée (m2)", store=True)
     
-    @api.depends('height_max', 'linear')
-    def _compute_inspected_surface(self):
+    @api.onchange('height_max', 'linear')
+    def _onchange_inspected_surface(self):
         for rec in self:
             rec.inspected_surface = rec.height_max * rec.linear

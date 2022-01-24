@@ -11,6 +11,7 @@ from . import prestation_scaffolding_class
 from . import prestation_scaffolding_operating_load
 from . import prestation_image
 from . import res_partner
+from . import res_company
 from . import prestation_observation
 from . import prestation_verification_point
 from . import prestation_constat
@@ -25,3 +26,9 @@ from . import prestation_characteristic
 from . import prestation_anchor_support_data
 from . import prestation_report_parameter
 from . import prestation_levage_installation_use
+from . import prestation_conservation_state
+from . import prestation_conservation_state_exam
+from . import prestation_conservation_state_exam_config
+from . import prestation_good_functioning
+from . import prestation_good_functioning_exam
+from . import characteristic

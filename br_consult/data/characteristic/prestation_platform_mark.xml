@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.platform.mark" id="prestation_platform_mark1">
+        <field name="name">SAE climber</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.platform.mark" id="prestation_platform_mark2">
+        <field name="name">CAMAC</field>
+        <field name="sequence">2</field>
+    </record>
+    <record model="prestation.platform.mark" id="prestation_platform_mark3">
+        <field name="name">Alba</field>
+        <field name="sequence">3</field>
+    </record>
+    <record model="prestation.platform.mark" id="prestation_platform_mark4">
+        <field name="name">Alimak</field>
+        <field name="sequence">4</field>
+    </record>
+    
+</odoo>

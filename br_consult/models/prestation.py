@@ -1,17 +1,22 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _, SUPERUSER_ID, tools
-
+import logging
+_logger = logging.getLogger(__name__)
+from odoo.exceptions import UserError
+from datetime import timedelta
+from odoo.tools import float_round
 
 class Prestation(models.Model):
     _name = 'prestation.prestation'
     _description = 'Prestation'
+    _order = 'id desc'
     _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
     
     def default_stage(self):
         phase1 = self.env['prestation.stage'].search([('state', '=', 'phase1')], limit=1)
         return phase1.id
-
+    
     def get_default_characteristic(self):
         attributes = self.env['prestation.characteristic'].search([('is_default', '=', True)])
         lines = []
@@ -32,14 +37,21 @@ class Prestation(models.Model):
         else:
             return False
 
-    name = fields.Char("N° Rapport", default=lambda self: 'New', copy=False)
-    report_parameter_id = fields.Many2one('prestation.report.parameter',string="Parametre du rapport", default=get_default_report_parameter)
+    def default_user(self):
+        user = self.env.user
+        if user.is_inspector:
+            return user.id
+        else:
+            return False
+
+    name = fields.Char("N° Rapport", default=lambda self: _('New'), copy=False)
+    report_parameter_id = fields.Many2one('prestation.report.parameter',string="Parametre du rapport")
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
     partner_id = fields.Many2one('res.partner', string="Entreprise")
     inspection_type = fields.Selection([
         ('echafaudage', 'Echafaudage'),
         ('levage', 'Levage'),
-    ], copy=False, string="Type d'inspection")
+    ], string="Type d'inspection")
     installation_type = fields.Selection([
         ('PSE', 'Plateforme suspendue électrique'),
         ('PSM', 'Plateforme suspendue manuelle'),
@@ -48,38 +60,40 @@ class Prestation(models.Model):
         ('PTR', 'Plateforme de transport'),
         ('MMA', 'Monte-matériaux'),
         ('TRE', 'Treuil'),
-        ('PAE', 'Palant motorisé'),
-        ('PAM', 'Palant manuel'),
-    ], copy=False, string="Type d'installation")
+        ('PAE', 'Palan motorisé'),
+        ('PAM', 'Palan manuel'),
+    ], string="Type d'installation")
     verification_type = fields.Selection([
         ('MS', 'Mise en service'),
         ('RS', 'Remise en service'),
         ('VP', 'Vérification périodique'),
-    ], copy=False, string="Type de vérification")
+    ], string="Type de vérification")
     date = fields.Date(string="Date de saisie du rapport", default=fields.Date.today())
     requested_date = fields.Date('Date de la demande')
-    verification_date = fields.Datetime('Date de vérification', default=fields.Datetime.now)
+    verification_date = fields.Datetime('Date de vérification', default=fields.Datetime.now, tracking=True)
+    end_date_verification = fields.Datetime("Fin de la date de vérification", store=True, compute='_compute_end_date')
+    prestation_duration = fields.Float("Durée d'une prestation", store=True, related="company_id.prestation_duration")
     partner_contact = fields.Char("Représentée par")
-    user_id = fields.Many2one('res.users', 'Vérificateur', default=lambda self: self.env.user)
+    user_id = fields.Many2one('res.users', 'Inspecteur', default=default_user, tracking=True)
+
     stage_id = fields.Many2one(
-        'prestation.stage', string='Etape', index=True, tracking=True, readonly=False, store=True,
-        copy=False, group_expand='_read_group_stage_ids', ondelete='restrict', default=default_stage)
-    state = fields.Selection(string='Status', readonly=True, copy=False, index=True, related='stage_id.state')
+        'prestation.stage', string='Etape', index=True, tracking=True, readonly=False, store=True, copy=False, group_expand='_read_group_stage_ids', ondelete='restrict', default=default_stage)
+    state = fields.Selection(string='Status', readonly=True, copy=False, index=True, related='stage_id.state', default="phase1")
     title_label = fields.Text("Titre de prestation", store = True)
     message_label = fields.Text("Code de l'article", store = True)
     site_address = fields.Text("Adresse de chantier")
     site_localisation = fields.Char("Localisation")
     prensent_contact = fields.Char("Nom de la personne présente")
     scaffolding_surface = fields.Float("Surface d'échafaudage annoncée (m2)")
-    inspected_scaffolding_surface = fields.Float("Surface d'échafaudage inspectée (m2)")
-    favorable_opinion = fields.Boolean('Avis favorable')
-    opinion_with_observation = fields.Boolean('Avec observation')
-    defavorable_opinion = fields.Boolean('Avis defavorable')
+    inspected_scaffolding_surface = fields.Float("Surface d'échafaudage inspectée (m2)", compute="_compute_inspected_surface", store=True)
+    favorable_opinion = fields.Boolean('Avis favorable', tracking=True)
+    opinion_with_observation = fields.Boolean('Avec observation', tracking=True)
+    defavorable_opinion = fields.Boolean('Avis defavorable', tracking=True)
     comment_observation_fiche = fields.Html("Commentaires Observation")
     visa_user = fields.Binary('Visa inspecteur', related='user_id.visa_user')
     contrat_ref = fields.Char('Contrat réf')
     motif_rs_id = fields.Many2one('prestation.motif.rs', string="Motif de remise en service")
-    scope_mission_date = fields.Date(string="Date du contrat")
+    scope_mission_date = fields.Date(string="Date du rapport précédent")
     comment_scope_mission = fields.Html("Commentaires Périmètre de la mission")
     scaffolding_mark_ids = fields.One2many('prestation.scaffolding.mark', 'prestation_id', 'Marques')
     scaffolding_characteristic_ids = fields.One2many('prestation.scaffolding.characteristic', 'prestation_id', string="Caracteristiques", default=get_default_characteristic)
@@ -92,9 +106,10 @@ class Prestation(models.Model):
     scaffolding_operating_load_ids = fields.One2many('prestation.scaffolding.operating.load', 'prestation_id', "Charge d'exploitation de l'échafaudage par défaut")
     security_register = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Registre de sécurité")
     assembly_file = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition du dossier de montage")
-    manufacturer_instructions = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition du notice constructeur")
+    manufacturer_instructions = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition de la notice du constructeur")
+    notice_constructeur = fields.Boolean("Notice constructeur")
     execution_plan = fields.Boolean("Plan d'exécution (PE)")
-    calculation_notice = fields.Boolean("Notice de calcul (NDC)")
+    calculation_notice = fields.Boolean("Note de calcul (NDC)")
     maintenance_log = fields.Boolean("Carnet de maintenance")
     soil_support_data_ids = fields.Many2many('prestation.soil.support.data', string="Données relatives au sol ou de support d'implantation")
     anchor_support_data_ids = fields.Many2many('prestation.anchor.support.data', string="Nature des supports d’ancrage")
@@ -120,123 +135,31 @@ class Prestation(models.Model):
     covering_nature_data = fields.Selection([
         ('transmitted', 'Transmises'), 
         ('observed_site', 'Constatées sur place')], string="Données relatives à la nature du bâchage éventuel")
-    # statisfaction fields echafaudage
-    presence_correct_installation = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="La présence et la bonne installation des dispositifs de protection collective et des moyens d'accès")
-    permanent_deformation_absence = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait'),
-    ], string="L'absence de déformation permanente ou de corrosion des éléments constitutifs de l'échafaudage pouvant compromettre sa solidité")
-    presence_fixing = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="La présence de tous les éléments de fixation ou de liaison des constituants de l'échafaudage")
-    absence_detectable_play = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="L'absence de jeu décelable susceptible d'affecter ces éléments")
-    good_behavior = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="La bonne tenue des éléments d'amarrage (ancrage, vérinage) ")
-    absence_disorder = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="L'absence de désordre au niveau des appuis et des surfaces portantes")
-    presence_wedging = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="La présence de tous les éléments de calage et de stabilisation ou d'immobilisation")
-    good_fixing = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="La bonne fixation des filets et des bâches sur l'échafaudage, ainsi que la continuité du bâchage sur toute la surface extérieure")
-    maintaining_continuity = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Le maintien de la continuité, de la planéité, de l'horizontalité et de la bonne tenue de chaque niveau de plancher")
-    visibility_indications = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="La visibilité des indications sur l'échafaudage relatives aux charges admissibles")
-    absence_loads_exceeding = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="L'absence de charges dépassant ces limites admissibles")
-    lack_floor_space = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="L'absence d'encombrement des planchers")
+    conservation_state_exam_ids = fields.One2many('prestation.conservation.state.exam', 'prestation_id', string="Examen d'état de conservation")
+    good_functioning_exam_ids = fields.One2many('prestation.good.functioning.exam', 'prestation_id', string="Examen du bon fonctionnement")
     
     location_diagram = fields.Binary("Schéma de l’emplacement")
     image_ids = fields.One2many('prestation.image', 'prestation_id' ,"Photographies")
+    image1 = fields.Binary("Image 1")
+    image2 = fields.Binary("Image 2")
+    image3 = fields.Binary("Image 3")
+    image4 = fields.Binary("Image 4")
+    image5 = fields.Binary("Image 5")
+    image6 = fields.Binary("Image 6")
     comment_scaffolding_photographic_location = fields.Html("Commentaires localisation photographique de l'échafaudage")
     
     constat_adequacy_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'adéquation", domain=[('type', '=', 'adequacy_exam')])
     constat_assembly_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de montage et d'installation", domain=[('type', '=', 'assembly_exam')])
-    constat_conservation_state_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat épreuve statique", domain=[('type', '=', 'conservation_state_exam')])
+    constat_conservation_state_exam_ids = fields.One2many('prestation.constat', 'prestation_id', string="Constat Examen de l'état de conservation", domain=[('type', '=', 'conservation_state_exam')])
     ############### Levage Fields ##################
     announced_installation_number = fields.Integer("Nombre d'installation annoncée(s)")
-    inspected_installation_number = fields.Integer("Nombre d'installation inspectée(s)")
+    inspected_installation_number = fields.Integer("Nombre d'installation inspectée(s)", compute="_compute_inspected_installation_number", store=True)
     protection_dispositif = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Présence d'un dispositif de protection")
-    levage_protection_dispositif = fields.Char("Dispositif de protection de levage")
+    levage_protection_dispositif = fields.Many2one('prestation.other.device' ,"Dispositif de protection de levage")
     comment_protection_dispositif = fields.Html("Commentaires dispositif de protection")
     comment_assembly_exam = fields.Html("Commentaires examen de montage")
     
-    # statisfaction fields Levage
-    locking_device = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Dispositif de verrouillage (freins)")
-    immobilizer_device = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait'),
-    ], string="Dispositif d'immobilisation")
-    device_control_descent_loads = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Dispositif contrôlant la descente des charges")
-    pulleys = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Poulies de mouflage, Poulies à empreintes")
-    overturning_moment_limiters = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Limiteurs de charges et de moment de renversement")
-    cable = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Câbles")
-    hook_marking = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Crochet (+ marquage")
-    devices_limiting_movements = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Dispositifs limitant les mouvements de l'appareil de levage et de la charge tels que limiteurs de course, limiteurs de relevage, limiteurs d'orientation, dispositifs anticollision, dispositifs parachutes ")
-    mast = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Mât(s)")
-    
-    # examen de bon fonctionnement Levage
-    up_down_movements = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Mouvements de montée et de descente")
-    operation_adjustment_load_limiter = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait'),
-    ], string="Fonctionnement et réglage du limiteur de charge")
-    evacuation_device = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Dispositif d'évacuation : Descente manuelle")
-    operation_limit_switches = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Fonctionnement des limiteurs de fin de course")
-    tilt_indicator_operation = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Fonctionnement de l'indicateur de devers : limiteur d'inclinaison")
-    operation_parachute_device = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Fonctionnement du dispositif de parachute")
-    operation_guidance_device = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Fonctionnement du dispositif du guidage")
-    operation_emergency_stop_device = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Fonctionnement du dispositif d'arrêt d'urgence")
-    wind_service_limit = fields.Selection([
-        ('yes', 'Satisfait'), 
-        ('no', 'Non satisfait')], string="Vent limite de service: 50 km/h ")
     constat_good_functioning_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de bon fonctionnement", domain=[('type', '=', 'good_functioning')])
-    
-    
-    
     
     installation_use_id = fields.Many2one('prestation.levage.installation.use', "Utilisation de l'installation")
     coefficient_statique = fields.Float("Coefficient statique")
@@ -253,8 +176,25 @@ class Prestation(models.Model):
     reel_test_load_dynamique = fields.Float("Charge d'épreuve réelle dynamique (en KG)")
     comment_epreuve_dynamique = fields.Html("Commentaires Epreuve dynamique")
     constat_epreuve_dynamique_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat d'épreuve dynamique", domain=[('type', '=', 'epreuve_dynamique')])
-        
     
+    characteristic_suspended_platform_ids = fields.One2many('prestation.levage.characteristic.suspended.platform', 'prestation_id', "Caractéristique de la plateforme suspendue")
+    
+    # travail sur mat
+    characteristic_platform_ids = fields.One2many('prestation.levage.characteristic.platform', 'prestation_id', "Caractéristique de l'installation")
+    
+    # travail sur palan + treuil
+    characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de l'installation")
+    comment_levage_characteristic = fields.Html("Commentaires Caractéristique de levage")
+    is_report_sent = fields.Boolean("Rapport envoyé")
+    kanban_color = fields.Integer('Color Index', compute="change_colore_on_kanban", store=True)
+    prestation_id = fields.Many2one('prestation.prestation', string="Référence du rapport précédent")
+    
+    @api.onchange('prestation_id')
+    def onchange_prestation(self):
+        for presta in self:
+            presta.scope_mission_date = presta.prestation_id.verification_date
+            
+
     @api.model
     def create(self, vals):
         if 'company_id' in vals:
@@ -267,24 +207,86 @@ class Prestation(models.Model):
             else:
                 partner_ref = ''
             
-        if vals.get('name') == 'New':
-            if vals.get('inspection_type') == 'echafaudage':
-                code_installation_type = 'RTU'
-            elif vals.get('inspection_type') == 'levage':
-                if vals.get('installation_type'):
-                    code_installation_type = vals.get('installation_type')
-            else:
-                code_installation_type = ''
-            if vals.get('verification_type'):
-                code_verification_type = vals.get('verification_type')
-            else:
-                code_verification_type = ''
-            vals['name'] = partner_ref + '-' +code_installation_type+ '-' + code_verification_type + '-' + self.env['ir.sequence'].next_by_code('prestation.prestation') or _('New')
+        #if vals.get('name') == 'New':
+        if vals.get('name', _('New')) == _('New'):
+            seq_date = None
+            if 'date' in vals:
+                seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(vals['date']))
+                
+                if vals.get('inspection_type') == 'echafaudage':
+                    code_installation_type = 'TUB'
+                elif vals.get('inspection_type') == 'levage':
+                    if vals.get('installation_type'):
+                        code_installation_type = vals.get('installation_type')
+                else:
+                    code_installation_type = ''
+                if vals.get('verification_type'):
+                    code_verification_type = vals.get('verification_type')
+                else:
+                    code_verification_type = ''
+                vals['name'] = partner_ref + '-' +code_installation_type+ '-' + code_verification_type + '-' + self.env['ir.sequence'].next_by_code('prestation.prestation') or _('New')
+        
+        attributes_good_functioning = None
+        if vals.get('inspection_type') == 'echafaudage':
+            attributes_conservation_state = self.env['prestation.conservation.state'].search([('inspection_type', '=', 'echafaudage')])
+        elif vals.get('inspection_type') == 'levage' and vals.get('installation_type'):
+            attributes_conservation_state = self.env['prestation.conservation.state'].search([('inspection_type', '=', 'levage'), ('installation_type', '=', vals.get('installation_type'))])
 
+            attributes_good_functioning = self.env['prestation.good.functioning'].search([('inspection_type', '=', 'levage'), ('installation_type', '=', vals.get('installation_type'))])
+
+        else:
+            attributes_conservation_state = None
+
+        if attributes_conservation_state:
+            lines = []
+            for line in attributes_conservation_state:
+                lines.append((0, 0, {'conservation_state_id': line.id,
+                                     'name': line.name}))
+
+            vals.update({'conservation_state_exam_ids': lines})
+        if attributes_good_functioning:
+            lines = []
+            for line in attributes_good_functioning:
+                lines.append((0, 0, {'good_functioning_id': line.id,
+                                     'name': line.name}))
+
+            vals.update({'good_functioning_exam_ids': lines})
+        
+        if vals.get('announced_installation_number') > 0 and vals.get('inspection_type') == 'levage':
+            i = 0
+            lines = []
+            while i < vals.get('announced_installation_number'):
+                i += 1
+                lines.append((0, 0, {'name': i}))
+            if vals.get('installation_type') in ['PSE', 'PSM']:
+                vals.update({'characteristic_suspended_platform_ids': lines})
+            elif vals.get('installation_type') in ['PWM', 'ASC', 'PTR', 'MMA']:
+                vals.update({'characteristic_platform_ids': lines})
+            else:
+                vals.update({'characteristic_palan_ids': lines})
+                             
+
+                
         result = super(Prestation, self).create(vals)
         
         return result
-    
+
+    def write(self, vals):
+        user = self.env.user
+        stages = user.stage_ids
+        if 'stage_id' in vals:
+            stage_id = vals.get('stage_id')
+            if stage_id not in stages.ids:
+                raise UserError(_('You don t have the privilege to change stage'))
+                
+                
+        if 'partner_id' in vals or 'inspection_type' in vals or 'installation_type' in vals:
+            _logger.info("################## %s", vals.get('name'))
+        
+        result = super(Prestation, self).write(vals)
+        
+        return result
+        
     @api.model
     def _read_group_stage_ids(self, stages, domain, order):
         stages = self.env['prestation.stage'].search([])
@@ -325,8 +327,8 @@ class Prestation(models.Model):
                 else:
                     anchor_data_theoretical_number = 0.0
                 
-                rec.anchor_data_theoretical_number = anchor_data_theoretical_number
-                rec.anchor_data_difference_number = rec.anchor_data_number - anchor_data_theoretical_number
+                rec.anchor_data_theoretical_number = round(anchor_data_theoretical_number)
+                rec.anchor_data_difference_number = round(rec.anchor_data_number - anchor_data_theoretical_number)
 
     @api.onchange('assembly_file')
     def onchange_assembly_file(self):
@@ -359,3 +361,110 @@ class Prestation(models.Model):
             self.comment_assembly_exam = ""
             self.comment_epreuve_statique = ""
             self.comment_epreuve_dynamique = ""
+        
+    @api.depends('characteristic_suspended_platform_ids', 'inspection_type', 'installation_type', 'characteristic_palan_ids', 'characteristic_platform_ids')
+    def _compute_inspected_installation_number(self):
+        for rec in self:
+            if rec.inspection_type and rec.installation_type in ['PSE', 'PSM']:
+                rec.inspected_installation_number = len(rec.characteristic_suspended_platform_ids)
+            elif rec.inspection_type and rec.installation_type in ['PWM','ASC', 'PTR', 'MMA']:
+                rec.inspected_installation_number = len(rec.characteristic_platform_ids)
+            elif rec.inspection_type and rec.installation_type in ['TRE','PAE', 'PAM']:
+                rec.inspected_installation_number = len(rec.characteristic_palan_ids)
+            else:
+                rec.inspected_installation_number = 0
+                
+            
+    
+    @api.depends('scaffolding_mark_ids', 'scaffolding_mark_ids.inspected_surface')
+    def _compute_inspected_surface(self):
+        for rec in self:
+            if rec.scaffolding_mark_ids:
+                inspected_scaffolding_surface = sum(rec.scaffolding_mark_ids.mapped('inspected_surface'))
+                rec.inspected_scaffolding_surface = round(inspected_scaffolding_surface)
+    
+    @api.onchange('installation_type')
+    def _onchange_coefficient(self):
+        if self.installation_type:
+            self.coefficient_dynamique = 1.1
+            if self.installation_type in ['PSE', 'PWM', 'ASC', 'PTR', 'MMA', 'TRE', 'PAE']:
+                self.coefficient_statique = 1.25
+            else :
+                self.coefficient_statique = 1.5
+            
+        else:
+            self.coefficient_statique = 0
+            self.coefficient_dynamique = 0
+    
+    @api.onchange('installation_type', 'inspection_type')
+    def _onchange_report_parameter_id(self):
+        report_parameter_ids = self.env['prestation.report.parameter'].search([('inspection_type', '=', self.inspection_type)])
+        if report_parameter_ids:
+            if self.inspection_type == 'echafaudage':
+                self.report_parameter_id = report_parameter_ids[0]
+            elif self.inspection_type == 'levage':
+                if self.installation_type:
+                    report_parameter_id = report_parameter_ids.filtered(lambda r: r.installation_type == self.installation_type)
+                    if report_parameter_id:
+                        self.report_parameter_id = report_parameter_id[0]
+            else:
+                self.report_parameter_id = None
+
+    @api.onchange('stage_id', 'state')
+    def onchange_stage_id(self):
+        user = self.env.user
+        stages = user.stage_ids
+        if self.stage_id not in stages:
+            raise UserError(_('You don t have the privilege to change stage'))
+    
+    @api.depends('verification_date')
+    def _compute_end_date(self):
+        for rec in self:
+            company = rec.company_id
+            duration = company.prestation_duration
+            rec.end_date_verification = rec.verification_date + timedelta(hours=duration)
+    
+    def button_send_report(self):
+        #for prestation in self:
+        if self.partner_id and self.partner_id.email:
+            _logger.info("########## presta %s", self)
+            template = self.env.ref('br_consult.email_notification_prestation')
+            if template:
+                template.sudo().send_mail(self.user_id.id, force_send=True)
+                self.is_report_sent = True
+    
+    def cron_send_report_prestation(self):
+        prestations = self.search([('state', '=', 'phase4'), ('is_report_sent', '=', False)])
+        for prestation in prestations:
+            prestation.sudo().button_send_report()
+    
+    def button_phase2(self):
+        for prestation in self:
+            stage_id = self.env['prestation.stage'].search([('state', '=', 'phase2')], limit=1)
+            if stage_id:
+                prestation.update({'stage_id': stage_id.id})
+    
+    def button_phase3(self):
+        for prestation in self:
+            stage_id = self.env['prestation.stage'].search([('state', '=', 'phase3')], limit=1)
+            if stage_id:
+                prestation.update({'stage_id': stage_id.id})
+                
+    def button_phase4(self):
+        for prestation in self:
+            stage_id = self.env['prestation.stage'].search([('state', '=', 'phase4')], limit=1)
+            if stage_id:
+                prestation.update({'stage_id': stage_id.id})
+    
+    @api.depends('inspection_type')
+    def change_colore_on_kanban(self):   
+        for record in self:
+             color = 0
+             if record.inspection_type == 'echafaudage':
+                 color = 10
+             elif record.inspection_type == 'levage':
+                 color = 6
+             else:
+                 color=0
+             record.kanban_color = color
+                

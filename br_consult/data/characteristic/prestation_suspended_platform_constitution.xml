@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.suspended.platform.constitution" id="prestation_suspended_platform_constitution1">
+        <field name="name">Aluminium</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.suspended.platform.constitution" id="prestation_suspended_platform_constitution2">
+        <field name="name">Bois</field>
+        <field name="sequence">2</field>
+    </record>
+</odoo>

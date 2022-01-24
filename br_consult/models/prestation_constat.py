@@ -12,6 +12,8 @@ class PrestationConstat(models.Model):
     type = fields.Selection(string="Type", related="verification_point_id.type", store=True)
     verification_point_id = fields.Many2one('prestation.verification.point', string="Point de vérification")
     observation_ids = fields.Many2many('prestation.observation', string="Observations/réserves" )
+    inspection_type = fields.Selection(related="prestation_id.inspection_type")
+    installation_type = fields.Selection(related="prestation_id.installation_type")
     reserve = fields.Text("Observations/réserves OLD")
     precision = fields.Text("Précisions")
     photo = fields.Binary("Photo")
@@ -20,7 +22,3 @@ class PrestationConstat(models.Model):
         ('lifted', "Levée")], string="Statut")
     date = fields.Date('Date')
     
-    @api.onchange('verification_point_id')
-    def _onchange_verification_point_id(self):
-        if self.verification_point_id:
-            self.reserve = self.verification_point_id.observations

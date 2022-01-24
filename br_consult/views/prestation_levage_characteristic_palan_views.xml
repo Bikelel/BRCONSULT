@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_prestation_levage_characteristic_palan_list" model="ir.ui.view">
+            <field name="name">prestation.levage.characteristic.palan.list</field>
+            <field name="model">prestation.levage.characteristic.palan</field>
+            <field name="arch" type="xml">
+                <tree string="Caractéristique plateforme">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_prestation_levage_characteristic_palan_form" model="ir.ui.view">
+            <field name="name">prestation.levage.characteristic.palan.form</field>
+            <field name="model">prestation.levage.characteristic.palan</field>
+            <field name="arch" type="xml">
+                <form string="Caractéristique de la plateforme">
+                    <sheet>
+                        <group string="Caractéristiques de l'installation'">
+                            <group>
+                                <field name="name"/>
+                                <field name="prestation_id" invisible="1"/>
+                                <field name="installation_type" invisible="1"/>
+                                <field name="palan_location_id"/>
+                                
+                            </group>
+                            <group>
+                                <field name="palan_access_id"/>
+                                <field name="suspension_mode"/>
+                                
+                                
+                                <field name="cote_poutre" attrs="{'invisible': [('suspension_mode', '!=', 'poutre_lestees')]}"/>
+                                <field name="noted_lest" attrs="{'invisible': [('suspension_mode', '!=', 'poutre_lestees')]}"/>
+                                <field name="preconized_lest" attrs="{'invisible': [('suspension_mode', '!=', 'poutre_lestees')]}"/>
+                                
+                                
+                                <field name="other_suspension_mode" attrs="{'invisible': [('suspension_mode', '!=', 'other')]}"/>
+                                
+                                <field name="palan_mark_id"/>
+                                
+                                <field name="modele"/>
+                                <field name="num_fabrication"/>
+                                <field name="circulation_year"/>
+                                <field name="capacity_nominale"/>
+                                <field name="capacity_taree"/>
+                                <field name="alimentation"/>
+                                <field name="move_speed"/>
+                                <field name="wind_speed_max_id"/>
+                                <field name="number_brins_builder"/>
+                                <field name="number_brins_noted"/>
+                                
+                            </group>
+                        </group>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </sheet>
+                    
+                    
+                    
+                </form>
+            </field>
+        </record>
+
+       
+
+  </data>
+</odoo>

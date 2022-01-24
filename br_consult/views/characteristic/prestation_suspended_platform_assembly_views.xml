@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_prestation_suspended_platform_assembly_list" model="ir.ui.view">
+            <field name="name">prestation.suspended.platform.assembly.list</field>
+            <field name="model">prestation.suspended.platform.assembly</field>
+            <field name="arch" type="xml">
+                <tree string="Assemblage de la plateforme suspendue" multi_edit="1" editable="top">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_prestation_suspended_platform_assembly" model="ir.actions.act_window">
+            <field name="name">Assemblage de la plateforme suspendue</field>
+            <field name="res_model">prestation.suspended.platform.assembly</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem name="Assemblage de la plateforme suspendue" 
+              id="br_consult_menu_prestation_suspended_platform_assembly" 
+              parent="br_consult_settings_levage_data_menu"
+              sequence="50"
+              action="action_prestation_suspended_platform_assembly"/>
+
+  </data>
+</odoo>

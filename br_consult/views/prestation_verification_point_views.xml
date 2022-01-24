@@ -7,8 +7,10 @@
             <field name="arch" type="xml">
                 <tree string="Point de vérification">
                     <field name="name"/>
+                    <field name="inspection_type"/>
+                    <field name="installation_type"/>
                     <field name="type"/>
-                    <field name="observations"/>
+                    <field name="observation_ids" widget="many2many_tags"/>
                 </tree>
             </field>
         </record>
@@ -20,8 +22,10 @@
                     <sheet>
                         <group>
                             <field name="name"/>
+                            <field name="inspection_type"/>
+                            <field name="installation_type" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
                             <field name="type"/>
-                            <field name="observations"/>
+                            
                             
                         </group>
                         <group string="Observations">
