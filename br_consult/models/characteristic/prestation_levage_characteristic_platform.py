@@ -11,7 +11,7 @@ class PrestationLevageCharacteristicPlatform(models.Model):
     prestation_id = fields.Many2one('prestation.prestation', 'Prestation')
     installation_type = fields.Selection(related="prestation_id.installation_type")
     platform_location_id = fields.Many2one('prestation.suspended.platform.location', "Localisation de la plateforme")
-    platform_access_id = fields.Many2one('prestation.suspended.platform.access', "Acces à la plateforme")
+    platform_access_id = fields.Many2one('prestation.suspended.platform.access', "Accès à la plateforme")
     length_platform = fields.Float("Longeur de la plateforme")
     width_platform = fields.Float("Largeur de la plateforme")
     hauteur_platform = fields.Float("Hauteur")
