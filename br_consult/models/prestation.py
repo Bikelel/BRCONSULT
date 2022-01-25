@@ -11,7 +11,7 @@ class Prestation(models.Model):
     _name = 'prestation.prestation'
     _description = 'Prestation'
     _order = 'id desc'
-    _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
+    _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin', 'format.address.mixin']
     
     def default_stage(self):
         phase1 = self.env['prestation.stage'].search([('state', '=', 'phase1')], limit=1)
@@ -430,20 +430,6 @@ class Prestation(models.Model):
             duration = company.prestation_duration
             rec.end_date_verification = rec.verification_date + timedelta(hours=duration)
     
-    def button_send_report(self):
-        #for prestation in self:
-        if self.partner_id and self.partner_id.email:
-            _logger.info("########## presta %s", self)
-            template = self.env.ref('br_consult.email_notification_prestation')
-            if template:
-                template.sudo().send_mail(self.user_id.id, force_send=True)
-                self.is_report_sent = True
-    
-    def cron_send_report_prestation(self):
-        prestations = self.search([('state', '=', 'phase4'), ('is_report_sent', '=', False)])
-        for prestation in prestations:
-            prestation.sudo().button_send_report()
-    
     def button_phase2(self):
         for prestation in self:
             stage_id = self.env['prestation.stage'].search([('state', '=', 'phase2')], limit=1)
@@ -478,7 +464,35 @@ class Prestation(models.Model):
         #for prestation in self:
         if self.partner_id and self.partner_id.email:
             template = self.env.ref('br_consult.email_confirmation_prestation')
+            email_values = {
+            'email_from': self.user_id.email,
+            'email_to': self.partner_id.email,
+            'email_cc': False,
+            'auto_delete': True,
+            'recipient_ids': [],
+            'partner_ids': [],
+            'scheduled_date': False,}
             if template:
-                template.sudo().send_mail(self.user_id.id, force_send=True)
+                template.send_mail(self.id, force_send=True, email_values=email_values)
                 self.write({'state_confirmation_sent': 'sent'})
+
+    def button_send_report(self):
+        if self.partner_id and self.partner_id.email:
+            template = self.env.ref('br_consult.email_notification_prestation')
+            email_values = {
+            'email_from': self.user_id.email,
+            'email_to': self.partner_id.email,
+            'email_cc': False,
+            'auto_delete': True,
+            'recipient_ids': [],
+            'partner_ids': [],
+            'scheduled_date': False,}
+            if template:
+                template.sudo().send_mail(self.id, force_send=True, email_values=email_values)
+                self.write({'is_report_sent': True})
+    
+    def cron_send_report_prestation(self):
+        prestations = self.search([('state', '=', 'phase4'), ('is_report_sent', '=', False)])
+        for prestation in prestations:
+            prestation.sudo().button_send_report()
                 
