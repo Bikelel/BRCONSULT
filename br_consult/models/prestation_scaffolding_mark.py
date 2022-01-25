@@ -11,7 +11,7 @@ class PrestationScaffoldingMark(models.Model):
     prestation_id = fields.Many2one('prestation.prestation', 'Prestation')
     mark_id = fields.Many2one('prestation.mark', 'Marque')
     type = fields.Char("Type")
-    height = fields.Float("Hauteur de 1er niveau (m)")
+    height = fields.Float("Hauteur du 1er niveau (m)")
     height_max = fields.Float("Hauteur maxi (m)")
     linear = fields.Float("Linéaire (m)")
     inspected_surface = fields.Float("Surface inspectée (m2)", store=True)

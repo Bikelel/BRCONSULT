@@ -11,7 +11,7 @@ class PrestationLevageCharacteristicPlatform(models.Model):
     prestation_id = fields.Many2one('prestation.prestation', 'Prestation')
     installation_type = fields.Selection(related="prestation_id.installation_type")
     platform_location_id = fields.Many2one('prestation.suspended.platform.location', "Localisation de la plateforme")
-    platform_access_id = fields.Many2one('prestation.suspended.platform.access', "Acces à la plateforme")
+    platform_access_id = fields.Many2one('prestation.suspended.platform.access', "Accès à la plateforme")
     length_platform = fields.Float("Longeur de la plateforme")
     width_platform = fields.Float("Largeur de la plateforme")
     hauteur_platform = fields.Float("Hauteur")
@@ -56,18 +56,18 @@ class PrestationLevageCharacteristicPlatform(models.Model):
     platform_section_mat_id = fields.Many2one('prestation.platform.section.mat', "Section des élément MAT(s)")
     nb_mat = fields.Integer("Nombre des éléments de MAT")
     dimension_mat = fields.Float("Dimension des éléments de MAT", default=1.5)
-    hauteur_elevation = fields.Float(string="Hauteur d'élévation (mètre)", compute='_compute_hauteur_elevation', store=True)
+    hauteur_elevation = fields.Float(string="Hauteur d'élévation (mètre)", store=True)
     platform_fixation_mat_id = fields.Many2one('prestation.platform.fixation.mat', "Mode de fixation des élément de MAT(s)")
     fixation_position = fields.Char("Positionnement des Fixations")
     move_speed = fields.Float("Vitesse de déplacement vertical")
     speed_unit_id = fields.Many2one('prestation.platform.speed.unit', "Unité de vitesse verticale")
     wind_speed_max_id = fields.Many2one('prestation.platform.wind.speed.max', string="Vitesse maximale de vent autorisée")
-    constructeur_cmu = fields.Char("CMU Constructeur")
-    autorized_cmu = fields.Char("CMU autorisée")
+    constructeur_cmu = fields.Char("CMU Constructeur (kg)")
+    autorized_cmu = fields.Char("CMU autorisée (kg)")
     comment_cmu = fields.Html("Commentaire CMU")
     
-    @api.depends('nb_mat','dimension_mat')
-    def _compute_hauteur_elevation(self):
+    @api.onchange('nb_mat','dimension_mat')
+    def _onchange_hauteur_elevation(self):
         for record in self:
             if record.nb_mat and record.dimension_mat:
                 record.hauteur_elevation = record.dimension_mat * record.nb_mat

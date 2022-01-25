@@ -26,7 +26,7 @@ class PrestationLevageCharacteristicPlatform(models.Model):
     cote_poutre = fields.Char("Côtes de la poutre")
     noted_lest = fields.Char("Lest constaté (kg)")
     preconized_lest = fields.Char("Lest préconisé (kg) ")
-    height = fields.Float("Hauteur d'élévation")
+    height = fields.Float("Hauteur d'élévation (en mètre)")
     palan_mark_id = fields.Many2one('prestation.platform.mark', "Marque")
     modele = fields.Char("Modèle")
     num_fabrication = fields.Char("Numéro(s) de fabrication")
@@ -39,6 +39,6 @@ class PrestationLevageCharacteristicPlatform(models.Model):
     ], string="Alimentation")
     move_speed = fields.Float("Vitesse de déplacement vertical (m/min)")
     wind_speed_max_id = fields.Many2one('prestation.platform.wind.speed.max', string="Vitesse maximale de vent autorisée")
-    number_brins_builder = fields.Char("Nombre de brins x Diamètre de la chaîne constructeur (en mm)")
-    number_brins_noted = fields.Char("Nombre de brins x Diamètre de la chaîne constaté (en mm):")
+    number_brins_builder = fields.Char("Nombre de brins x Diamètre de la chaîne constructeur (en millimètre)")
+    number_brins_noted = fields.Char("Nombre de brins x Diamètre de la chaîne constaté (en millimètre):")
     

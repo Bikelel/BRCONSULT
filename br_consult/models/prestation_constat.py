@@ -13,6 +13,7 @@ class PrestationConstat(models.Model):
     verification_point_id = fields.Many2one('prestation.verification.point', string="Point de vérification")
     observation_ids = fields.Many2many('prestation.observation', string="Observations/réserves" )
     inspection_type = fields.Selection(related="prestation_id.inspection_type")
+    installation_type = fields.Selection(related="prestation_id.installation_type")
     reserve = fields.Text("Observations/réserves OLD")
     precision = fields.Text("Précisions")
     photo = fields.Binary("Photo")

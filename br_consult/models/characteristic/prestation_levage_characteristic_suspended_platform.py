@@ -18,17 +18,17 @@ class PrestationLevageCharacteristicSuspendedPlatform(models.Model):
     suspended_platform_constitution_id = fields.Many2one('prestation.suspended.platform.constitution', "Constitution")
     suspended_platform_mark_id = fields.Many2one('prestation.suspended.platform.mark', "Marque de la plateforme")
     suspended_platform_assembly_id = fields.Many2one('prestation.suspended.platform.assembly', "Assemblage des modules")
-    suspended_platform_mark_treuil_id = fields.Many2one('prestation.suspended.platform.mark.treuil', "Marque treuil plateforme suspendue")
-    type_treuil = fields.Char("Type de treuil")
+    suspended_platform_mark_treuil_id = fields.Many2one('prestation.suspended.platform.mark.treuil', "Marque des treuils")
+    type_treuil = fields.Char("Type des treuils")
     alimentation = fields.Selection([
         ('triphase', 'Triphase'),
         ('monophase', 'Monophase'),
     ], string="Alimentation")
-    numero_treuil = fields.Char("N° treuil")
+    numero_treuil = fields.Char("N° des treuils")
     capacity_treuil = fields.Integer("Capacité nominale des treuils")
     is_taree = fields.Boolean("A une capacité tarée")
     capacity_taree = fields.Float("Capacité tarée")
-    suspended_platform_cable_diameter_id = fields.Many2one('prestation.suspended.platform.cable.diameter', "Diametre des cables (en mm)")
+    suspended_platform_cable_diameter_id = fields.Many2one('prestation.suspended.platform.cable.diameter', "Diamètre des câbles (en mm)")
     
 #     suspended_platform_suspension_id = fields.Many2one('prestation.suspended.platform.suspension', "Suspension par")
     suspension_by = fields.Selection([
@@ -43,8 +43,8 @@ class PrestationLevageCharacteristicSuspendedPlatform(models.Model):
     
     suspended_platform_suspension_mark_id = fields.Many2one('prestation.suspended.platform.suspension.mark', "Marque des suspensions")
     vertical_guide = fields.Selection([
-        ('cable', 'Cables'),
-        ('mat', 'Mat(s)'),
+        ('cable', 'Câbles'),
+        ('mat', 'Mât(s)'),
         ('sans_objet', 'Sans objet'),
     ], string="Guidage vertical")
     

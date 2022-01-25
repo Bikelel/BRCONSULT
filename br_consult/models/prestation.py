@@ -5,6 +5,7 @@ import logging
 _logger = logging.getLogger(__name__)
 from odoo.exceptions import UserError
 from datetime import timedelta
+from odoo.tools import float_round
 
 class Prestation(models.Model):
     _name = 'prestation.prestation'
@@ -84,7 +85,7 @@ class Prestation(models.Model):
     site_localisation = fields.Char("Localisation")
     prensent_contact = fields.Char("Nom de la personne présente")
     scaffolding_surface = fields.Float("Surface d'échafaudage annoncée (m2)")
-    inspected_scaffolding_surface = fields.Float("Surface d'échafaudage inspectée (m2)", digits="0", compute="_compute_inspected_surface", store=True)
+    inspected_scaffolding_surface = fields.Float("Surface d'échafaudage inspectée (m2)", compute="_compute_inspected_surface", store=True)
     favorable_opinion = fields.Boolean('Avis favorable', tracking=True)
     opinion_with_observation = fields.Boolean('Avec observation', tracking=True)
     defavorable_opinion = fields.Boolean('Avis defavorable', tracking=True)
@@ -92,7 +93,7 @@ class Prestation(models.Model):
     visa_user = fields.Binary('Visa inspecteur', related='user_id.visa_user')
     contrat_ref = fields.Char('Contrat réf')
     motif_rs_id = fields.Many2one('prestation.motif.rs', string="Motif de remise en service")
-    scope_mission_date = fields.Date(string="Date du contrat")
+    scope_mission_date = fields.Date(string="Date du rapport précédent")
     comment_scope_mission = fields.Html("Commentaires Périmètre de la mission")
     scaffolding_mark_ids = fields.One2many('prestation.scaffolding.mark', 'prestation_id', 'Marques')
     scaffolding_characteristic_ids = fields.One2many('prestation.scaffolding.characteristic', 'prestation_id', string="Caracteristiques", default=get_default_characteristic)
@@ -100,12 +101,13 @@ class Prestation(models.Model):
     comment_scaffolding_characteristic = fields.Html("Commentaires Caractéristique de l'échafaudage")
     adequacy_exam_ids = fields.One2many('prestation.adequacy.exam', 'prestation_id', "Examen d'adéquation")
     is_pare_gravats = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Présence d'un pare-gravats")
-    is_other_device = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Présence d'un autre dispositif")
+    is_other_device = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Présence d'un dispositif de protection")
     other_device_id = fields.Many2one('prestation.other.device', string='Autre dispositif')
     scaffolding_operating_load_ids = fields.One2many('prestation.scaffolding.operating.load', 'prestation_id', "Charge d'exploitation de l'échafaudage par défaut")
     security_register = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Registre de sécurité")
     assembly_file = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition du dossier de montage")
     manufacturer_instructions = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition de la notice du constructeur")
+    notice_constructeur = fields.Boolean("Notice constructeur")
     execution_plan = fields.Boolean("Plan d'exécution (PE)")
     calculation_notice = fields.Boolean("Note de calcul (NDC)")
     maintenance_log = fields.Boolean("Carnet de maintenance")
@@ -153,7 +155,7 @@ class Prestation(models.Model):
     announced_installation_number = fields.Integer("Nombre d'installation annoncée(s)")
     inspected_installation_number = fields.Integer("Nombre d'installation inspectée(s)", compute="_compute_inspected_installation_number", store=True)
     protection_dispositif = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Présence d'un dispositif de protection")
-    levage_protection_dispositif = fields.Char("Dispositif de protection de levage")
+    levage_protection_dispositif = fields.Many2one('prestation.other.device' ,"Dispositif de protection de levage")
     comment_protection_dispositif = fields.Html("Commentaires dispositif de protection")
     comment_assembly_exam = fields.Html("Commentaires examen de montage")
     
@@ -178,14 +180,25 @@ class Prestation(models.Model):
     characteristic_suspended_platform_ids = fields.One2many('prestation.levage.characteristic.suspended.platform', 'prestation_id', "Caractéristique de la plateforme suspendue")
     
     # travail sur mat
-    characteristic_platform_ids = fields.One2many('prestation.levage.characteristic.platform', 'prestation_id', "Caractéristique de la plateforme")
+    characteristic_platform_ids = fields.One2many('prestation.levage.characteristic.platform', 'prestation_id', "Caractéristique de l'installation")
     
     # travail sur palan + treuil
-    characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de levage palan")
+    characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de l'installation")
     comment_levage_characteristic = fields.Html("Commentaires Caractéristique de levage")
     is_report_sent = fields.Boolean("Rapport envoyé")
     kanban_color = fields.Integer('Color Index', compute="change_colore_on_kanban", store=True)
+    prestation_id = fields.Many2one('prestation.prestation', string="Référence du rapport précédent")
+    state_confirmation_sent = fields.Selection([
+        ('draft', 'Pas encore envoyée'),
+        ('sent', 'Confirmation envoyée au client'),
+    ], string="Confirmation envoyée ?", default='draft')
     
+    @api.onchange('prestation_id')
+    def onchange_prestation(self):
+        for presta in self:
+            presta.scope_mission_date = presta.prestation_id.verification_date
+            
+
     @api.model
     def create(self, vals):
         if 'company_id' in vals:
@@ -267,6 +280,8 @@ class Prestation(models.Model):
         stages = user.stage_ids
         if 'stage_id' in vals:
             stage_id = vals.get('stage_id')
+            if vals.get('state_confirmation_sent') == 'draft':
+                raise UserError(_('Vous ne pouvez pas modifier la phase sans envoyer une confirmation de planning au client!'))
             if stage_id not in stages.ids:
                 raise UserError(_('You don t have the privilege to change stage'))
                 
@@ -318,8 +333,8 @@ class Prestation(models.Model):
                 else:
                     anchor_data_theoretical_number = 0.0
                 
-                rec.anchor_data_theoretical_number = anchor_data_theoretical_number
-                rec.anchor_data_difference_number = rec.anchor_data_number - anchor_data_theoretical_number
+                rec.anchor_data_theoretical_number = round(anchor_data_theoretical_number)
+                rec.anchor_data_difference_number = round(rec.anchor_data_number - anchor_data_theoretical_number)
 
     @api.onchange('assembly_file')
     def onchange_assembly_file(self):
@@ -371,7 +386,8 @@ class Prestation(models.Model):
     def _compute_inspected_surface(self):
         for rec in self:
             if rec.scaffolding_mark_ids:
-                rec.inspected_scaffolding_surface = sum(rec.scaffolding_mark_ids.mapped('inspected_surface'))
+                inspected_scaffolding_surface = sum(rec.scaffolding_mark_ids.mapped('inspected_surface'))
+                rec.inspected_scaffolding_surface = round(inspected_scaffolding_surface)
     
     @api.onchange('installation_type')
     def _onchange_coefficient(self):
@@ -415,16 +431,18 @@ class Prestation(models.Model):
             rec.end_date_verification = rec.verification_date + timedelta(hours=duration)
     
     def button_send_report(self):
-        for prestation in self:
-            if prestation.partner_id and prestation.partner_id.email:
-                template = self.env.ref('br_consult.email_notification_prestation')
-                template.send_mail(prestation.user_id.id, force_send=True)
-                prestation.is_report_sent = True
+        #for prestation in self:
+        if self.partner_id and self.partner_id.email:
+            _logger.info("########## presta %s", self)
+            template = self.env.ref('br_consult.email_notification_prestation')
+            if template:
+                template.sudo().send_mail(self.user_id.id, force_send=True)
+                self.is_report_sent = True
     
     def cron_send_report_prestation(self):
         prestations = self.search([('state', '=', 'phase4'), ('is_report_sent', '=', False)])
         for prestation in prestations:
-            prestation.button_send_report()
+            prestation.sudo().button_send_report()
     
     def button_phase2(self):
         for prestation in self:
@@ -455,4 +473,12 @@ class Prestation(models.Model):
              else:
                  color=0
              record.kanban_color = color
+    
+    def button_send_confirmation_prestation(self):
+        #for prestation in self:
+        if self.partner_id and self.partner_id.email:
+            template = self.env.ref('br_consult.email_confirmation_prestation')
+            if template:
+                template.sudo().send_mail(self.user_id.id, force_send=True)
+                self.write({'state_confirmation_sent': 'sent'})
                 
