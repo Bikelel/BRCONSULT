@@ -28,7 +28,7 @@ class PrestationLevageCharacteristicSuspendedPlatform(models.Model):
     capacity_treuil = fields.Integer("Capacité nominale des treuils")
     is_taree = fields.Boolean("A une capacité tarée")
     capacity_taree = fields.Float("Capacité tarée")
-    suspended_platform_cable_diameter_id = fields.Many2one('prestation.suspended.platform.cable.diameter', "Diametre des cables (en mm)")
+    suspended_platform_cable_diameter_id = fields.Many2one('prestation.suspended.platform.cable.diameter', "Diamètre des câbles (en mm)")
     
 #     suspended_platform_suspension_id = fields.Many2one('prestation.suspended.platform.suspension', "Suspension par")
     suspension_by = fields.Selection([

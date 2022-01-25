@@ -188,6 +188,10 @@ class Prestation(models.Model):
     is_report_sent = fields.Boolean("Rapport envoyé")
     kanban_color = fields.Integer('Color Index', compute="change_colore_on_kanban", store=True)
     prestation_id = fields.Many2one('prestation.prestation', string="Référence du rapport précédent")
+    state_confirmation_sent = fields.Selection([
+        ('draft', 'Pas encore envoyée'),
+        ('sent', 'Confirmation envoyée au client'),
+    ], string="Confirmation envoyée ?", default='draft')
     
     @api.onchange('prestation_id')
     def onchange_prestation(self):
@@ -276,6 +280,8 @@ class Prestation(models.Model):
         stages = user.stage_ids
         if 'stage_id' in vals:
             stage_id = vals.get('stage_id')
+            if vals.get('state_confirmation_sent') == 'draft':
+                raise UserError(_('Vous ne pouvez pas modifier la phase sans envoyer une confirmation de planning au client!'))
             if stage_id not in stages.ids:
                 raise UserError(_('You don t have the privilege to change stage'))
                 
@@ -467,4 +473,12 @@ class Prestation(models.Model):
              else:
                  color=0
              record.kanban_color = color
+    
+    def button_send_confirmation_prestation(self):
+        #for prestation in self:
+        if self.partner_id and self.partner_id.email:
+            template = self.env.ref('br_consult.email_confirmation_prestation')
+            if template:
+                template.sudo().send_mail(self.user_id.id, force_send=True)
+                self.write({'state_confirmation_sent': 'sent'})
                 
