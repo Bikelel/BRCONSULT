@@ -48,16 +48,16 @@ class PrestationLevageCharacteristicPlatform(models.Model):
     ], string="Présence d'un toit")
     
     platform_assembly_id = fields.Many2one('prestation.suspended.platform.assembly', "Assemblage des modules")
-    platform_assembly_mat_id = fields.Many2one('prestation.platform.assembly.mat', "Assemblage des élément MAT(s)")
+    platform_assembly_mat_id = fields.Many2one('prestation.platform.assembly.mat', "Assemblage des élément mât(s)")
     suspension_type = fields.Selection([
         ('monomat', 'Monomât'),
         ('bimats', 'bimâts'),
     ], string="Type de suspension")
-    platform_section_mat_id = fields.Many2one('prestation.platform.section.mat', "Section des élément MAT(s)")
-    nb_mat = fields.Integer("Nombre des éléments de MAT")
-    dimension_mat = fields.Float("Dimension des éléments de MAT", default=1.5)
+    platform_section_mat_id = fields.Many2one('prestation.platform.section.mat', "Section des élément mât(s)")
+    nb_mat = fields.Integer("Nombre des éléments de mât")
+    dimension_mat = fields.Float("Dimension des éléments de mât", default=1.5)
     hauteur_elevation = fields.Float(string="Hauteur d'élévation (mètre)", store=True)
-    platform_fixation_mat_id = fields.Many2one('prestation.platform.fixation.mat', "Mode de fixation des élément de MAT(s)")
+    platform_fixation_mat_id = fields.Many2one('prestation.platform.fixation.mat', "Mode de fixation des élément de mât(s)")
     fixation_position = fields.Char("Positionnement des Fixations")
     move_speed = fields.Float("Vitesse de déplacement vertical")
     speed_unit_id = fields.Many2one('prestation.platform.speed.unit', "Unité de vitesse verticale")
