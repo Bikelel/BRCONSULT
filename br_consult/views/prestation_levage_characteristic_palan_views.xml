@@ -27,7 +27,7 @@
                             <group>
                                 <field name="palan_access_id"/>
                                 <field name="suspension_mode"/>
-                                <field name="height" attrs="{'invisible': [('installation_type', '!=', 'TRE')]}"/>
+                                <field name="height"/>
                                 
                                 <field name="cote_poutre" attrs="{'invisible': [('suspension_mode', '!=', 'poutre_lestees')]}"/>
                                 <field name="noted_lest" attrs="{'invisible': [('suspension_mode', '!=', 'poutre_lestees')]}"/>
@@ -41,7 +41,7 @@
                                 
                                 <field name="modele"/>
                                 <field name="num_fabrication"/>
-                                <field name="fabrication_year" attrs="{'invisible': [('installation_type', '!=', 'TRE')]}"/>
+                                <field name="fabrication_year" />
                                 <field name="circulation_year"/>
                                 <field name="capacity_nominale"/>
                                 <field name="is_taree"/>
@@ -51,8 +51,8 @@
                                 <field name="wind_speed_max_id"/>
                                 <field name="number_brins_builder" attrs="{'invisible': [('installation_type', 'not in', ['PAE', 'PAM'])]}"/>
                                 <field name="number_brins_noted" attrs="{'invisible': [('installation_type', 'not in', ['PAE', 'PAM'])]}"/>
-                                <field name="constructeur_cmu" attrs="{'invisible': [('installation_type', 'not in', ['TRE'])]}"/>
-                                <field name="autorized_cmu" attrs="{'invisible': [('installation_type', 'not in', ['TRE'])]}"/>
+                                <field name="constructeur_cmu"/>
+                                <field name="autorized_cmu"/>
                                 
                             </group>
                         </group>
