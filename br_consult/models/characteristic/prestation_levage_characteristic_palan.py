@@ -42,7 +42,7 @@ class PrestationLevageCharacteristicPlatform(models.Model):
         ('triphase', 'Triphase'),
         ('monophase', 'Monophase'),
     ], string="Alimentation")
-    move_speed = fields.Float("Vitesse de déplacement vertical (m/min)")
+    move_speed = fields.Char("Vitesse de déplacement vertical (m/min)")
     wind_speed_max_id = fields.Many2one('prestation.platform.wind.speed.max', string="Vitesse maximale du vent autorisée en service")
     number_brins_builder = fields.Char("Nombre de brins x Diamètre de la chaîne constructeur (en millimètre)")
     number_brins_noted = fields.Char("Nombre de brins x Diamètre de la chaîne constaté (en millimètre)")
