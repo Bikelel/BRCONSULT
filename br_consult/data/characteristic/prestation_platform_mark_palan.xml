@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="prestation.platform.mark.palan" id="prestation_platform_mark_palan1">
+        <field name="name">HUCHEZ</field>
+        <field name="sequence">1</field>
+    </record>
+    <record model="prestation.platform.mark.palan" id="prestation_platform_mark_palan2">
+        <field name="name">FIXATOR</field>
+        <field name="sequence">2</field>
+    </record>
+    <record model="prestation.platform.mark.palan" id="prestation_platform_mark_palan3">
+        <field name="name">TRACTEL</field>
+        <field name="sequence">3</field>
+    </record>
+    <record model="prestation.platform.mark.palan" id="prestation_platform_mark_palan4">
+        <field name="name">Autre</field>
+        <field name="sequence">10</field>
+    </record>
+</odoo>

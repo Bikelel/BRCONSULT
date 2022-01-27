@@ -5,7 +5,7 @@
             <field name="name">prestation.levage.characteristic.palan.list</field>
             <field name="model">prestation.levage.characteristic.palan</field>
             <field name="arch" type="xml">
-                <tree string="Caractéristique plateforme">
+                <tree string="Caractéristique de l'installation">
                     <field name="name"/>
                 </tree>
             </field>
@@ -14,7 +14,7 @@
             <field name="name">prestation.levage.characteristic.palan.form</field>
             <field name="model">prestation.levage.characteristic.palan</field>
             <field name="arch" type="xml">
-                <form string="Caractéristique de la plateforme">
+                <form string="Caractéristique l'installation">
                     <sheet>
                         <group string="Caractéristiques de l'installation'">
                             <group>
@@ -27,27 +27,32 @@
                             <group>
                                 <field name="palan_access_id"/>
                                 <field name="suspension_mode"/>
-                                
+                                <field name="height" attrs="{'invisible': [('installation_type', '!=', 'TRE')]}"/>
                                 
                                 <field name="cote_poutre" attrs="{'invisible': [('suspension_mode', '!=', 'poutre_lestees')]}"/>
                                 <field name="noted_lest" attrs="{'invisible': [('suspension_mode', '!=', 'poutre_lestees')]}"/>
                                 <field name="preconized_lest" attrs="{'invisible': [('suspension_mode', '!=', 'poutre_lestees')]}"/>
+                                <field name="difference_lest" attrs="{'invisible': [('suspension_mode', '!=', 'poutre_lestees')]}"/>
                                 
                                 
                                 <field name="other_suspension_mode" attrs="{'invisible': [('suspension_mode', '!=', 'other')]}"/>
                                 
-                                <field name="palan_mark_id"/>
+                                <field name="platform_palan_mark_id"/>
                                 
                                 <field name="modele"/>
                                 <field name="num_fabrication"/>
+                                <field name="fabrication_year" attrs="{'invisible': [('installation_type', '!=', 'TRE')]}"/>
                                 <field name="circulation_year"/>
                                 <field name="capacity_nominale"/>
-                                <field name="capacity_taree"/>
+                                <field name="is_taree"/>
+                                <field name="capacity_taree" attrs="{'invisible': [('is_taree', '=', False)]}"/>
                                 <field name="alimentation"/>
                                 <field name="move_speed"/>
                                 <field name="wind_speed_max_id"/>
-                                <field name="number_brins_builder"/>
-                                <field name="number_brins_noted"/>
+                                <field name="number_brins_builder" attrs="{'invisible': [('installation_type', 'not in', ['PAE', 'PAM'])]}"/>
+                                <field name="number_brins_noted" attrs="{'invisible': [('installation_type', 'not in', ['PAE', 'PAM'])]}"/>
+                                <field name="constructeur_cmu" attrs="{'invisible': [('installation_type', 'not in', ['TRE'])]}"/>
+                                <field name="autorized_cmu" attrs="{'invisible': [('installation_type', 'not in', ['TRE'])]}"/>
                                 
                             </group>
                         </group>

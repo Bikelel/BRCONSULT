@@ -162,6 +162,7 @@ class Prestation(models.Model):
     constat_good_functioning_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de bon fonctionnement", domain=[('type', '=', 'good_functioning')])
     
     installation_use_id = fields.Many2one('prestation.levage.installation.use', "Utilisation de l'installation")
+    #max_use_id = fields.Many2one('prestation.levage.max.use', "Charge maximale d’utilisation (CMU)")
     coefficient_statique = fields.Float("Coefficient statique")
     autorised_cmu_statique = fields.Float("CMU Autorisée statique (en KG)")
     theoretical_test_load_statique = fields.Float("Charge d'épreuve théorique statique (en KG)", store="True", compute='_compute_theoretical_test_load_statique')
@@ -177,17 +178,20 @@ class Prestation(models.Model):
     comment_epreuve_dynamique = fields.Html("Commentaires Epreuve dynamique")
     constat_epreuve_dynamique_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat d'épreuve dynamique", domain=[('type', '=', 'epreuve_dynamique')])
     
+    # PSE et PSM
     characteristic_suspended_platform_ids = fields.One2many('prestation.levage.characteristic.suspended.platform', 'prestation_id', "Caractéristique de la plateforme suspendue")
     
-    # travail sur mat
+    # PWM ASC PTR MMA
     characteristic_platform_ids = fields.One2many('prestation.levage.characteristic.platform', 'prestation_id', "Caractéristique de l'installation")
     
-    # travail sur palan + treuil
+    # TRE PAE PAM
     characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de l'installation")
     comment_levage_characteristic = fields.Html("Commentaires Caractéristique de levage")
     is_report_sent = fields.Boolean("Rapport envoyé")
     kanban_color = fields.Integer('Color Index', compute="change_colore_on_kanban", store=True)
     prestation_id = fields.Many2one('prestation.prestation', string="Référence du rapport précédent")
+    #champ temp
+    autre_prestation = fields.Char(string="Autre référence", placeholder="Si le repport n'existe pas dans la base, mentionner manullement une réf ici!!")
     state_confirmation_sent = fields.Selection([
         ('draft', 'Pas encore envoyée'),
         ('sent', 'Confirmation envoyée au client'),
