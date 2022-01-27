@@ -4,8 +4,8 @@
         <record id="email_notification_prestation" model="mail.template">
             <field name="name">Mail d'envoie de prestation au client</field>
             <field name="model_id" ref="br_consult.model_prestation_prestation"/>
-            <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted) }}</field>
-            <field name="partner_to">{{ object.partner_id.email }}</field>
+            <field name="email_from"></field>
+            <field name="partner_to"></field>
             <field name="subject">Rapport de prestation: {{object.name}} </field>
             <field name="body_html" type="html">
                 <head></head>
@@ -14,6 +14,30 @@
                         Bonjour,
                         <br /><br />
                         Ci-joint le rapport de prestation n° {{object.name}}
+                        <br />
+                        Merci! 
+                    </p>
+                </div>
+            </field>
+            <field name="report_template" ref="action_report_prestation"/>
+            <field name="report_name">{{ (object.name or '').replace('/','_') }}</field>
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+        
+        <record id="email_confirmation_prestation" model="mail.template">
+            <field name="name">Mail d'envoie de prestation au client</field>
+            <field name="model_id" ref="br_consult.model_prestation_prestation"/>
+            <field name="email_from"></field>
+            <field name="partner_to"></field>
+            <field name="subject">Prestation: {{object.name}} </field>
+            <field name="body_html" type="html">
+                <head></head>
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Bonjour,
+                        <br /><br />
+                        Veuillez confirmer le planning
                         <br />
                         Merci! 
                     </p>

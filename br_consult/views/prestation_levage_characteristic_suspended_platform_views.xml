@@ -117,12 +117,6 @@
                             <field name="suspended_platform_cmu_id"/>
                             <field name="nb_personne_max"/>
                         </group>
-                        <group>
-                            <field name="comment_cmu" nolabel="1" placeholder="Commentaire..."/>
-                        </group>
-                        
-                        
-                        
                         
                     </sheet>
                     

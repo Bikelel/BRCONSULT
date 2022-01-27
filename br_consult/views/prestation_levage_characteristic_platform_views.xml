@@ -39,23 +39,22 @@
                                 <field name="platform_mark_id"/>
                                 
                                 <field name="platform_type" attrs="{'invisible': [('installation_type', 'not in', ['PWM'])]}"/>
-                                <field name="modele" attrs="{'invisible': [('installation_type', 'not in', ['ASC', 'MMA'])]}"/>
+                                <field name="modele" attrs="{'invisible': [('installation_type', 'not in', ['ASC', 'MMA', 'PTR'])]}"/>
                                 
                                 <field name="num_fabrication"/>
-                                <field name="fabrication_year" attrs="{'invisible': [('installation_type', 'not in', ['ASC', 'MMA'])]}"/>
-                                <field name="circulation_year" attrs="{'invisible': [('installation_type', 'not in', ['ASC','MMA'])]}"/>
+                                <field name="fabrication_year" attrs="{'invisible': [('installation_type', 'not in', ['ASC', 'MMA', 'PTR'])]}"/>
+                                <field name="circulation_year" attrs="{'invisible': [('installation_type', 'not in', ['ASC','MMA', 'PTR'])]}"/>
                                 <field name="alimentation"/>
-                                <field name="level_service" attrs="{'invisible': [('installation_type', 'not in', ['ASC', 'MMA'])]}"/>
+                                <field name="level_service" attrs="{'invisible': [('installation_type', 'not in', ['ASC', 'MMA', 'PTR'])]}"/>
                                 <field name="open_close_doors" attrs="{'invisible': [('installation_type', 'not in', ['ASC'])]}"/>
                                 <field name="other_open_close_doors" attrs="{'invisible': [('open_close_doors', 'not in', ['other'])]}"/>
                                 <field name="presence_roof" attrs="{'invisible': [('installation_type', 'not in', ['PTR'])]}"/>
+                                <field name="platform_assembly_id"/>
                                 
                                 
                             </group>
                         </group>
-                        <group string="Caractéristiques module">
-                            <field name="platform_assembly_id"/>
-                        </group>
+
                         <group string="Caractéristiques des mats">
                             <field name="platform_assembly_mat_id"/>
                             <field name="suspension_type" attrs="{'invisible': [('installation_type', 'not in', ['PWM'])]}"/>
@@ -77,12 +76,6 @@
                             <field name="constructeur_cmu"/>
                             <field name="autorized_cmu"/>
                         </group>
-                        <group>
-                            <field name="comment_cmu" nolabel="1" placeholder="Commentaire..."/>
-                        </group>
-                        
-                        
-                        
                         
                     </sheet>
                     

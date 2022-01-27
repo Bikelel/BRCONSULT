@@ -14,7 +14,7 @@ class PrestationLevageCharacteristicSuspendedPlatform(models.Model):
     height_platform = fields.Float("Hauteur d'élévation (en mètre)")
     length_platform = fields.Float("Longeur de la plateforme")
     
-    suspended_platform_access_id = fields.Many2one('prestation.suspended.platform.access', "Acces à la plateforme")
+    suspended_platform_access_id = fields.Many2one('prestation.suspended.platform.access', "Accès à la plateforme")
     suspended_platform_constitution_id = fields.Many2one('prestation.suspended.platform.constitution', "Constitution")
     suspended_platform_mark_id = fields.Many2one('prestation.suspended.platform.mark', "Marque de la plateforme")
     suspended_platform_assembly_id = fields.Many2one('prestation.suspended.platform.assembly', "Assemblage des modules")
@@ -28,7 +28,7 @@ class PrestationLevageCharacteristicSuspendedPlatform(models.Model):
     capacity_treuil = fields.Integer("Capacité nominale des treuils")
     is_taree = fields.Boolean("A une capacité tarée")
     capacity_taree = fields.Float("Capacité tarée")
-    suspended_platform_cable_diameter_id = fields.Many2one('prestation.suspended.platform.cable.diameter', "Diametre des cables (en mm)")
+    suspended_platform_cable_diameter_id = fields.Many2one('prestation.suspended.platform.cable.diameter', "Diamètre des câbles (en mm)")
     
 #     suspended_platform_suspension_id = fields.Many2one('prestation.suspended.platform.suspension', "Suspension par")
     suspension_by = fields.Selection([
