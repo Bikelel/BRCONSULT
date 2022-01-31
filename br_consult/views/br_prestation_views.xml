@@ -174,7 +174,7 @@
                                         <field name="verification_date" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase3'])]}"/>
                                         <field name="end_date_verification" invisible="1"/>
                                         <field name="user_id" domain="[('is_inspector', '=', True)]" attrs="{'readonly': [('state', 'not in', ['phase1'])]}"/>
-                                        <field name="prensent_contact" attrs="{'readonly': [('state', 'not in', ['phase1'])]}"/>
+                                        <field name="prensent_contact" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2'])]}"/>
                                         <field name="scaffolding_surface" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')], 'readonly': [('state', 'not in', ['phase1'])]}"/>
                                         <field name="inspected_scaffolding_surface" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}" widget="integer"/>
                                         <field name="announced_installation_number" attrs="{'invisible': [('inspection_type', '!=', 'levage')], 'readonly': [('state', 'not in', ['phase1'])]}"/>
@@ -400,7 +400,7 @@
                                     <field name="constat_assembly_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
                                         <tree editable='bottom' class="constat_class_table">
                                             <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'assembly_exam'), ('inspection_type', '=', inspection_type), ('installation_type', '=', installation_type)]"/>
-                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" options="{'no_create': True}"/>
+                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" context = "{'default_verification_point_id':verification_point_id}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
                                             <field name="state"/>
