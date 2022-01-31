@@ -2,20 +2,50 @@
 <odoo>
     <data>
         <record id="email_notification_prestation" model="mail.template">
-            <field name="name">Mail d'envoie de prestation au client</field>
+            <field name="name">Mail d'envoie du rapport au client avis favorable</field>
             <field name="model_id" ref="br_consult.model_prestation_prestation"/>
             <field name="email_from"></field>
             <field name="partner_to"></field>
-            <field name="subject">Rapport de prestation: {{object.name}} </field>
+            <field name="subject"> {{object.site_address}} - Avis favorable </field>
             <field name="body_html" type="html">
                 <head></head>
                 <div style="margin: 0px; padding: 0px;">
                     <p style="margin: 0px; padding: 0px; font-size: 13px;">
                         Bonjour,
                         <br /><br />
-                        Ci-joint le rapport de prestation n° {{object.name}}
+                        Vous trouverez ci-joint(s) le(s) rapport(s) d’inspection du chantier cité en objet.
+                        Nous vous souhaitons une bonne réception,
                         <br />
-                        Merci! 
+                        Bien cordialement.
+                    </p>
+                </div>
+            </field>
+            <field name="report_template" ref="action_report_prestation"/>
+            <field name="report_name">{{ (object.name or '').replace('/','_') }}</field>
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+        
+        <record id="email_notification_prestation_avis_defavorable" model="mail.template">
+            <field name="name">Mail d'envoie du rapport au client avis défavorable</field>
+            <field name="model_id" ref="br_consult.model_prestation_prestation"/>
+            <field name="email_from"></field>
+            <field name="partner_to"></field>
+            <field name="subject"> {{object.site_address}} - Avis défavorable </field>
+            <field name="body_html" type="html">
+                <head></head>
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Bonjour,
+                        <br /><br />
+                        Vous trouverez ci-joint(s) le(s) rapport(s) d’inspection du chantier cité en objet.
+                        ATTENTION, un avis défavorable a été émis sur le rapport référencé (numéro de référence: {{ object.name}})<br/>
+                        Nous vous recommandons fortement de programmer une vérification de remise en service, afin de constater la levée des réserves.<br />
+                        A l’issue, il vous sera remis un nouveau rapport « annulant et remplaçant le précédent », et ne mentionnant plus les observations qui ont été levées.<br/>
+                        Nous restons à votre disposition pour tout complément d’information.<br />
+                        Nous vous souhaitons une bonne réception,<br />
+                        Bien cordialement.<br />
+                        
                     </p>
                 </div>
             </field>
@@ -26,7 +56,7 @@
         </record>
         
         <record id="email_confirmation_prestation" model="mail.template">
-            <field name="name">Mail d'envoie de prestation au client</field>
+            <field name="name">Mail CONFIRMATION DE VOTRE RDV</field>
             <field name="model_id" ref="br_consult.model_prestation_prestation"/>
             <field name="email_from"></field>
             <field name="partner_to"></field>

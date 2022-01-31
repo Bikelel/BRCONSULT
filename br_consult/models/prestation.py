@@ -482,7 +482,12 @@ class Prestation(models.Model):
 
     def button_send_report(self):
         if self.partner_id and self.partner_id.email:
-            template = self.env.ref('br_consult.email_notification_prestation')
+            if self.favorable_opinion:
+                template = self.env.ref('br_consult.email_notification_prestation')
+            elif self.defavorable_opinion:
+                template = self.env.ref('br_consult.email_notification_prestation_avis_defavorable')
+            else:
+                template = False
             email_values = {
             'email_from': self.user_id.email,
             'email_to': self.partner_id.email,
