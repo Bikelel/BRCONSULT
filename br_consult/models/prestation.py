@@ -11,7 +11,7 @@ class Prestation(models.Model):
     _name = 'prestation.prestation'
     _description = 'Prestation'
     _order = 'id desc'
-    _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
+    _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin', 'format.address.mixin']
     
     def default_stage(self):
         phase1 = self.env['prestation.stage'].search([('state', '=', 'phase1')], limit=1)
@@ -162,6 +162,7 @@ class Prestation(models.Model):
     constat_good_functioning_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de bon fonctionnement", domain=[('type', '=', 'good_functioning')])
     
     installation_use_id = fields.Many2one('prestation.levage.installation.use', "Utilisation de l'installation")
+    #max_use_id = fields.Many2one('prestation.levage.max.use', "Charge maximale d’utilisation (CMU)")
     coefficient_statique = fields.Float("Coefficient statique")
     autorised_cmu_statique = fields.Float("CMU Autorisée statique (en KG)")
     theoretical_test_load_statique = fields.Float("Charge d'épreuve théorique statique (en KG)", store="True", compute='_compute_theoretical_test_load_statique')
@@ -177,17 +178,20 @@ class Prestation(models.Model):
     comment_epreuve_dynamique = fields.Html("Commentaires Epreuve dynamique")
     constat_epreuve_dynamique_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat d'épreuve dynamique", domain=[('type', '=', 'epreuve_dynamique')])
     
+    # PSE et PSM
     characteristic_suspended_platform_ids = fields.One2many('prestation.levage.characteristic.suspended.platform', 'prestation_id', "Caractéristique de la plateforme suspendue")
     
-    # travail sur mat
+    # PWM ASC PTR MMA
     characteristic_platform_ids = fields.One2many('prestation.levage.characteristic.platform', 'prestation_id', "Caractéristique de l'installation")
     
-    # travail sur palan + treuil
+    # TRE PAE PAM
     characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de l'installation")
     comment_levage_characteristic = fields.Html("Commentaires Caractéristique de levage")
     is_report_sent = fields.Boolean("Rapport envoyé")
     kanban_color = fields.Integer('Color Index', compute="change_colore_on_kanban", store=True)
     prestation_id = fields.Many2one('prestation.prestation', string="Référence du rapport précédent")
+    #champ temp
+    autre_prestation = fields.Char(string="Autre référence", placeholder="Si le repport n'existe pas dans la base, mentionner manullement une réf ici!!")
     state_confirmation_sent = fields.Selection([
         ('draft', 'Pas encore envoyée'),
         ('sent', 'Confirmation envoyée au client'),
@@ -430,20 +434,6 @@ class Prestation(models.Model):
             duration = company.prestation_duration
             rec.end_date_verification = rec.verification_date + timedelta(hours=duration)
     
-    def button_send_report(self):
-        #for prestation in self:
-        if self.partner_id and self.partner_id.email:
-            _logger.info("########## presta %s", self)
-            template = self.env.ref('br_consult.email_notification_prestation')
-            if template:
-                template.sudo().send_mail(self.user_id.id, force_send=True)
-                self.is_report_sent = True
-    
-    def cron_send_report_prestation(self):
-        prestations = self.search([('state', '=', 'phase4'), ('is_report_sent', '=', False)])
-        for prestation in prestations:
-            prestation.sudo().button_send_report()
-    
     def button_phase2(self):
         for prestation in self:
             stage_id = self.env['prestation.stage'].search([('state', '=', 'phase2')], limit=1)
@@ -478,7 +468,40 @@ class Prestation(models.Model):
         #for prestation in self:
         if self.partner_id and self.partner_id.email:
             template = self.env.ref('br_consult.email_confirmation_prestation')
+            email_values = {
+            'email_from': self.user_id.email,
+            'email_to': self.partner_id.email,
+            'email_cc': False,
+            'auto_delete': True,
+            'recipient_ids': [],
+            'partner_ids': [],
+            'scheduled_date': False,}
             if template:
-                template.sudo().send_mail(self.user_id.id, force_send=True)
+                template.send_mail(self.id, force_send=True, email_values=email_values)
                 self.write({'state_confirmation_sent': 'sent'})
+
+    def button_send_report(self):
+        if self.partner_id and self.partner_id.email:
+            if self.favorable_opinion:
+                template = self.env.ref('br_consult.email_notification_prestation')
+            elif self.defavorable_opinion:
+                template = self.env.ref('br_consult.email_notification_prestation_avis_defavorable')
+            else:
+                template = False
+            email_values = {
+            'email_from': self.user_id.email,
+            'email_to': self.partner_id.email,
+            'email_cc': False,
+            'auto_delete': True,
+            'recipient_ids': [],
+            'partner_ids': [],
+            'scheduled_date': False,}
+            if template:
+                template.sudo().send_mail(self.id, force_send=True, email_values=email_values)
+                self.write({'is_report_sent': True})
+    
+    def cron_send_report_prestation(self):
+        prestations = self.search([('state', '=', 'phase4'), ('is_report_sent', '=', False)])
+        for prestation in prestations:
+            prestation.sudo().button_send_report()
                 

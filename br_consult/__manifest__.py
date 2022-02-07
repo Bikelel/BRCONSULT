@@ -17,7 +17,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'portal', 'contacts', 'report_qweb_element_page_visibility', 'project'],
+    'depends': ['base', 'portal', 'contacts', 'report_qweb_element_page_visibility', 'project', 'mail'],
 
     # always loaded
     'data': [
@@ -99,6 +99,8 @@
         'data/characteristic/prestation_platform_wind_speed_max.xml',
         'views/characteristic/prestation_platform_wind_speed_max_views.xml',
         'views/prestation_levage_characteristic_palan_views.xml',
+        'data/characteristic/prestation_platform_mark_palan.xml',
+        'views/characteristic/prestation_platform_mark_palan_views.xml',
         'data/mail_template_data.xml',
         'data/ir_cron_data.xml',
     ],

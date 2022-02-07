@@ -227,13 +227,20 @@ La présente mission est réalisée conformément au contrat référencé
                     <br/>
                     <t t-if="doc.verification_type=='RS'">Motif de remise en service: <span t-field="doc.motif_rs_id"/><br/>
                         <div class="row">
-                            <div class="col-6">Référence du rapport précédent : <span t-field="doc.prestation_id.name"/></div>
+                            <div class="col-6">Référence du rapport précédent : <span t-field="doc.prestation_id.name" t-if="doc.prestation_id"/><span t-field="doc.autre_prestation" t-if="not doc.prestation_id and doc.autre_prestation"/>
+                                
+                            
+                            </div>
                             <div class="col-6">Date du rapport précédent : <span t-field="doc.scope_mission_date"/></div>
                         </div>
                     
                     </t>
                     <span t-field="doc.report_parameter_id.scope_mission" t-if="doc.report_parameter_id and doc.report_parameter_id.scope_mission"/>
                     
+                </div>
+                <div style="border: 2px solid #5F5F5F; padding:10px; page-break-inside: avoid;" t-if="doc.comment_scope_mission">
+                    Commentaires:<br/>
+                    <span t-field="doc.comment_scope_mission"/>
                 </div>
                 <div style="page-break-inside: avoid;">
                     <div class="bloc_title" t-if="doc.inspection_type == 'echafaudage'">
@@ -308,7 +315,7 @@ La présente mission est réalisée conformément au contrat référencé
                     </tbody>
                 </table>
                 </div>
-                <table class='table' style="margin-top:30px;" t-if="doc.inspection_type == 'echafaudage'">
+                <table class='table' style="margin-top:30px;" t-if="doc.inspection_type == 'echafaudage' and doc.scaffolding_characteristic_ids">
                     <tr>
                         <td>Caractéristiques</td>
                         <td>Présence</td>
@@ -687,8 +694,24 @@ La présente mission est réalisée conformément au contrat référencé
                             <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.height"/></td>
                         </tr>
                         <tr>
+                            <td>Côtes de la poutre</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.cote_poutre" t-if="charac.suspension_mode == 'poutre_lestees'"/></td>
+                        </tr>
+                        <tr>
+                            <td>Lest constaté (kg)</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.noted_lest" t-if="charac.suspension_mode == 'poutre_lestees'"/></td>
+                        </tr>
+                        <tr>
+                            <td>Lest préconisé (kg)</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.preconized_lest" t-if="charac.suspension_mode == 'poutre_lestees'"/></td>
+                        </tr>
+                        <tr>
+                            <td>Différence</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.difference_lest" t-if="charac.suspension_mode == 'poutre_lestees'"/></td>
+                        </tr>
+                        <tr>
                             <td>Marque</td>
-                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.palan_mark_id"/></td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.platform_palan_mark_id"/></td>
                         </tr>
                         <tr>
                             <td>Modèle</td>
@@ -730,6 +753,15 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Diamètre du câble mesuré (en mm)</td>
                             <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.number_brins_noted"/></td>
                         </tr>
+                        <tr>
+                            <td>CMU constructeur (en kg)</td>
+                            <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.constructeur_cmu"/></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>CMU autorisée (en kg)</td>
+                            <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.autorized_cmu"/></td>
+                        </tr>
                     </t>
                     
                 </table>
@@ -769,6 +801,10 @@ La présente mission est réalisée conformément au contrat référencé
                     </tbody>
                 </table>
                 </div>
+                <div class="bloc_sub_title2" style="text-decoration: underline;" t-if="doc.installation_use_id">
+                    Utilisation de l’installation <span t-field="doc.installation_use_id"/>
+                </div>
+                
                 <div style="page-break-inside: avoid;">
                     <div class="bloc_sub_title2" style="text-decoration: underline;">
                         Dispositif de protection :
