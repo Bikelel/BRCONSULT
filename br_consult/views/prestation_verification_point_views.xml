@@ -10,7 +10,7 @@
                     <field name="inspection_type"/>
                     <field name="installation_type"/>
                     <field name="type"/>
-                    <field name="observation_ids" widget="many2many_tags"/>
+                    <field name="observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                 </tree>
             </field>
         </record>
@@ -32,6 +32,8 @@
                             <field name="observation_ids" nolabel="1">
                                 <tree editable="bottom">
                                     <field name="name"/>
+                                    <field name="reserve"/>
+                                    
                                 </tree>
                             </field>
                         </group>
