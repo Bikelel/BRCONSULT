@@ -208,7 +208,7 @@
                                     <field name="autre_prestation" attrs="{'invisible': [('prestation_id', '!=', False)], 'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}"/>
                                     
                                     
-                                    <field name="scope_mission_date" attrs="{'invisible': [('prestation_id', '=', False)], 'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}"/>
+                                    <field name="scope_mission_date" attrs="{'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}"/>
                                 </group>
                                 <group string="Commentaires">
                                     <field name="comment_scope_mission" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}"/>

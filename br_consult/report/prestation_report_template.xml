@@ -330,13 +330,13 @@ La présente mission est réalisée conformément au contrat référencé
                             <tr>
                                 <td><span t-field="charac.characteristic_id"/></td>
                                 <td><span t-field="charac.is_presence"/></td>
-                                <t t-if="charac.length == 0"><td style="background-color:#F5F5F5;"/></t>
+                                <t t-if="charac.length == 0"><td style="background-color:#DDDCDC;"/></t>
                                 <t t-else=""><td><span t-field="charac.length"/></td></t>
-                                <t t-if="charac.width == 0"><td style="background-color: #F5F5F5;"/></t>
+                                <t t-if="charac.width == 0"><td style="background-color: #DDDCDC;"/></t>
                                 <t t-else=""><td><span t-field="charac.width"/></td></t>
-                                <t t-if="charac.height == 0"><td style="background-color: #F5F5F5;"/></t>
+                                <t t-if="charac.height == 0"><td style="background-color: #DDDCDC;"/></t>
                                 <t t-else=""><td><span t-field="charac.height"/></td></t>
-                                <t t-if="charac.surface == 0"><td style="background-color: #F5F5F5;"/></t>
+                                <t t-if="charac.surface == 0"><td style="background-color: #DDDCDC;"/></t>
                                 <t t-else=""><td><span t-field="charac.surface"/></td></t>
                                 <td><span t-field="charac.localisation_id"/></td>
                                 
