@@ -190,7 +190,7 @@
                                         <field name="defavorable_opinion" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2', 'phase3'])]}"/>
                                     </group>
                                 </group>
-                                <group string="Commantaires">
+                                <group string="Commentaires">
                                     <field name="comment_observation_fiche" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2', 'phase3'])]}"/>
                                 </group>
                                 <group string="Visa de l’inspecteur technique">
@@ -210,7 +210,7 @@
                                     
                                     <field name="scope_mission_date" attrs="{'invisible': [('prestation_id', '=', False)], 'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}"/>
                                 </group>
-                                <group string="Commantaires">
+                                <group string="Commentaires">
                                     <field name="comment_scope_mission" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}"/>
                                 </group>
                             </page>
@@ -239,7 +239,7 @@
                                         <field name="image6" nolabel="1" options='{"size":[0,90]}' widget='image' attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
                                     </group>
                                 </group>
-                                <group string="Commantaires">
+                                <group string="Commentaires">
                                     <field name="comment_scaffolding_photographic_location" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
                                 </group>
                             </page>
@@ -272,7 +272,7 @@
                                             <field name="is_surface" invisible="1"/>
                                         </tree>
                                     </field>
-                                <group string="Commantaires">
+                                <group string="Commentaires">
                                     <field name="comment_scaffolding_characteristic" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
                                 </group>
                             </page>
@@ -299,7 +299,7 @@
                                     </field>
                                 </group>
                                 
-                                <group string="Commantaires">
+                                <group string="Commentaires">
                                     <field name="comment_levage_characteristic" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
                                 </group>
                             </page>

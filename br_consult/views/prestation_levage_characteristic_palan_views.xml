@@ -27,16 +27,12 @@
                             <group>
                                 <field name="palan_access_id"/>
                                 <field name="suspension_mode"/>
-                                <field name="height"/>
-                                
+                                <field name="other_suspension_mode" attrs="{'invisible': [('suspension_mode', '!=', 'other')]}"/>
                                 <field name="cote_poutre" attrs="{'invisible': [('suspension_mode', '!=', 'poutre_lestees')]}"/>
                                 <field name="noted_lest" attrs="{'invisible': [('suspension_mode', '!=', 'poutre_lestees')]}"/>
                                 <field name="preconized_lest" attrs="{'invisible': [('suspension_mode', '!=', 'poutre_lestees')]}"/>
                                 <field name="difference_lest" attrs="{'invisible': [('suspension_mode', '!=', 'poutre_lestees')]}"/>
-                                
-                                
-                                <field name="other_suspension_mode" attrs="{'invisible': [('suspension_mode', '!=', 'other')]}"/>
-                                
+                                <field name="height"/>
                                 <field name="platform_palan_mark_id"/>
                                 
                                 <field name="modele"/>
