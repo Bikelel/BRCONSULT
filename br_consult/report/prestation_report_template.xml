@@ -693,19 +693,20 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Hauteur d’élévation (en mètre)</td>
                             <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.height"/></td>
                         </tr>
-                        <tr>
+                        <t t-set="display_poutre" t-value="any(l.suspension_mode == 'poutre_lestees' for l in doc.characteristic_palan_ids)"/>
+                        <tr t-if="display_poutre">
                             <td>Côtes de la poutre</td>
                             <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.cote_poutre" t-if="charac.suspension_mode == 'poutre_lestees'"/></td>
                         </tr>
-                        <tr>
+                        <tr t-if="display_poutre">
                             <td>Lest constaté (kg)</td>
                             <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.noted_lest" t-if="charac.suspension_mode == 'poutre_lestees'"/></td>
                         </tr>
-                        <tr>
+                        <tr t-if="display_poutre">
                             <td>Lest préconisé (kg)</td>
                             <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.preconized_lest" t-if="charac.suspension_mode == 'poutre_lestees'"/></td>
                         </tr>
-                        <tr>
+                        <tr t-if="display_poutre">
                             <td>Différence</td>
                             <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.difference_lest" t-if="charac.suspension_mode == 'poutre_lestees'"/></td>
                         </tr>
@@ -745,22 +746,22 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Vitesse maximale du vent autorisée en service</td>
                             <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.wind_speed_max_id"/></td>
                         </tr>
-                        <tr>
+                        <tr t-if="doc.installation_type in ['PAE', 'PAM']">
                             <td>Diamètre du câble constructeur (en mm)</td>
                             <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.number_brins_builder"/></td>
                         </tr>
-                        <tr>
+                        <tr t-if="doc.installation_type in ['PAE', 'PAM']">
                             <td>Diamètre du câble mesuré (en mm)</td>
                             <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.number_brins_noted"/></td>
                         </tr>
                         <tr>
                             <td>CMU constructeur (en kg)</td>
-                            <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.constructeur_cmu"/></td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.constructeur_cmu"/></td>
                         </tr>
                         
                         <tr>
                             <td>CMU autorisée (en kg)</td>
-                            <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.autorized_cmu"/></td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.autorized_cmu"/></td>
                         </tr>
                     </t>
                     
@@ -900,7 +901,7 @@ La présente mission est réalisée conformément au contrat référencé
 
                     <table class='borderless'>
                         <tr class='borderless'>
-                            <td class='borderless' style="width:35%;">Présentation de registre de sécurité:</td>
+                            <td class='borderless' style="width:35%;">Présentation du registre de sécurité:</td>
                             <td class='borderless'><span t-field="doc.security_register"/></td>
                         </tr>
                         <tr class='borderless'>
@@ -909,36 +910,38 @@ La présente mission est réalisée conformément au contrat référencé
                         </tr>
                     </table>
                 </div>
-                <table t-if="doc.assembly_file=='yes'" class="table">
-                    <tr class="text-center">
-                        <td>Notice constructeur</td>
-                        <td>Plans d’exécution (PE)</td>
-                        <td>Note de calcul</td>
-                        <td>Carnet de maintenance</td>
-                    </tr>
-                    <tbody>
+                <div style="page-break-inside: avoid;">
+                    <table t-if="doc.assembly_file=='yes'" class="table">
+                        <tr class="text-center">
+                            <td>Notice constructeur</td>
+                            <td>Plans d’exécution (PE)</td>
+                            <td>Note de calcul</td>
+                            <td>Carnet de maintenance</td>
+                        </tr>
                         <tbody>
-                            <tr class="text-center">
-                                <td>
-                                    <t t-if="doc.notice_constructeur">Oui</t>
-                                    <t t-else="">Non</t>
-                                </td>
-                                <td>
-                                    <t t-if="doc.execution_plan">Oui</t>
-                                    <t t-else="">Non</t>
-                                </td>
-                                <td>
-                                    <t t-if="doc.calculation_notice">Oui</t>
-                                    <t t-else="">Non</t>
-                                </td>
-                                <td>
-                                    <t t-if="doc.maintenance_log">Oui</t>
-                                    <t t-else="">Non</t>
-                                </td>
-                            </tr>
+                            <tbody>
+                                <tr class="text-center">
+                                    <td>
+                                        <t t-if="doc.notice_constructeur">Oui</t>
+                                        <t t-else="">Non</t>
+                                    </td>
+                                    <td>
+                                        <t t-if="doc.execution_plan">Oui</t>
+                                        <t t-else="">Non</t>
+                                    </td>
+                                    <td>
+                                        <t t-if="doc.calculation_notice">Oui</t>
+                                        <t t-else="">Non</t>
+                                    </td>
+                                    <td>
+                                        <t t-if="doc.maintenance_log">Oui</t>
+                                        <t t-else="">Non</t>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </tbody>
-                    </tbody>
-                </table>
+                    </table>
+                </div>
                 
                 <table class='borderless'>
                     <tr class='borderless'>
@@ -974,15 +977,15 @@ La présente mission est réalisée conformément au contrat référencé
                         </tr>
                         <tr>
                             <td style="width:35%;">Nombre constaté:</td>
-                            <td><span t-field="doc.anchor_data_number"/></td>
+                            <td><span t-field="doc.anchor_data_number" t-options='{"widget": "integer"}'/></td>
                         </tr>
                         <tr>
                             <td style="width:35%;">Nombre théorique requis:</td>
-                            <td><span t-field="doc.anchor_data_theoretical_number"/></td>
+                            <td><span t-field="doc.anchor_data_theoretical_number" t-options='{"widget": "integer"}'/></td>
                         </tr>
                         <tr>
                             <td style="width:35%;">Différence:</td>
-                            <td><span t-field="doc.anchor_data_difference_number"/></td>
+                            <td><span t-field="doc.anchor_data_difference_number" t-options='{"widget": "integer"}'/></td>
                         </tr>
                         <tr>
                             <td style="width:35%;">Données relatives aux réactions d'appuis au sol ou au support d’accueil:</td>
