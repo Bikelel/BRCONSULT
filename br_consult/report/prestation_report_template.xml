@@ -292,7 +292,7 @@ La présente mission est réalisée conformément au contrat référencé
                 <div class="bloc_title" t-if="doc.inspection_type == 'echafaudage'">
                     3) Caractéristiques de l’échafaudage
                 </div>
-                <table class='table' style="margin-top:30px;" t-if="doc.inspection_type == 'echafaudage'">
+                <table class='table' style="margin-top:30px;" t-if="doc.inspection_type == 'echafaudage' and doc.scaffolding_mark_ids">
                     <tr>
                         <td>Marque</td>
                         <td>Type</td>
@@ -782,25 +782,25 @@ La présente mission est réalisée conformément au contrat référencé
                 </div>
                 </div>
                 <div style="page-break-inside: avoid;">
-                <div class="bloc_sub_title2" style="text-decoration: underline;">
-                    Nature des travaux :
-                </div>
-                <table class='table' style="margin-top:10px;">
-                    <tr>
-                        <td>Nature des travaux</td>
-                        <td>Précisions</td>
-                        <td>Examiné</td>
-                    </tr>
-                    <tbody>
-                        <t t-foreach="doc.adequacy_exam_ids" t-as="exam">
-                            <tr>
-                                <td><span t-field="exam.works_nature_id"/></td>
-                                <td><span t-field="exam.precision"/></td>
-                                <td><span t-field="exam.is_examined"/></td>
-                            </tr>
-                        </t>
-                    </tbody>
-                </table>
+                    <div class="bloc_sub_title2" style="text-decoration: underline;">
+                        Nature des travaux :
+                    </div>
+                    <table class='table' style="margin-top:10px;" t-if="doc.adequacy_exam_ids">
+                        <tr>
+                            <td>Nature des travaux</td>
+                            <td>Précisions</td>
+                            <td>Examiné</td>
+                        </tr>
+                        <tbody>
+                            <t t-foreach="doc.adequacy_exam_ids" t-as="exam">
+                                <tr>
+                                    <td><span t-field="exam.works_nature_id"/></td>
+                                    <td><span t-field="exam.precision"/></td>
+                                    <td><span t-field="exam.is_examined"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="bloc_sub_title2" style="text-decoration: underline;" t-if="doc.installation_use_id">
                     Utilisation de l’installation <span t-field="doc.installation_use_id"/>
@@ -831,64 +831,64 @@ La présente mission est réalisée conformément au contrat référencé
                     </div>
                 </div>
                 <div style="page-break-inside: avoid; text-decoration: underline;">
-        <div class="bloc_sub_title2" t-if="doc.inspection_type == 'echafaudage'">
-                   Charges d’exploitation de l’échafaudage par défaut:
-                </div>
-                <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'echafaudage'">
-                    <tr>
-                        <td>Classe de l’échafaudage</td>
-                        <td>Surcharge d’exploitation (en kg/m2)</td>
-                        <td>Précision</td>
-                    </tr>
-                    <tbody>
-                        <t t-foreach="doc.scaffolding_operating_load_ids" t-as="classe">
-                            <tr>
-                                <td><span t-field="classe.scaffolding_class_id"/></td>
-                                <td><span t-field="classe.operating_overload"/></td>
-                                <td><span t-field="classe.precision"/></td>
-                                
-                            </tr>
-                        </t>
-                    </tbody>
-                </table>
+                    <div class="bloc_sub_title2" t-if="doc.inspection_type == 'echafaudage'">
+                       Charges d’exploitation de l’échafaudage par défaut:
+                    </div>
+                    <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'echafaudage' and doc.scaffolding_operating_load_ids">
+                        <tr>
+                            <td>Classe de l’échafaudage</td>
+                            <td>Surcharge d’exploitation (en kg/m2)</td>
+                            <td>Précision</td>
+                        </tr>
+                        <tbody>
+                            <t t-foreach="doc.scaffolding_operating_load_ids" t-as="classe">
+                                <tr>
+                                    <td><span t-field="classe.scaffolding_class_id"/></td>
+                                    <td><span t-field="classe.operating_overload"/></td>
+                                    <td><span t-field="classe.precision"/></td>
+
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
                 </div>
                 <div style="page-break-inside: avoid;">
-                <div class="bloc_sub_title2" style="background-color: #F3F3F3;" t-if="doc.constat_adequacy_exam_ids">
-                   Constat(s):
-                </div>
-                <table class='table' style="margin-top:20px;" t-if="doc.constat_adequacy_exam_ids">
-                    <tr>
-                        <td>Points de vérification</td>
-                        <td>Observations/Réserves </td>
-                        <td>Précisions </td>
-                        <td class="text-center">Photos </td>
-                        <td>Statut </td>
-                        <td>Date </td>
-                    </tr>
-                    <tbody>
-                        <t t-foreach="doc.constat_adequacy_exam_ids" t-as="constat">
-                            <tr>
-                                <td ><span t-field="constat.verification_point_id"/></td>
-                                <td>
-                                    <ol>
-                                        <t t-foreach="constat.observation_ids" t-as="observation">
-                                            <li><t t-if="observation.reserve">
-                                                    <span style="font-weight:bold;" t-field="observation.name"/>
-                                                 </t>
-                                                <t t-else=""><span t-field="observation.name"/></t>
-                                            </li>
-                                        </t>
-                                    </ol>
-                                </td>
-                                <td><span t-field="constat.precision"/></td>
-                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                    <div class="bloc_sub_title2" style="background-color: #F3F3F3;" t-if="doc.constat_adequacy_exam_ids">
+                       Constat(s):
+                    </div>
+                    <table class='table' style="margin-top:20px;" t-if="doc.constat_adequacy_exam_ids">
+                        <tr>
+                            <td>Points de vérification</td>
+                            <td>Observations/Réserves </td>
+                            <td>Précisions </td>
+                            <td class="text-center">Photos </td>
+                            <td>Statut </td>
+                            <td>Date </td>
+                        </tr>
+                        <tbody>
+                            <t t-foreach="doc.constat_adequacy_exam_ids" t-as="constat">
+                                <tr>
+                                    <td ><span t-field="constat.verification_point_id"/></td>
+                                    <td>
+                                        <ol>
+                                            <t t-foreach="constat.observation_ids" t-as="observation">
+                                                <li><t t-if="observation.reserve">
+                                                        <span style="font-weight:bold;" t-field="observation.name"/>
+                                                     </t>
+                                                    <t t-else=""><span t-field="observation.name"/></t>
+                                                </li>
+                                            </t>
+                                        </ol>
                                     </td>
-                                <td><span t-field="constat.state"/></td>
-                                <td><span t-field="constat.date"/></td>
-                            </tr>
-                        </t>
-                    </tbody>
-                </table>
+                                    <td><span t-field="constat.precision"/></td>
+                                    <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                        </td>
+                                    <td><span t-field="constat.state"/></td>
+                                    <td><span t-field="constat.date"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
                 </div>
                 <div style="page-break-inside: avoid;">
                     <div style="color: #318CE7;" class="bloc_sub_title">
@@ -1105,62 +1105,62 @@ La présente mission est réalisée conformément au contrat référencé
                 </table>
                 </div>
                 <div style="page-break-inside: avoid;">
-                <div style="color: #318CE7;" class="bloc_sub_title" t-if="doc.inspection_type == 'levage'">
-                    4.4) Examen de bon fonctionnement
-                </div>
-                <div t-if="doc.report_parameter_id and doc.inspection_type == 'levage'">
-                    <span t-field="doc.report_parameter_id.good_functionning" t-if="doc.report_parameter_id.good_functionning"/>
-                </div>
-                <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage'">
-                    
-                    <tbody>
-                        <t t-foreach="doc.good_functioning_exam_ids" t-as="stat">
-                            <tr>
-                                <td style="width: 80%;"><span t-field="stat.name"/></td>
-                                
-                                <td><span t-field="stat.opinion"/></td>
-                            </tr>
-                        </t>
-                    </tbody>
-                </table>
+                    <div style="color: #318CE7;" class="bloc_sub_title" t-if="doc.inspection_type == 'levage'">
+                        4.4) Examen de bon fonctionnement
+                    </div>
+                    <div t-if="doc.report_parameter_id and doc.inspection_type == 'levage'">
+                        <span t-field="doc.report_parameter_id.good_functionning" t-if="doc.report_parameter_id.good_functionning"/>
+                    </div>
+                    <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.good_functioning_exam_ids">
+
+                        <tbody>
+                            <t t-foreach="doc.good_functioning_exam_ids" t-as="stat">
+                                <tr>
+                                    <td style="width: 80%;"><span t-field="stat.name"/></td>
+
+                                    <td><span t-field="stat.opinion"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
                 </div>
                 <div style="page-break-inside: avoid;">
-                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage' and doc.constat_good_functioning_exam_ids" style="background-color: #F3F3F3;">
-                   Constat(s):
-                </div>
-                <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.constat_good_functioning_exam_ids">
-                    <tr>
-                        <td>Points de vérification</td>
-                        <td>Observations/Réserves </td>
-                        <td>Précisions </td>
-                        <td class="text-center">Photos </td>
-                        <td>Statut </td>
-                        <td>Date </td>
-                    </tr>
-                    <tbody>
-                        <t t-foreach="doc.constat_good_functioning_exam_ids" t-as="constat">
-                            <tr>
-                                <td ><span t-field="constat.verification_point_id"/></td>
-                                <td>
-                                    <ol>
-                                        <t t-foreach="constat.observation_ids" t-as="observation">
-                                            <li><t t-if="observation.reserve">
-                                                    <span style="font-weight:bold;" t-field="observation.name"/>
-                                                 </t>
-                                                <t t-else=""><span t-field="observation.name"/></t>
-                                            </li>
-                                        </t>
-                                    </ol>
-                                </td>
-                                <td><span t-field="constat.precision"/></td>
-                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                    <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage' and doc.constat_good_functioning_exam_ids" style="background-color: #F3F3F3;">
+                       Constat(s):
+                    </div>
+                    <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.constat_good_functioning_exam_ids">
+                        <tr>
+                            <td>Points de vérification</td>
+                            <td>Observations/Réserves </td>
+                            <td>Précisions </td>
+                            <td class="text-center">Photos </td>
+                            <td>Statut </td>
+                            <td>Date </td>
+                        </tr>
+                        <tbody>
+                            <t t-foreach="doc.constat_good_functioning_exam_ids" t-as="constat">
+                                <tr>
+                                    <td ><span t-field="constat.verification_point_id"/></td>
+                                    <td>
+                                        <ol>
+                                            <t t-foreach="constat.observation_ids" t-as="observation">
+                                                <li><t t-if="observation.reserve">
+                                                        <span style="font-weight:bold;" t-field="observation.name"/>
+                                                     </t>
+                                                    <t t-else=""><span t-field="observation.name"/></t>
+                                                </li>
+                                            </t>
+                                        </ol>
                                     </td>
-                                <td><span t-field="constat.state"/></td>
-                                <td><span t-field="constat.date"/></td>
-                            </tr>
-                        </t>
-                    </tbody>
-                </table>
+                                    <td><span t-field="constat.precision"/></td>
+                                    <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                        </td>
+                                    <td><span t-field="constat.state"/></td>
+                                    <td><span t-field="constat.date"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
                 </div>
                 <div style="page-break-inside: avoid;">
                 <div class="bloc_title" t-if="doc.inspection_type == 'levage'">
@@ -1204,42 +1204,42 @@ La présente mission est réalisée conformément au contrat référencé
                 </table>
                 </div>
                 <div style="page-break-inside: avoid;">
-                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage' and doc.constat_epreuve_statique_ids" style="background-color: #F3F3F3;">
-                   Constat(s):
-                </div>
-                <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.verification_type in ['MS', 'RS'] and doc.constat_epreuve_statique_ids">
-                    <tr>
-                        <td>Points de vérification</td>
-                        <td>Observations/Réserves </td>
-                        <td>Précisions </td>
-                        <td class="text-center">Photos </td>
-                        <td>Statut </td>
-                        <td>Date </td>
-                    </tr>
-                    <tbody>
-                        <t t-foreach="doc.constat_epreuve_statique_ids" t-as="constat">
-                            <tr>
-                                <td ><span t-field="constat.verification_point_id"/></td>
-                                <td>
-                                    <ol>
-                                        <t t-foreach="constat.observation_ids" t-as="observation">
-                                            <li><t t-if="observation.reserve">
-                                                    <span style="font-weight:bold;" t-field="observation.name"/>
-                                                 </t>
-                                                <t t-else=""><span t-field="observation.name"/></t>
-                                            </li>
-                                        </t>
-                                    </ol>
-                                </td>
-                                <td><span t-field="constat.precision"/></td>
-                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                    <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage' and doc.constat_epreuve_statique_ids" style="background-color: #F3F3F3;">
+                       Constat(s):
+                    </div>
+                    <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.verification_type in ['MS', 'RS'] and doc.constat_epreuve_statique_ids">
+                        <tr>
+                            <td>Points de vérification</td>
+                            <td>Observations/Réserves </td>
+                            <td>Précisions </td>
+                            <td class="text-center">Photos </td>
+                            <td>Statut </td>
+                            <td>Date </td>
+                        </tr>
+                        <tbody>
+                            <t t-foreach="doc.constat_epreuve_statique_ids" t-as="constat">
+                                <tr>
+                                    <td ><span t-field="constat.verification_point_id"/></td>
+                                    <td>
+                                        <ol>
+                                            <t t-foreach="constat.observation_ids" t-as="observation">
+                                                <li><t t-if="observation.reserve">
+                                                        <span style="font-weight:bold;" t-field="observation.name"/>
+                                                     </t>
+                                                    <t t-else=""><span t-field="observation.name"/></t>
+                                                </li>
+                                            </t>
+                                        </ol>
                                     </td>
-                                <td><span t-field="constat.state"/></td>
-                                <td><span t-field="constat.date"/></td>
-                            </tr>
-                        </t>
-                    </tbody>
-                </table>
+                                    <td><span t-field="constat.precision"/></td>
+                                    <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                        </td>
+                                    <td><span t-field="constat.state"/></td>
+                                    <td><span t-field="constat.date"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
                 </div>
                 <div style="page-break-inside: avoid;">
                 <div style="color: #318CE7;" class="bloc_sub_title" t-if="doc.inspection_type == 'levage'">
@@ -1274,42 +1274,42 @@ La présente mission est réalisée conformément au contrat référencé
                 </table>
                 </div>
                 <div style="page-break-inside: avoid;">
-                <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage' and doc.constat_epreuve_dynamique_ids" style="background-color: #F3F3F3;">
-                   Constat(s):
-                </div>
-                <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.verification_type in ['MS', 'RS'] and doc.constat_epreuve_dynamique_ids">
-                    <tr>
-                        <td>Points de vérification</td>
-                        <td>Observations/Réserves </td>
-                        <td>Précisions </td>
-                        <td class="text-center">Photos </td>
-                        <td>Statut </td>
-                        <td>Date </td>
-                    </tr>
-                    <tbody>
-                        <t t-foreach="doc.constat_epreuve_dynamique_ids" t-as="constat">
-                            <tr>
-                                <td ><span t-field="constat.verification_point_id"/></td>
-                                <td>
-                                    <ol>
-                                        <t t-foreach="constat.observation_ids" t-as="observation">
-                                            <li><t t-if="observation.reserve">
-                                                    <span style="font-weight:bold;" t-field="observation.name"/>
-                                                 </t>
-                                                <t t-else=""><span t-field="observation.name"/></t>
-                                            </li>
-                                        </t>
-                                    </ol>
-                                </td>
-                                <td><span t-field="constat.precision"/></td>
-                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                    <div class="bloc_sub_title" t-if="doc.inspection_type == 'levage' and doc.constat_epreuve_dynamique_ids" style="background-color: #F3F3F3;">
+                       Constat(s):
+                    </div>
+                    <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.verification_type in ['MS', 'RS'] and doc.constat_epreuve_dynamique_ids">
+                        <tr>
+                            <td>Points de vérification</td>
+                            <td>Observations/Réserves </td>
+                            <td>Précisions </td>
+                            <td class="text-center">Photos </td>
+                            <td>Statut </td>
+                            <td>Date </td>
+                        </tr>
+                        <tbody>
+                            <t t-foreach="doc.constat_epreuve_dynamique_ids" t-as="constat">
+                                <tr>
+                                    <td ><span t-field="constat.verification_point_id"/></td>
+                                    <td>
+                                        <ol>
+                                            <t t-foreach="constat.observation_ids" t-as="observation">
+                                                <li><t t-if="observation.reserve">
+                                                        <span style="font-weight:bold;" t-field="observation.name"/>
+                                                     </t>
+                                                    <t t-else=""><span t-field="observation.name"/></t>
+                                                </li>
+                                            </t>
+                                        </ol>
                                     </td>
-                                <td><span t-field="constat.state"/></td>
-                                <td><span t-field="constat.date"/></td>
-                            </tr>
-                        </t>
-                    </tbody>
-                </table>
+                                    <td><span t-field="constat.precision"/></td>
+                                    <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                        </td>
+                                    <td><span t-field="constat.state"/></td>
+                                    <td><span t-field="constat.date"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
