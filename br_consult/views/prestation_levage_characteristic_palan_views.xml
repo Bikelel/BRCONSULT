@@ -45,8 +45,8 @@
                                 <field name="alimentation"/>
                                 <field name="move_speed"/>
                                 <field name="wind_speed_max_id"/>
-                                <field name="number_brins_builder" attrs="{'invisible': [('installation_type', 'not in', ['PAE', 'PAM'])]}"/>
-                                <field name="number_brins_noted" attrs="{'invisible': [('installation_type', 'not in', ['PAE', 'PAM'])]}"/>
+                                <field name="number_brins_builder"/>
+                                <field name="number_brins_noted"/>
                                 <field name="constructeur_cmu"/>
                                 <field name="autorized_cmu"/>
                                 
