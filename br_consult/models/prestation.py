@@ -205,6 +205,7 @@ class Prestation(models.Model):
 
     @api.model
     def create(self, vals):
+        
         if 'company_id' in vals:
             self = self.with_company(vals['company_id'])
         if vals.get('partner_id'):
@@ -272,6 +273,7 @@ class Prestation(models.Model):
                 vals.update({'characteristic_platform_ids': lines})
             else:
                 vals.update({'characteristic_palan_ids': lines})
+        
                              
 
                 
@@ -507,4 +509,11 @@ class Prestation(models.Model):
                 presta.contrat_ref = presta.partner_id.ref
             else:
                 presta.contrat_ref = ''
+
+    @api.onchange('stage_id', 'state')
+    def onchange_stage_id(self):
+        user = self.env.user
+        stages = user.stage_ids
+        if self.stage_id not in stages:
+            raise UserError(_('You don t have the privilege to change stage'))
                 
