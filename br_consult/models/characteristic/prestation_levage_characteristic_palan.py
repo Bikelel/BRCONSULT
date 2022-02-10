@@ -7,7 +7,7 @@ class PrestationLevageCharacteristicPlatform(models.Model):
     _name = "prestation.levage.characteristic.palan"
     _description = "Prestation levage characteristic palan"
 
-    name = fields.Char("Numéro")
+    name = fields.Char("Numéro",required=True)
     prestation_id = fields.Many2one('prestation.prestation', 'Prestation')
     installation_type = fields.Selection(related="prestation_id.installation_type")
     palan_location_id = fields.Many2one('prestation.suspended.platform.location', "Localisation")

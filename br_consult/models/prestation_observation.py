@@ -12,3 +12,12 @@ class PrestationObservation(models.Model):
     type = fields.Selection(related="verification_point_id.type")
     reserve = fields.Boolean("Reserve")
     temp_save = fields.Boolean("Enregisrement temporaire")
+    color = fields.Integer("Couleur", compute = '_get_observation_color', store=True)
+    
+    @api.depends('reserve')
+    def _get_observation_color(self):
+        for line in self:
+            if line.reserve:
+                line.color = 2
+            else:
+                line.color = 0

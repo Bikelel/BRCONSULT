@@ -74,7 +74,7 @@ class Prestation(models.Model):
     end_date_verification = fields.Datetime("Fin de la date de vérification", store=True, compute='_compute_end_date')
     prestation_duration = fields.Float("Durée d'une prestation", store=True, related="company_id.prestation_duration")
     partner_contact = fields.Char("Représentée par")
-    user_id = fields.Many2one('res.users', 'Inspecteur', default=default_user, tracking=True)
+    user_id = fields.Many2one('res.users', 'Inspecteur', default=default_user, tracking=True, required=True)
 
     stage_id = fields.Many2one(
         'prestation.stage', string='Etape', index=True, tracking=True, readonly=False, store=True, copy=False, group_expand='_read_group_stage_ids', ondelete='restrict', default=default_stage)
@@ -482,7 +482,12 @@ class Prestation(models.Model):
 
     def button_send_report(self):
         if self.partner_id and self.partner_id.email:
-            template = self.env.ref('br_consult.email_notification_prestation')
+            if self.favorable_opinion:
+                template = self.env.ref('br_consult.email_notification_prestation')
+            elif self.defavorable_opinion:
+                template = self.env.ref('br_consult.email_notification_prestation_avis_defavorable')
+            else:
+                template = False
             email_values = {
             'email_from': self.user_id.email,
             'email_to': self.partner_id.email,
