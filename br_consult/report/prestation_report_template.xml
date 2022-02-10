@@ -220,7 +220,7 @@ La présente mission est réalisée conformément au contrat référencé
                     <span t-field="doc.partner_id.ref"/>. 
  Il s’agit d’une mission de <span t-field="doc.verification_type"/> limitée à la vérification visuelle des zones de 
                     <t t-if="inspection_type=='echafaudage'"> 
-                        l’échafaudage 
+                        l’échafaudage
                     </t>
                     <t t-else=""> <span t-field="doc.installation_type"/> </t>
                     accessibles en sécurité. 
@@ -746,11 +746,11 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Vitesse maximale du vent autorisée en service</td>
                             <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.wind_speed_max_id"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['PAE', 'PAM']">
+                        <tr>
                             <td>Diamètre du câble constructeur (en mm)</td>
                             <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.number_brins_builder"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['PAE', 'PAM']">
+                        <tr>
                             <td>Diamètre du câble mesuré (en mm)</td>
                             <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.number_brins_noted"/></td>
                         </tr>

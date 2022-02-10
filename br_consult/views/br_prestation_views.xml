@@ -133,7 +133,8 @@
                         <button name="button_phase2" string="Envoyer vers Phase 2" type="object" attrs="{'invisible': [('state', '!=', 'phase1')]}" class="btn-primary" />
                        <button name="button_phase3" string="Envoyer vers Phase 3" type="object" attrs="{'invisible': [('state', '!=', 'phase2')]}" class="btn-primary" />
                         <button name="button_phase4" string="Envoyer vers Phase 4" type="object" attrs="{'invisible': [('state', '!=', 'phase3')]}" class="btn-primary"/>
-                        <button name="button_send_report" string="Envoyer le rapport" type="object" attrs="{'invisible': [('state', '!=', 'phase4')]}" class="btn-primary" data-hotkey="g"/>
+                        <button name="button_send_report" string="Envoyer le rapport" type="object" attrs="{'invisible': ['|',('state', '!=', 'phase4'), ('is_report_sent', '=', True)]}" class="btn-primary"/>
+                        <button name="button_send_report" string="Envoyer le rapport" type="object" attrs="{'invisible': [('is_report_sent', '=', False)]}" groups="base.group_system"/>
                     </header>
                     <sheet>
                         <div class="prestation_sheet_header">
@@ -414,7 +415,7 @@
                                 </group>
                                 <h1 class="headding_1">4.3- Examen de l'etat de conservation</h1>
                                 <group>
-                                    <field name="conservation_state_exam_ids" nolabel="1">
+                                    <field name="conservation_state_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'in', ['phase1'])]}">
                                         <tree editable="bottom" delete="false" create="false">
                                             <field name="conservation_state_id" invisible="1"/>
                                             <field name="name" readonly="1" widget="html"/>
@@ -441,7 +442,7 @@
                                 </group>
                                 <h1 class="headding_1" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">4.4- Examen du bon fonctionenement</h1>
                                 <group attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
-                                    <field name="good_functioning_exam_ids" nolabel="1">
+                                    <field name="good_functioning_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'in', ['phase1'])]}">
                                         <tree editable="bottom" delete="false" create="false">
                                             <field name="good_functioning_id" invisible="1"/>
                                             <field name="name" readonly="1" widget='html'/>
