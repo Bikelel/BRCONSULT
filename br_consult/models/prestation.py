@@ -477,7 +477,7 @@ class Prestation(models.Model):
             'partner_ids': [],
             'scheduled_date': False,}
             if template:
-                template.send_mail(self.id, force_send=True, email_values=email_values)
+                template.sudo().send_mail(self.id, force_send=True, email_values=email_values)
                 self.write({'state_confirmation_sent': 'sent'})
 
     def button_send_report(self):
