@@ -504,4 +504,12 @@ class Prestation(models.Model):
         prestations = self.search([('state', '=', 'phase4'), ('is_report_sent', '=', False)])
         for prestation in prestations:
             prestation.sudo().button_send_report()
+    
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        for presta in self:
+            if presta.partner_id:
+                presta.contrat_ref = presta.partner_id.ref
+            else:
+                presta.contrat_ref = ''
                 
