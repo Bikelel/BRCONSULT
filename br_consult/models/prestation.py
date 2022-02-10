@@ -287,6 +287,7 @@ class Prestation(models.Model):
             if vals.get('state_confirmation_sent') == 'draft':
                 raise UserError(_('Vous ne pouvez pas modifier la phase sans envoyer une confirmation de planning au client!'))
             if stage_id not in stages.ids:
+                _logger.info("###### stage_id %s, stages %s ", stage_id,stages)
                 raise UserError(_('You don t have the privilege to change stage'))
                 
                 
@@ -420,12 +421,6 @@ class Prestation(models.Model):
             else:
                 self.report_parameter_id = None
 
-    @api.onchange('stage_id', 'state')
-    def onchange_stage_id(self):
-        user = self.env.user
-        stages = user.stage_ids
-        if self.stage_id not in stages:
-            raise UserError(_('You don t have the privilege to change stage'))
     
     @api.depends('verification_date')
     def _compute_end_date(self):
