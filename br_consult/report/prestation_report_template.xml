@@ -225,7 +225,7 @@ La présente mission est réalisée conformément au contrat référencé
                     <t t-else=""> <span t-field="doc.installation_type"/> </t>
                     accessibles en sécurité. 
                     <br/>
-                    <t t-if="doc.verification_type=='RS'">Motif de remise en service: <span t-field="doc.motif_rs_id"/><br/>
+                    <t t-if="doc.verification_type in ['RS', 'VP']">Motif de remise en service: <span t-field="doc.motif_rs_id"/><br/>
                         <div class="row">
                             <div class="col-6">Référence du rapport précédent : <span t-field="doc.prestation_id.name" t-if="doc.prestation_id"/><span t-field="doc.autre_prestation" t-if="not doc.prestation_id and doc.autre_prestation"/>
                                 
@@ -517,10 +517,10 @@ La présente mission est réalisée conformément au contrat référencé
                         <tr t-if="doc.installation_type in ['ASC', 'PTR', 'MMA']">
                             <td>Dimension (en mètre)</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac">
-                                <div class='row'>
-                                    <div class='col-4'>Longeur: <span t-field="charac.length_platform"/></div>
-                                    <div class='col-4'>Largeur: <span t-field="charac.width_platform"/></div>
-                                    <div class='col-4'>Hauteur: <span t-field="charac.hauteur_platform"/></div>
+                                <div class='row text-center'>
+                                    <div class='col-4'><div>Longeur:</div><div> <span t-field="charac.length_platform"/></div></div>
+                                    <div class='col-4'><div>Largeur:</div><div> <span t-field="charac.width_platform"/></div></div>
+                                    <div class='col-4'><div>Hauteur:</div><div> <span t-field="charac.hauteur_platform"/></div></div>
                                 </div>
                                 
                             </td>
@@ -802,8 +802,8 @@ La présente mission est réalisée conformément au contrat référencé
                         </tbody>
                     </table>
                 </div>
-                <div class="bloc_sub_title2" style="text-decoration: underline;" t-if="doc.installation_use_id">
-                    Utilisation de l’installation <span t-field="doc.installation_use_id"/>
+                <div  t-if="doc.installation_use_id">
+                   <span style="text-decoration: underline;" class="bloc_sub_title2"> Utilisation de l’installation : </span><span t-field="doc.installation_use_id"/>
                 </div>
                 
                 <div style="page-break-inside: avoid;">

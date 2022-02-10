@@ -45,7 +45,7 @@
                             <group>
                                 <field name="suspended_platform_mark_treuil_id"/>
                                 <field name="type_treuil"/>
-                                <field name="alimentation" attrs="{'invisible': [('installation_type', '!=', 'PSE')]}"/>
+                                <field name="alimentation" attrs="{'invisible': [('installation_type', 'not in', ['PSE', 'PSM'])]}"/>
                             </group>
                             <group>
                                 <field name="numero_treuil"/>
