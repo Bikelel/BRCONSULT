@@ -8,21 +8,21 @@
             <field name="partner_to"></field>
             <field name="subject"> {{object.site_address}} - Avis favorable </field>
             <field name="body_html" type="html">
-                <head></head>
+                
                 <div style="margin: 0px; padding: 0px;">
                     <p style="margin: 0px; padding: 0px; font-size: 13px;">
                         Bonjour,
-                        <br /><br />
+                        <br/><br/>
                         Vous trouverez ci-joint(s) le(s) rapport(s) d’inspection du chantier cité en objet.
                         Nous vous souhaitons une bonne réception,
-                        <br />
+                        <br/>
                         Bien cordialement.
                     </p>
                 </div>
             </field>
             <field name="report_template" ref="action_report_prestation"/>
             <field name="report_name">{{ (object.name or '').replace('/','_') }}</field>
-            <field name="lang">{{object.partner_id.lang}}</field>
+<!--             <field name="lang">{{object.partner_id.lang}}</field> -->
             <field name="auto_delete" eval="True"/>
         </record>
         
@@ -33,13 +33,13 @@
             <field name="partner_to"></field>
             <field name="subject"> {{object.site_address}} - Avis défavorable </field>
             <field name="body_html" type="html">
-                <head></head>
+                
                 <div style="margin: 0px; padding: 0px;">
                     <p style="margin: 0px; padding: 0px; font-size: 13px;">
                         Bonjour,
                         <br /><br />
                         Vous trouverez ci-joint(s) le(s) rapport(s) d’inspection du chantier cité en objet.
-                        ATTENTION, un avis défavorable a été émis sur le rapport référencé (numéro de référence: {{ object.name}})<br/>
+                        ATTENTION, un avis défavorable a été émis sur le rapport référencé (numéro de référence: <t t-out="object.name" />)<br/>
                         Nous vous recommandons fortement de programmer une vérification de remise en service, afin de constater la levée des réserves.<br />
                         A l’issue, il vous sera remis un nouveau rapport « annulant et remplaçant le précédent », et ne mentionnant plus les observations qui ont été levées.<br/>
                         Nous restons à votre disposition pour tout complément d’information.<br />
@@ -51,7 +51,7 @@
             </field>
             <field name="report_template" ref="action_report_prestation"/>
             <field name="report_name">{{ (object.name or '').replace('/','_') }}</field>
-            <field name="lang">{{object.partner_id.lang}}</field>
+<!--             <field name="lang">{{object.partner_id.lang}}</field> -->
             <field name="auto_delete" eval="True"/>
         </record>
         
@@ -60,7 +60,7 @@
             <field name="model_id" ref="br_consult.model_prestation_prestation"/>
             <field name="email_from"></field>
             <field name="partner_to"></field>
-            <field name="subject">Prestation: {{object.name}} </field>
+            <field name="subject">Prestation: {{object.name}} - {{object.site_address}} </field>
             <field name="body_html" type="html">
                 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
