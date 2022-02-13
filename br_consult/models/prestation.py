@@ -196,7 +196,8 @@ class Prestation(models.Model):
         ('draft', 'Pas encore envoyée'),
         ('sent', 'Confirmation envoyée au client'),
     ], string="Confirmation envoyée ?", default='draft')
-    
+    email_partner_ids = fields.Many2many('res.partner', string="Emails")
+    #email_partner_ids = fields.One2many('prestation.contact.email', 'prestation_id', string="Emails")
     @api.onchange('prestation_id')
     def onchange_prestation(self):
         for presta in self:
@@ -273,12 +274,7 @@ class Prestation(models.Model):
                 vals.update({'characteristic_platform_ids': lines})
             else:
                 vals.update({'characteristic_palan_ids': lines})
-        
-                             
-
-                
         result = super(Prestation, self).create(vals)
-        
         return result
 
     def write(self, vals):
@@ -286,16 +282,11 @@ class Prestation(models.Model):
         stages = user.stage_ids
         if 'stage_id' in vals:
             stage_id = vals.get('stage_id')
-            if vals.get('state_confirmation_sent') == 'draft':
+            if self.state_confirmation_sent == 'draft':
                 raise UserError(_('Vous ne pouvez pas modifier la phase sans envoyer une confirmation de planning au client!'))
             if stage_id not in stages.ids:
-                _logger.info("###### stage_id %s, stages %s ", stage_id,stages)
                 raise UserError(_('You don t have the privilege to change stage'))
                 
-                
-        if 'partner_id' in vals or 'inspection_type' in vals or 'installation_type' in vals:
-            _logger.info("################## %s", vals.get('name'))
-        
         result = super(Prestation, self).write(vals)
         
         return result
@@ -462,39 +453,42 @@ class Prestation(models.Model):
              record.kanban_color = color
     
     def button_send_confirmation_prestation(self):
-        #for prestation in self:
-        if self.partner_id and self.partner_id.email:
+        if self.email_partner_ids:
             template = self.env.ref('br_consult.email_confirmation_prestation')
-            email_values = {
-            'email_from': self.user_id.email,
-            'email_to': self.partner_id.email,
-            'email_cc': False,
-            'auto_delete': True,
-            'recipient_ids': [],
-            'partner_ids': [],
-            'scheduled_date': False,}
-            if template:
+            for partner in self.email_partner_ids:
+                email_values = {
+                'email_from': self.user_id.email,
+                'email_to': partner.email,
+                'email_cc': False,
+                'auto_delete': True,
+                'recipient_ids': [],
+                'partner_ids': [],
+                'scheduled_date': False,}
+                
                 template.sudo().send_mail(self.id, force_send=True, email_values=email_values)
-                self.write({'state_confirmation_sent': 'sent'})
+        
+            self.write({'state_confirmation_sent': 'sent'})
 
     def button_send_report(self):
-        if self.partner_id and self.partner_id.email:
+        if self.email_partner_ids:
             if self.favorable_opinion:
                 template = self.env.ref('br_consult.email_notification_prestation')
             elif self.defavorable_opinion:
                 template = self.env.ref('br_consult.email_notification_prestation_avis_defavorable')
             else:
                 template = False
-            email_values = {
-            'email_from': self.user_id.email,
-            'email_to': self.partner_id.email,
-            'email_cc': False,
-            'auto_delete': True,
-            'recipient_ids': [],
-            'partner_ids': [],
-            'scheduled_date': False,}
+            
             if template:
-                template.sudo().send_mail(self.id, force_send=True, email_values=email_values)
+                for partner in self.email_partner_ids:
+                    email_values = {
+                        'email_from': self.user_id.email,
+                        'email_to': partner.email,
+                        'email_cc': False,
+                        'auto_delete': True,
+                        'recipient_ids': [],
+                        'partner_ids': [],
+                        'scheduled_date': False,}
+                    template.sudo().send_mail(self.id, force_send=True, email_values=email_values)
                 self.write({'is_report_sent': True})
     
     def cron_send_report_prestation(self):
