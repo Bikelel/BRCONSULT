@@ -453,7 +453,7 @@ class Prestation(models.Model):
              record.kanban_color = color
     
     def button_send_confirmation_prestation(self):
-        if self.email_partner_ids:
+        if self.email_partner_ids and self.partner_id:
             template = self.env.ref('br_consult.email_confirmation_prestation')
             for partner in self.email_partner_ids:
                 email_values = {
@@ -466,7 +466,7 @@ class Prestation(models.Model):
                 'scheduled_date': False,}
                 
                 template.sudo().send_mail(self.id, force_send=True, email_values=email_values)
-        
+                partner.sudo().update({'parent_id': self.partner_id.id})
             self.write({'state_confirmation_sent': 'sent'})
 
     def button_send_report(self):
