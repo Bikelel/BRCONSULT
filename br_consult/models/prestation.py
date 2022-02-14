@@ -459,7 +459,7 @@ class Prestation(models.Model):
                 email_values = {
                 'email_from': self.user_id.email,
                 'email_to': partner.email,
-                'email_cc': False,
+                'email_cc': 'controlebr@brconsult.fr',
                 'auto_delete': True,
                 'recipient_ids': [],
                 'partner_ids': [],
@@ -483,7 +483,7 @@ class Prestation(models.Model):
                     email_values = {
                         'email_from': self.user_id.email,
                         'email_to': partner.email,
-                        'email_cc': False,
+                        'email_cc': 'controlebr@brconsult.fr',
                         'auto_delete': True,
                         'recipient_ids': [],
                         'partner_ids': [],
@@ -493,7 +493,6 @@ class Prestation(models.Model):
     
     def cron_send_report_prestation(self):
         prestations = self.search([('state', '=', 'phase4'), ('is_report_sent', '=', False)])
-        _logger.info("##### prestations %s", prestations)
         for prestation in prestations:
             prestation.sudo().button_send_report()
     
