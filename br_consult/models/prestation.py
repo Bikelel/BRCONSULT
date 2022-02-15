@@ -457,7 +457,7 @@ class Prestation(models.Model):
             template = self.env.ref('br_consult.email_confirmation_prestation')
             for partner in self.email_partner_ids:
                 email_values = {
-                'email_from': self.user_id.email,
+                'email_from': 'controlebr@brconsult.fr',
                 'email_to': partner.email,
                 'email_cc': 'controlebr@brconsult.fr',
                 'auto_delete': True,
@@ -481,7 +481,7 @@ class Prestation(models.Model):
             if template:
                 for partner in self.email_partner_ids:
                     email_values = {
-                        'email_from': self.user_id.email,
+                        'email_from': 'controlebr@brconsult.fr',
                         'email_to': partner.email,
                         'email_cc': 'controlebr@brconsult.fr',
                         'auto_delete': True,
