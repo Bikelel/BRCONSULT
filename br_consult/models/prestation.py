@@ -187,7 +187,7 @@ class Prestation(models.Model):
     # TRE PAE PAM
     characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de l'installation")
     comment_levage_characteristic = fields.Html("Commentaires Caractéristique de levage")
-    is_report_sent = fields.Boolean("Rapport envoyé")
+    is_report_sent = fields.Boolean("Rapport envoyé", copy=False)
     kanban_color = fields.Integer('Color Index', compute="change_colore_on_kanban", store=True)
     prestation_id = fields.Many2one('prestation.prestation', string="Référence du rapport précédent")
     #champ temp
@@ -195,7 +195,7 @@ class Prestation(models.Model):
     state_confirmation_sent = fields.Selection([
         ('draft', 'Pas encore envoyée'),
         ('sent', 'Confirmation envoyée au client'),
-    ], string="Confirmation envoyée ?", default='draft')
+    ], string="Confirmation envoyée ?", default='draft', copy=False)
     email_partner_ids = fields.Many2many('res.partner', string="Emails")
     #email_partner_ids = fields.One2many('prestation.contact.email', 'prestation_id', string="Emails")
     @api.onchange('prestation_id')
