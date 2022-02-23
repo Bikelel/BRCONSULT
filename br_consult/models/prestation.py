@@ -81,7 +81,7 @@ class Prestation(models.Model):
     state = fields.Selection(string='Status', readonly=True, copy=False, index=True, related='stage_id.state', default="phase1")
     title_label = fields.Text("Titre de prestation", store = True)
     message_label = fields.Text("Code de l'article", store = True)
-    site_address = fields.Text("Adresse de chantier")
+    site_address = fields.Char("Adresse de chantier")
     site_localisation = fields.Char("Localisation")
     prensent_contact = fields.Char("Nom de la personne présente")
     scaffolding_surface = fields.Float("Surface d'échafaudage annoncée (m2)")
@@ -286,6 +286,10 @@ class Prestation(models.Model):
                 raise UserError(_('Vous ne pouvez pas modifier la phase sans envoyer une confirmation de planning au client!'))
             if stage_id not in stages.ids:
                 raise UserError(_('You don t have the privilege to change stage'))
+            if not self.favorable_opinion and not self.defavorable_opinion:
+                if self.state in ['phase2', 'phase3']:
+                    raise UserError(_('Vous devez selectionner soit avis favorable, avis défavorable ou les deux!'))
+                    
                 
         result = super(Prestation, self).write(vals)
         
@@ -471,10 +475,11 @@ class Prestation(models.Model):
 
     def button_send_report(self):
         if self.email_partner_ids:
-            if self.favorable_opinion:
-                template = self.env.ref('br_consult.email_notification_prestation')
-            elif self.defavorable_opinion:
+            if self.defavorable_opinion:
                 template = self.env.ref('br_consult.email_notification_prestation_avis_defavorable')
+            elif self.favorable_opinion:
+                template = self.env.ref('br_consult.email_notification_prestation')
+            
             else:
                 template = False
             
