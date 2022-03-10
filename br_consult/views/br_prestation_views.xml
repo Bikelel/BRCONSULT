@@ -108,6 +108,7 @@
                 <calendar date_start="verification_date" string="Prestation" mode="week" color="user_id" date_delay="prestation_duration" form_view_id="%(br_consult.quick_calendar_form_view_prestation)d">
                     
                     <field name="inspection_type" filters="1"/>
+                    <field name="site_address"/>
                     <field name="installation_type"/>
                     <field name="verification_type"/>
                     <field name="user_id" filters="1"/>
