@@ -608,7 +608,7 @@
                         
                             <h2 class="null" style="display: block;margin: 0;padding: 0;color: #303030;font-family: Helvetica;font-size: 22px;font-style: normal;font-weight: bold;line-height: 125%;letter-spacing: normal;text-align: left;"> <t t-out="object.partner_id.name" /></h2>
 <br/>
-Nous avons le plaisir de vous confirmer que <strong> <t t-out="object.user_id.name" />/ <t t-out="object.user_id.phone" /></strong> interviendra sur votre chantier du <strong> <t t-out="object.site_address" /></strong> le <strong> <t t-out="object.verification_date" /></strong>
+Nous avons le plaisir de vous confirmer que <strong> <t t-out="object.user_id.name" />/ <t t-out="object.user_id.phone" /></strong> interviendra sur votre chantier du <strong> <t t-out="object.site_address" /></strong> le <strong> <t t-out="object.verification_date.strftime('%d/%m/%Y')" /></strong>
                         </td>
                     </tr>
                 </tbody></table>
@@ -672,7 +672,8 @@ Nous avons le plaisir de vous confirmer que <strong> <t t-out="object.user_id.na
                         
                         <td valign="top" class="mcnTextContent" style="padding-top: 0;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #505050;font-family: Helvetica;font-size: 16px;line-height: 150%;text-align: left;">
                         
-                            XXXAUTREINFOSXXX
+                            Bien à vous, <br/>
+                            Merci
                         </td>
                     </tr>
                 </tbody></table>
@@ -700,12 +701,12 @@ Nous avons le plaisir de vous confirmer que <strong> <t t-out="object.user_id.na
 															<table border="0" cellpadding="5" cellspacing="5" width="150" id="calendarContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;border: 5px solid #FFFFFF;">
 																<tr>
 																	<td align="center" bgcolor="#EFEFEF" valign="top" id="monthContainer" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EFEFEF;color: #303030;font-family: Helvetica;font-size: 14px;font-weight: bold;line-height: 150%;">
-																		<div><t t-out="object.verification_date" /></div>
+																		<div><t t-out="object.verification_date.strftime('%d/%m/%Y')" /></div>
 																	</td>
 																</tr>
 																<tr>
 																	<td align="center" valign="top" id="dayContainer" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;color: #303030;font-family: Helvetica;font-size: 72px;font-weight: bold;line-height: 100%;">
-																		<div>XNX</div>
+																		<div><t t-out="object.verification_date.strftime('%d')"/></div>
 																	</td>
 																</tr>
 															</table>
