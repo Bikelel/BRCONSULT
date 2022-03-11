@@ -282,12 +282,14 @@ class Prestation(models.Model):
         stages = user.stage_ids
         if 'stage_id' in vals:
             stage_id = vals.get('stage_id')
+            stage_obj_id = self.env['prestation.stage'].browse(int(stage_id))
+            
             if self.state_confirmation_sent == 'draft':
                 raise UserError(_('Vous ne pouvez pas modifier la phase sans envoyer une confirmation de planning au client!'))
             if stage_id not in stages.ids:
                 raise UserError(_('You don t have the privilege to change stage'))
             if not self.favorable_opinion and not self.defavorable_opinion:
-                if self.state in ['phase2', 'phase3']:
+                if self.state in ['phase2', 'phase3'] and stage_obj_id.state != 'phase1':
                     raise UserError(_('Vous devez selectionner soit avis favorable, avis défavorable ou les deux!'))
                     
                 
