@@ -53,6 +53,7 @@ access_prestation_platform_wind_speed_max_admin,prestation.platform.wind.speed.m
 access_prestation_levage_characteristic_palan_admin,prestation.levage.characteristic.palan,model_prestation_levage_characteristic_palan,base.group_user,1,1,1,1
 access_prestation_platform_mark_palan_admin,prestation.platform.mark.palan,model_prestation_platform_mark_palan,base.group_user,1,1,1,1
 access_prestation_levage_max_use_admin,prestation.levage.max.use,model_prestation_levage_max_use,base.group_user,1,1,1,1
+access_contact_dell_admin,prestation.prestation,base.model_res_partner,base.group_system,1,1,1,1
 
 
 
