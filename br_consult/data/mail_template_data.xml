@@ -17,6 +17,15 @@
                         Nous vous souhaitons une bonne réception,
                         <br/>
                         Bien cordialement.
+                        <br/><br/>
+                        <strong>Département Inspection Technique</strong>
+                        Tél: 01 45 11 71 50
+                        ControleBR@brconsult.fr 
+                        <br/>
+                        16-18 Boulevard de Créteil
+                        <br/>
+                        94100 Saint-Maur-des-Fossés
+                        www.brconsult.com
                     </p>
                 </div>
             </field>
@@ -45,6 +54,15 @@
                         Nous restons à votre disposition pour tout complément d’information.<br />
                         Nous vous souhaitons une bonne réception,<br />
                         Bien cordialement.<br />
+                        <br/><br/>
+                        <strong>Département Inspection Technique</strong>
+                        Tél: 01 45 11 71 50
+                        ControleBR@brconsult.fr 
+                        <br/>
+                        16-18 Boulevard de Créteil
+                        <br/>
+                        94100 Saint-Maur-des-Fossés
+                        www.brconsult.com
                         
                     </p>
                 </div>
@@ -608,7 +626,7 @@
                         
                             <h2 class="null" style="display: block;margin: 0;padding: 0;color: #303030;font-family: Helvetica;font-size: 22px;font-style: normal;font-weight: bold;line-height: 125%;letter-spacing: normal;text-align: left;"> <t t-out="object.partner_id.name" /></h2>
 <br/>
-Nous avons le plaisir de vous confirmer que <strong> <t t-out="object.user_id.name" />/ <t t-out="object.user_id.phone" /></strong> interviendra sur votre chantier du <strong> <t t-out="object.site_address" /></strong> le <strong> <t t-out="object.verification_date.strftime('%d/%m/%Y')" /></strong>
+Nous avons le plaisir de vous confirmer que <strong> <t t-out="object.user_id.name" />/ <t t-out="object.user_id.phone" /></strong> interviendra sur votre chantier du <strong> <t t-out="object.site_address" /></strong> le <strong> <t t-out="object.verification_date.strftime('%d/%m/%Y')" />.</strong>
                         </td>
                     </tr>
                 </tbody></table>
