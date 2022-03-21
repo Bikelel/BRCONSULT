@@ -211,6 +211,7 @@
                     </div>
                 </div>
                 <div style="page-break-after: always;"/>
+                <br/>
                 <div class="bloc_title">
                     1) Périmètre de la mission
                 </div>
@@ -1329,7 +1330,7 @@ La présente mission est réalisée conformément au contrat référencé
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">br_consult.report_prestation</field>
             <field name="report_file">br_consult.report_prestation</field>
-            <field name="print_report_name">'Prestation - %s' % (object.name)</field>
+            <field name="print_report_name">'Prestation - %s - %s - %s' % (object.name, object.site_address, object.partner_id.name)</field>
             <field name="binding_model_id" ref="model_prestation_prestation"/>
             <field name="binding_type">report</field>
         </record>
