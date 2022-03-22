@@ -3,17 +3,17 @@
     <template id="external_layout_standard_br_consult" inherit_id="web.external_layout_standard">
         <xpath expr="//div[hasclass('row')]" position="replace">
             <div class='row not-first-page' style="font-size:11px;">
-                <div class="col-5 mb6">
+                <div class="col-6 row">
                     
-                    <div t-if='report_name_brconsult'>
+                    <div t-if='report_name_brconsult' class="col-6">
                         <span t-esc='report_name_brconsult' />
                     </div>
-                    <div t-if='partner_id_name_brconsult' >
+                    <div t-if='partner_id_name_brconsult' class="col-6 text-right">
                         <strong><span t-esc='partner_id_name_brconsult' /></strong>
                     </div>
                 </div>
 
-                <div class="col-6 mb6 text-right" >
+                <div class="col-6 text-right" >
                     <t t-if='site_address_brconsult'>
                         <span t-esc='site_address_brconsult' />
                     </t>
