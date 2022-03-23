@@ -897,7 +897,7 @@ La présente mission est réalisée conformément au contrat référencé
                     </div>
 
                     <div t-if="doc.report_parameter_id and doc.report_parameter_id.adequation_exam">
-                        <span t-field="doc.report_parameter_id.adequation_exam"/>
+                        <span t-field="doc.report_parameter_id.assembly_exam"/>
                     </div>
 
                     <table class='borderless'>
