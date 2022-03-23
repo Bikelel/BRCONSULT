@@ -219,9 +219,9 @@
                 
 La présente mission est réalisée conformément au contrat référencé
                     <span t-field="doc.partner_id.ref"/>. 
- Il s’agit d’une mission de <span t-field="doc.verification_type"/> limitée à la vérification visuelle des zones de 
+ Il s’agit d’une mission de <span t-field="doc.verification_type"/> limitée à la vérification visuelle des zones de l’échafaudage
                     <t t-if="inspection_type=='echafaudage'"> 
-                        l’échafaudage
+                       
                     </t>
                     <t t-else=""> <span t-field="doc.installation_type"/> </t>
                     accessibles en sécurité. 
@@ -241,7 +241,7 @@ La présente mission est réalisée conformément au contrat référencé
                 </div>
                 <div style="border: 2px solid #5F5F5F; padding:10px; page-break-inside: avoid;" t-if="doc.comment_scope_mission">
                     Commentaires:<br/>
-                    <span t-field="doc.comment_scope_mission"/>
+                    <span t-field="doc.comment_scope_mission" />
                 </div>
                 <div style="page-break-inside: avoid;">
                     <div class="bloc_title" t-if="doc.inspection_type == 'echafaudage'">
@@ -897,7 +897,7 @@ La présente mission est réalisée conformément au contrat référencé
                     </div>
 
                     <div t-if="doc.report_parameter_id and doc.report_parameter_id.adequation_exam">
-                        <span t-field="doc.report_parameter_id.adequation_exam"/>
+                        <span t-field="doc.report_parameter_id.assembly_exam"/>
                     </div>
 
                     <table class='borderless'>
@@ -1107,7 +1107,7 @@ La présente mission est réalisée conformément au contrat référencé
                 </div>
                 <div style="page-break-inside: avoid;">
                     <div style="color: #318CE7;" class="bloc_sub_title" t-if="doc.inspection_type == 'levage'">
-                        4.4) Examen de bon fonctionnement
+                        4.4) Examen de bon fonctionnement 
                     </div>
                     <div t-if="doc.report_parameter_id and doc.inspection_type == 'levage'">
                         <span t-field="doc.report_parameter_id.good_functionning" t-if="doc.report_parameter_id.good_functionning"/>
