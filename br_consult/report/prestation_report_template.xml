@@ -219,10 +219,11 @@
                 
 La présente mission est réalisée conformément au contrat référencé
                     <span t-field="doc.partner_id.ref"/>. 
- Il s’agit d’une mission de <span t-field="doc.verification_type"/> limitée à la vérification visuelle des zones de l’échafaudage
-                    <t t-if="inspection_type=='echafaudage'"> 
-                       
-                    </t>
+ Il s’agit d’une mission de <span t-field="doc.verification_type"/> limitée à la vérification visuelle des zones de 
+    
+                    <t t-if="doc.inspection_type == 'echafaudage'">  
+                    l'échafaudage
+                    </t> 
                     <t t-else=""> <span t-field="doc.installation_type"/> </t>
                     accessibles en sécurité. 
                     <br/>
