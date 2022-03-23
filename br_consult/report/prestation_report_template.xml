@@ -241,7 +241,7 @@ La présente mission est réalisée conformément au contrat référencé
                 </div>
                 <div style="border: 2px solid #5F5F5F; padding:10px; page-break-inside: avoid;" t-if="doc.comment_scope_mission">
                     Commentaires:<br/>
-                    <span t-field="doc.comment_scope_mission" t-as="charac"/>
+                    <span t-field="doc.comment_scope_mission" />
                 </div>
                 <div style="page-break-inside: avoid;">
                     <div class="bloc_title" t-if="doc.inspection_type == 'echafaudage'">
