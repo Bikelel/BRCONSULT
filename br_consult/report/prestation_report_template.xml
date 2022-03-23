@@ -241,7 +241,7 @@ La présente mission est réalisée conformément au contrat référencé
                 </div>
                 <div style="border: 2px solid #5F5F5F; padding:10px; page-break-inside: avoid;" t-if="doc.comment_scope_mission">
                     Commentaires:<br/>
-                    <span t-field="doc.comment_scope_mission"/>
+                    <span t-field="doc.comment_scope_mission" t-as="charac"/>
                 </div>
                 <div style="page-break-inside: avoid;">
                     <div class="bloc_title" t-if="doc.inspection_type == 'echafaudage'">
@@ -1112,7 +1112,7 @@ La présente mission est réalisée conformément au contrat référencé
                     <div t-if="doc.report_parameter_id and doc.inspection_type == 'levage'">
                         <span t-field="doc.report_parameter_id.good_functionning" t-if="doc.report_parameter_id.good_functionning"/>
                     </div>
-                    <table class='table' t-if="doc.inspection_type == 'levage' and doc.good_functioning_exam_ids">
+                    <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.good_functioning_exam_ids">
 
                         <tbody>
                             <t t-foreach="doc.good_functioning_exam_ids" t-as="stat">
