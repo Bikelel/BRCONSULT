@@ -461,18 +461,20 @@ class Prestation(models.Model):
     def button_send_confirmation_prestation(self):
         if self.email_partner_ids and self.partner_id:
             template = self.env.ref('br_consult.email_confirmation_prestation')
+            receipt_list = []
             for partner in self.email_partner_ids:
-                email_values = {
-                'email_from': 'controlebr@brconsult.fr',
-                'email_to': partner.email,
-                'email_cc': 'controlebr@brconsult.fr',
-                'auto_delete': True,
-                'recipient_ids': [],
-                'partner_ids': [],
-                'scheduled_date': False,}
-                
-                template.sudo().send_mail(self.id, force_send=True, email_values=email_values)
-                partner.sudo().update({'parent_id': self.partner_id.id})
+                receipt_list.append(partner.email)
+            email_values = {
+            'email_from': 'controlebr@brconsult.fr',
+            'email_to': ';'.join(map(lambda x: x, receipt_list)),
+            'email_cc': 'controlebr@brconsult.fr',
+            'auto_delete': True,
+            'recipient_ids': [],
+            'partner_ids': [],
+            'scheduled_date': False,}
+
+            template.sudo().send_mail(self.id, force_send=True, email_values=email_values)
+            partner.sudo().update({'parent_id': self.partner_id.id})
             self.write({'state_confirmation_sent': 'sent'})
 
     def button_send_report(self):
@@ -486,16 +488,18 @@ class Prestation(models.Model):
                 template = False
             
             if template:
+                receipt_list = []
                 for partner in self.email_partner_ids:
-                    email_values = {
-                        'email_from': 'controlebr@brconsult.fr',
-                        'email_to': partner.email,
-                        'email_cc': 'controlebr@brconsult.fr',
-                        'auto_delete': True,
-                        'recipient_ids': [],
-                        'partner_ids': [],
-                        'scheduled_date': False,}
-                    template.sudo().send_mail(self.id, force_send=True, email_values=email_values)
+                    receipt_list.append(partner.email)
+                email_values = {
+                    'email_from': 'controlebr@brconsult.fr',
+                    'email_to': ';'.join(map(lambda x: x, receipt_list)),
+                    'email_cc': 'controlebr@brconsult.fr',
+                    'auto_delete': True,
+                    'recipient_ids': [],
+                    'partner_ids': [],
+                    'scheduled_date': False,}
+                template.sudo().send_mail(self.id, force_send=True, email_values=email_values)
                 self.write({'is_report_sent': True})
     
     def cron_send_report_prestation(self):
