@@ -12,6 +12,7 @@ class PrestationConstat(models.Model):
     type = fields.Selection(string="Type", related="verification_point_id.type", store=True)
     verification_point_id = fields.Many2one('prestation.verification.point', string="Point de vérification")
     observation_ids = fields.Many2many('prestation.observation', string="Observations/réserves" )
+    constat_observation_ids = fields.One2many('prestation.constat.observation', 'constat_id',string="Observations/réserves" )
     inspection_type = fields.Selection(related="prestation_id.inspection_type")
     installation_type = fields.Selection(related="prestation_id.installation_type")
     reserve = fields.Text("Observations/réserves OLD")

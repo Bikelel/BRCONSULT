@@ -342,9 +342,9 @@
                                 </group>
                                 <group string="Constat (s)" attrs="{'invisible': [('inspection_type', '=', 'levage'), ('verification_type', '=', 'VP')]}">
                                     <field name="constat_adequacy_exam_ids" nolabel="1" context="{'default_prestation_id':active_id}" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
-                                        <tree editable='bottom'>
+                                        <tree>
                                             <field name="verification_point_id" options="{'no_create': True,  'no_open':False}" domain="[('type', '=', 'adequacy_exam'), ('inspection_type', '=', inspection_type), ('installation_type', '=', installation_type)]"/>
-                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" context = "{'default_verification_point_id':verification_point_id}" options="{'color_field': 'color'}" decoration-warning="reserve == True"/>
+                                            <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="inspection_type" invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
                                             <field name="precision"/>
