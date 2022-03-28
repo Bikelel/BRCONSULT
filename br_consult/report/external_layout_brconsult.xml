@@ -3,17 +3,17 @@
     <template id="external_layout_standard_br_consult" inherit_id="web.external_layout_standard">
         <xpath expr="//div[hasclass('row')]" position="replace">
             <div class='row not-first-page' style="font-size:11px;">
-                <div class="col-4 mb4">
-                    <t t-if='report_name_brconsult'>
+                <div class="col-6 row">
+                    
+                    <div t-if='report_name_brconsult' class="col-6">
                         <span t-esc='report_name_brconsult' />
-                    </t>
+                    </div>
+                    <div t-if='partner_id_name_brconsult' class="col-6 text-right">
+                        <strong><span t-esc='partner_id_name_brconsult' /></strong>
+                    </div>
                 </div>
-                <div class="col-4 mb4 text-center">
-                    <t t-if='partner_id_name_brconsult'>
-                        <span t-esc='partner_id_name_brconsult' />
-                    </t>
-                </div>
-                <div class="col-4 mb4 text-right" >
+
+                <div class="col-6 text-right" >
                     <t t-if='site_address_brconsult'>
                         <span t-esc='site_address_brconsult' />
                     </t>
@@ -30,20 +30,23 @@
         
         <xpath expr="//div[@t-attf-class='footer o_standard_footer o_company_#{company.id}_layout']" position="replace">
             <div class="footer">
-          <div class="text-center" style="border-top: 1px solid black;">
-            <div name="image_logo" style="margin-top:5px;">
-                <img src="/br_consult/static/src/img/ISO-9001-1.png" style="max-height: 30px;" alt="iso_9001"/>
-                <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 30px; margin-left:10px;" alt="Logo"/>
-                <img src="br_consult/static/src/img/Logo-Mileezim.png" style="max-height: 30px;" alt="Mileezim"/>
-              
+          <div style="border-top: 1px solid black;">
+            <div class="row">
+                <div name="image_logo" style="margin-top:5px;" class="text-center col-1"/>
+                <div name="image_logo" style="margin-top:5px;" class="text-center col-10">
+                    <img src="/br_consult/static/src/img/ISO-9001-1.png" style="max-height: 30px;" alt="iso_9001"/>
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 30px; margin-left:10px;" alt="Logo"/>
+                    <img src="br_consult/static/src/img/Logo-Mileezim.png" style="max-height: 30px;" alt="Mileezim"/>
+                </div>
+                <div t-if="report_type == 'pdf'" class="text-right col-1" style="font-size:9px;">
+                    <span class="page"/> / <span class="topage"/>
+                </div>
             </div>
-            <div>
+            <div class="text-center">
               <span t-field="company.report_footer"/>
             </div>
 
-            <div t-if="report_type == 'pdf'" class="text-muted" style="font-size:11px;">
-              Page: <span class="page"/> / <span class="topage"/>
-            </div>
+
           </div>
         </div>
             

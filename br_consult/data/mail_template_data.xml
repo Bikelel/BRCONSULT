@@ -6,23 +6,37 @@
             <field name="model_id" ref="br_consult.model_prestation_prestation"/>
             <field name="email_from"></field>
             <field name="partner_to"></field>
-            <field name="subject"> {{object.site_address}} - Avis favorable </field>
+            <field name="subject"> {{object.site_address}} - Avis favorable</field>
             <field name="body_html" type="html">
-                <head></head>
+                
                 <div style="margin: 0px; padding: 0px;">
                     <p style="margin: 0px; padding: 0px; font-size: 13px;">
                         Bonjour,
-                        <br /><br />
+                        <br/><br/>
                         Vous trouverez ci-joint(s) le(s) rapport(s) d’inspection du chantier cité en objet.
                         Nous vous souhaitons une bonne réception,
-                        <br />
+                        <br/>
                         Bien cordialement.
+                        <br/><br/>
+                        <strong>BR CONSULT</strong>
+                        <br/>
+                        <strong>Département Inspection Technique</strong>
+                        <br/>
+                        Tél: 01 45 11 71 50
+                        <br/>
+                        E-mail : ControleBR@brconsult.fr 
+                        <br/><br/>
+                        16-18 Boulevard de Créteil
+                        <br/>
+                        94100 Saint-Maur-des-Fossés
+                        <br/>
+                        www.brconsult.com
                     </p>
                 </div>
             </field>
             <field name="report_template" ref="action_report_prestation"/>
             <field name="report_name">{{ (object.name or '').replace('/','_') }}</field>
-            <field name="lang">{{object.partner_id.lang}}</field>
+<!--             <field name="lang">{{object.partner_id.lang}}</field> -->
             <field name="auto_delete" eval="True"/>
         </record>
         
@@ -31,27 +45,40 @@
             <field name="model_id" ref="br_consult.model_prestation_prestation"/>
             <field name="email_from"></field>
             <field name="partner_to"></field>
-            <field name="subject"> {{object.site_address}} - Avis défavorable </field>
+            <field name="subject"> {{object.site_address}} - Avis défavorable</field>
             <field name="body_html" type="html">
-                <head></head>
+                
                 <div style="margin: 0px; padding: 0px;">
                     <p style="margin: 0px; padding: 0px; font-size: 13px;">
                         Bonjour,
                         <br /><br />
                         Vous trouverez ci-joint(s) le(s) rapport(s) d’inspection du chantier cité en objet.
-                        ATTENTION, un avis défavorable a été émis sur le rapport référencé (numéro de référence: {{ object.name}})<br/>
+                        ATTENTION, un avis défavorable a été émis sur le rapport référencé (numéro de référence: <t t-out="object.name" />)<br/>
                         Nous vous recommandons fortement de programmer une vérification de remise en service, afin de constater la levée des réserves.<br />
                         A l’issue, il vous sera remis un nouveau rapport « annulant et remplaçant le précédent », et ne mentionnant plus les observations qui ont été levées.<br/>
                         Nous restons à votre disposition pour tout complément d’information.<br />
                         Nous vous souhaitons une bonne réception,<br />
                         Bien cordialement.<br />
-                        
+                       <br/><br/>
+                        <strong>BR CONSULT</strong>
+                        <br/>
+                        <strong>Département Inspection Technique</strong>
+                        <br/>
+                        Tél: 01 45 11 71 50
+                        <br/>
+                        E-mail : ControleBR@brconsult.fr 
+                        <br/><br/>
+                        16-18 Boulevard de Créteil
+                        <br/>
+                        94100 Saint-Maur-des-Fossés
+                        <br/>
+                        www.brconsult.com      
                     </p>
                 </div>
             </field>
             <field name="report_template" ref="action_report_prestation"/>
             <field name="report_name">{{ (object.name or '').replace('/','_') }}</field>
-            <field name="lang">{{object.partner_id.lang}}</field>
+<!--             <field name="lang">{{object.partner_id.lang}}</field> -->
             <field name="auto_delete" eval="True"/>
         </record>
         
@@ -60,7 +87,7 @@
             <field name="model_id" ref="br_consult.model_prestation_prestation"/>
             <field name="email_from"></field>
             <field name="partner_to"></field>
-            <field name="subject">Prestation: {{object.name}} </field>
+            <field name="subject">Prestation: {{object.name}} - {{object.site_address}}</field>
             <field name="body_html" type="html">
                 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -608,7 +635,7 @@
                         
                             <h2 class="null" style="display: block;margin: 0;padding: 0;color: #303030;font-family: Helvetica;font-size: 22px;font-style: normal;font-weight: bold;line-height: 125%;letter-spacing: normal;text-align: left;"> <t t-out="object.partner_id.name" /></h2>
 <br/>
-Nous avons le plaisir de vous confirmer que <strong> <t t-out="object.user_id.name" />/ <t t-out="object.user_id.phone" /></strong> interviendra sur votre chantier du <strong> <t t-out="object.site_address" /></strong> le <strong> <t t-out="object.verification_date" /></strong>
+Nous avons le plaisir de vous confirmer que <strong> <t t-out="object.user_id.name" />/ <t t-out="object.user_id.phone" /></strong> interviendra sur votre chantier du <strong> <t t-out="object.site_address" /></strong> le <strong> <t t-out="object.verification_date.strftime('%d/%m/%Y')" />.</strong>
                         </td>
                     </tr>
                 </tbody></table>
@@ -672,7 +699,8 @@ Nous avons le plaisir de vous confirmer que <strong> <t t-out="object.user_id.na
                         
                         <td valign="top" class="mcnTextContent" style="padding-top: 0;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #505050;font-family: Helvetica;font-size: 16px;line-height: 150%;text-align: left;">
                         
-                            XXXAUTREINFOSXXX
+                            Bien à vous, <br/>
+                            Merci
                         </td>
                     </tr>
                 </tbody></table>
@@ -700,12 +728,12 @@ Nous avons le plaisir de vous confirmer que <strong> <t t-out="object.user_id.na
 															<table border="0" cellpadding="5" cellspacing="5" width="150" id="calendarContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;border: 5px solid #FFFFFF;">
 																<tr>
 																	<td align="center" bgcolor="#EFEFEF" valign="top" id="monthContainer" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EFEFEF;color: #303030;font-family: Helvetica;font-size: 14px;font-weight: bold;line-height: 150%;">
-																		<div><t t-out="object.verification_date" /></div>
+																		<div><t t-out="object.verification_date.strftime('%d/%m/%Y')" /> à <t t-out="object.verification_date.strftime('%H:%M')"/></div>
 																	</td>
 																</tr>
 																<tr>
 																	<td align="center" valign="top" id="dayContainer" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;color: #303030;font-family: Helvetica;font-size: 72px;font-weight: bold;line-height: 100%;">
-																		<div>XNX</div>
+																		<div><t t-out="object.verification_date.strftime('%d')"/></div>
 																	</td>
 																</tr>
 															</table>

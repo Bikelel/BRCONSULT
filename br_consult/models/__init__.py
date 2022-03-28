@@ -33,3 +33,4 @@ from . import prestation_good_functioning
 from . import prestation_good_functioning_exam
 from . import characteristic
 from . import prestation_levage_max_use
+from . import prestation_constat_observation

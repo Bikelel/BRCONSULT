@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_prestation_constat_form" model="ir.ui.view">
+            <field name="name">prestation.constat.form</field>
+            <field name="model">prestation.constat</field>
+            <field name="arch" type="xml">
+                <form string="Constat">
+                    <sheet>
+                        <group col="4">
+                            
+                            <field name="verification_point_id" options="{'no_create': True,  'no_open':False}" domain="[('type', '=', 'adequacy_exam'), ('inspection_type', '=', inspection_type), ('installation_type', '=', installation_type)]"/>
+                            <field name="type"/>
+                            <field name="precision"/>
+                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+                            <field name="state"/>
+                            <field name="date"/>
+                            <field name="name" invisible="1"/>
+                            <field name="inspection_type" invisible="1"/>
+                            <field name="installation_type" invisible="1"/>
+                        </group>
+                        <group string="Observations/réserves">
+                            <field name="constat_observation_ids"  context="{'default_verification_point_id':verification_point_id}" nolabel="1">
+                                <tree  editable='bottom'>
+                                    <field name="observation_id" domain="[('verification_point_id', '=', verification_point_id)]"/>
+                                    <field name="verification_point_id" invisible="1"/>
+                                    <field name="reserve"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+
+  </data>
+</odoo>

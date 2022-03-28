@@ -25,6 +25,7 @@
         'data/ir_sequence_data.xml',
         'views/menu_item_views.xml',
         'views/prestation_stage_views.xml',
+        'views/prestation_constat_views.xml',
         'views/br_prestation_views.xml',
         'views/prestation_message_label_views.xml',
         'views/prestation_scaffolding_class_views.xml',
@@ -103,6 +104,7 @@
         'views/characteristic/prestation_platform_mark_palan_views.xml',
         'data/mail_template_data.xml',
         'data/ir_cron_data.xml',
+        
     ],
     'installable': True,
     'auto_install': False,

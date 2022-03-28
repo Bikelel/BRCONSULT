@@ -74,14 +74,14 @@ class Prestation(models.Model):
     end_date_verification = fields.Datetime("Fin de la date de vérification", store=True, compute='_compute_end_date')
     prestation_duration = fields.Float("Durée d'une prestation", store=True, related="company_id.prestation_duration")
     partner_contact = fields.Char("Représentée par")
-    user_id = fields.Many2one('res.users', 'Inspecteur', default=default_user, tracking=True)
+    user_id = fields.Many2one('res.users', 'Inspecteur', default=default_user, tracking=True, required=True)
 
     stage_id = fields.Many2one(
         'prestation.stage', string='Etape', index=True, tracking=True, readonly=False, store=True, copy=False, group_expand='_read_group_stage_ids', ondelete='restrict', default=default_stage)
     state = fields.Selection(string='Status', readonly=True, copy=False, index=True, related='stage_id.state', default="phase1")
     title_label = fields.Text("Titre de prestation", store = True)
     message_label = fields.Text("Code de l'article", store = True)
-    site_address = fields.Text("Adresse de chantier")
+    site_address = fields.Char("Adresse de chantier")
     site_localisation = fields.Char("Localisation")
     prensent_contact = fields.Char("Nom de la personne présente")
     scaffolding_surface = fields.Float("Surface d'échafaudage annoncée (m2)")
@@ -187,7 +187,7 @@ class Prestation(models.Model):
     # TRE PAE PAM
     characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de l'installation")
     comment_levage_characteristic = fields.Html("Commentaires Caractéristique de levage")
-    is_report_sent = fields.Boolean("Rapport envoyé")
+    is_report_sent = fields.Boolean("Rapport envoyé", copy=False)
     kanban_color = fields.Integer('Color Index', compute="change_colore_on_kanban", store=True)
     prestation_id = fields.Many2one('prestation.prestation', string="Référence du rapport précédent")
     #champ temp
@@ -195,8 +195,9 @@ class Prestation(models.Model):
     state_confirmation_sent = fields.Selection([
         ('draft', 'Pas encore envoyée'),
         ('sent', 'Confirmation envoyée au client'),
-    ], string="Confirmation envoyée ?", default='draft')
-    
+    ], string="Confirmation envoyée ?", default='draft', copy=False)
+    email_partner_ids = fields.Many2many('res.partner', string="Emails")
+    #email_partner_ids = fields.One2many('prestation.contact.email', 'prestation_id', string="Emails")
     @api.onchange('prestation_id')
     def onchange_prestation(self):
         for presta in self:
@@ -205,6 +206,7 @@ class Prestation(models.Model):
 
     @api.model
     def create(self, vals):
+        
         if 'company_id' in vals:
             self = self.with_company(vals['company_id'])
         if vals.get('partner_id'):
@@ -272,11 +274,7 @@ class Prestation(models.Model):
                 vals.update({'characteristic_platform_ids': lines})
             else:
                 vals.update({'characteristic_palan_ids': lines})
-                             
-
-                
         result = super(Prestation, self).create(vals)
-        
         return result
 
     def write(self, vals):
@@ -284,15 +282,17 @@ class Prestation(models.Model):
         stages = user.stage_ids
         if 'stage_id' in vals:
             stage_id = vals.get('stage_id')
-            if vals.get('state_confirmation_sent') == 'draft':
+            stage_obj_id = self.env['prestation.stage'].browse(int(stage_id))
+            
+            if self.state_confirmation_sent == 'draft':
                 raise UserError(_('Vous ne pouvez pas modifier la phase sans envoyer une confirmation de planning au client!'))
             if stage_id not in stages.ids:
                 raise UserError(_('You don t have the privilege to change stage'))
+            if not self.favorable_opinion and not self.defavorable_opinion:
+                if self.state in ['phase2', 'phase3'] and stage_obj_id.state != 'phase1':
+                    raise UserError(_('Vous devez selectionner soit avis favorable, avis défavorable ou les deux!'))
+                    
                 
-                
-        if 'partner_id' in vals or 'inspection_type' in vals or 'installation_type' in vals:
-            _logger.info("################## %s", vals.get('name'))
-        
         result = super(Prestation, self).write(vals)
         
         return result
@@ -420,12 +420,6 @@ class Prestation(models.Model):
             else:
                 self.report_parameter_id = None
 
-    @api.onchange('stage_id', 'state')
-    def onchange_stage_id(self):
-        user = self.env.user
-        stages = user.stage_ids
-        if self.stage_id not in stages:
-            raise UserError(_('You don t have the privilege to change stage'))
     
     @api.depends('verification_date')
     def _compute_end_date(self):
@@ -465,38 +459,46 @@ class Prestation(models.Model):
              record.kanban_color = color
     
     def button_send_confirmation_prestation(self):
-        #for prestation in self:
-        if self.partner_id and self.partner_id.email:
+        if self.email_partner_ids and self.partner_id:
             template = self.env.ref('br_consult.email_confirmation_prestation')
+            receipt_list = []
+            for partner in self.email_partner_ids:
+                receipt_list.append(partner.email)
             email_values = {
-            'email_from': self.user_id.email,
-            'email_to': self.partner_id.email,
-            'email_cc': False,
+            'email_from': 'controlebr@brconsult.fr',
+            'email_to': ';'.join(map(lambda x: x, receipt_list)),
+            'email_cc': 'controlebr@brconsult.fr',
             'auto_delete': True,
             'recipient_ids': [],
             'partner_ids': [],
             'scheduled_date': False,}
-            if template:
-                template.send_mail(self.id, force_send=True, email_values=email_values)
-                self.write({'state_confirmation_sent': 'sent'})
+
+            template.sudo().send_mail(self.id, force_send=True, email_values=email_values)
+            partner.sudo().update({'parent_id': self.partner_id.id})
+            self.write({'state_confirmation_sent': 'sent'})
 
     def button_send_report(self):
-        if self.partner_id and self.partner_id.email:
-            if self.favorable_opinion:
-                template = self.env.ref('br_consult.email_notification_prestation')
-            elif self.defavorable_opinion:
+        if self.email_partner_ids:
+            if self.defavorable_opinion:
                 template = self.env.ref('br_consult.email_notification_prestation_avis_defavorable')
+            elif self.favorable_opinion:
+                template = self.env.ref('br_consult.email_notification_prestation')
+            
             else:
                 template = False
-            email_values = {
-            'email_from': self.user_id.email,
-            'email_to': self.partner_id.email,
-            'email_cc': False,
-            'auto_delete': True,
-            'recipient_ids': [],
-            'partner_ids': [],
-            'scheduled_date': False,}
+            
             if template:
+                receipt_list = []
+                for partner in self.email_partner_ids:
+                    receipt_list.append(partner.email)
+                email_values = {
+                    'email_from': 'controlebr@brconsult.fr',
+                    'email_to': ';'.join(map(lambda x: x, receipt_list)),
+                    'email_cc': 'controlebr@brconsult.fr',
+                    'auto_delete': True,
+                    'recipient_ids': [],
+                    'partner_ids': [],
+                    'scheduled_date': False,}
                 template.sudo().send_mail(self.id, force_send=True, email_values=email_values)
                 self.write({'is_report_sent': True})
     
@@ -504,4 +506,19 @@ class Prestation(models.Model):
         prestations = self.search([('state', '=', 'phase4'), ('is_report_sent', '=', False)])
         for prestation in prestations:
             prestation.sudo().button_send_report()
+    
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        for presta in self:
+            if presta.partner_id:
+                presta.contrat_ref = presta.partner_id.ref
+            else:
+                presta.contrat_ref = ''
+
+    @api.onchange('stage_id', 'state')
+    def onchange_stage_id(self):
+        user = self.env.user
+        stages = user.stage_ids
+        if self.stage_id not in stages:
+            raise UserError(_('You don t have the privilege to change stage'))
                 
