@@ -25,6 +25,7 @@ class PrestationConstat(models.Model):
     
 
     def action_show_details(self):
+        self.ensure_one()
         view = self.env.ref('br_consult.view_prestation_constat_form')
         return {
             'name': _('%s') % self.name,

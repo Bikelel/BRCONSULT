@@ -341,9 +341,9 @@
                                     </field>
                                 </group>
                                 <group string="Constat (s)" attrs="{'invisible': [('inspection_type', '=', 'levage'), ('verification_type', '=', 'VP')]}">
-                                    <field name="constat_adequacy_exam_ids" nolabel="1" context="{'default_prestation_id':active_id}" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
+                                    <field name="constat_adequacy_exam_ids" nolabel="1" context="{'default_prestation_id':active_id, 'default_type': 'adequacy_exam'}" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
                                         <tree>
-                                            <field name="verification_point_id" options="{'no_create': True,  'no_open':False}" domain="[('type', '=', 'adequacy_exam'), ('inspection_type', '=', inspection_type), ('installation_type', '=', installation_type)]"/>
+                                            <field name="verification_point_id" />
                                             <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="inspection_type" invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
@@ -352,6 +352,7 @@
                                             <field name="state"/>
                                             <field name="date"/>
                                             <button name="action_show_details" string="Edit" type="object" />
+
                                         </tree>
                                     </field>
                                 </group>
@@ -401,10 +402,10 @@
                                     <field name="comment_assembly_exam" string="Commentaires" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" force_save="1"/>
                                 </group>
                                 <group string="Constat (s)" attrs="{'invisible': [('inspection_type', '=', 'levage'), ('verification_type', '=', 'VP')]}">
-                                    <field name="constat_assembly_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
-                                        <tree editable='bottom' class="constat_class_table">
-                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'assembly_exam'), ('inspection_type', '=', inspection_type), ('installation_type', '=', installation_type)]"/>
-                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" context = "{'default_verification_point_id':verification_point_id}" options="{'color_field': 'color'}"/>
+                                    <field name="constat_assembly_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'assembly_exam'}">
+                                        <tree class="constat_class_table">
+                                            <field name="verification_point_id" options="{'no_create': True}"/>
+                                            <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
                                             <field name="state"/>
@@ -412,6 +413,7 @@
                                             <field name='inspection_type' invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object" />
+
                                         </tree>
                                     </field>
                                 </group>
@@ -428,10 +430,10 @@
                                 </group>
 
                                 <group string="Constat (s)">
-                                    <field name="constat_conservation_state_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
-                                        <tree editable='bottom' class="constat_class_table">
-                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'conservation_state_exam'), ('inspection_type', '=', inspection_type), ('installation_type', '=', installation_type)]"/>
-                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" context = "{'default_verification_point_id':verification_point_id}" options="{'color_field': 'color'}"/>
+                                    <field name="constat_conservation_state_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'conservation_state_exam'}">
+                                        <tree class="constat_class_table">
+                                            <field name="verification_point_id" options="{'no_create': True}" />
+                                            <field name="constat_observation_ids" widget="many2many_tags"  options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
                                             <field name="state"/>
@@ -455,10 +457,10 @@
                                 </group>
 
                                 <group string="Constat (s)" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
-                                    <field name="constat_good_functioning_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
-                                        <tree editable='bottom' class="constat_class_table">
-                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'good_functioning'), ('installation_type', '=', installation_type)]"/>
-                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" context = "{'default_verification_point_id':verification_point_id}" options="{'color_field': 'color'}"/>
+                                    <field name="constat_good_functioning_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'good_functioning'}">
+                                        <tree class="constat_class_table">
+                                            <field name="verification_point_id" options="{'no_create': True}"/>
+                                            <field name="constat_observation_ids" widget="many2many_tags"  options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
                                             <field name="state"/>
@@ -484,10 +486,10 @@
                                     
                                 </group>
                                 <group string="Constat (s)" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}">
-                                    <field name="constat_epreuve_statique_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
-                                        <tree editable='bottom' style="max-width:90%;">
-                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'epreuve_statique'), ('installation_type', '=', installation_type)]"/>
-                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" context = "{'default_verification_point_id':verification_point_id}" options="{'color_field': 'color'}"/>
+                                    <field name="constat_epreuve_statique_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'epreuve_statique'}">
+                                        <tree style="max-width:90%;">
+                                            <field name="verification_point_id" options="{'no_create': True}" />
+                                            <field name="constat_observation_ids"  widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
                                             <field name="state"/>
@@ -508,10 +510,10 @@
                                     
                                 </group>
                                 <group string="Constat (s)" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}">
-                                    <field name="constat_epreuve_dynamique_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
-                                        <tree editable='bottom' style="max-width:90%;">
-                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'epreuve_dynamique'), ('installation_type', '=', installation_type)]"/>
-                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" context = "{'default_verification_point_id':verification_point_id}" options="{'color_field': 'color'}"/>
+                                    <field name="constat_epreuve_dynamique_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'epreuve_dynamique'}">
+                                        <tree style="max-width:90%;">
+                                            <field name="verification_point_id" options="{'no_create': True}" />
+                                            <field name="constat_observation_ids"  widget="many2many_tags"  options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
                                             <field name="state"/>
