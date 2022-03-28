@@ -38,7 +38,7 @@
                     <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 30px; margin-left:10px;" alt="Logo"/>
                     <img src="br_consult/static/src/img/Logo-Mileezim.png" style="max-height: 30px;" alt="Mileezim"/>
                 </div>
-                <div t-if="report_type == 'pdf'" class="text-muted text-right col-1" style="font-size:9px;">
+                <div t-if="report_type == 'pdf'" class="text-right col-1" style="font-size:9px;">
                     <span class="page"/> / <span class="topage"/>
                 </div>
             </div>
