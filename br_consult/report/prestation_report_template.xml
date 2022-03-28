@@ -940,6 +940,28 @@ La présente mission est réalisée conformément au contrat référencé
                             </tbody>
                         </tbody>
                     </table>
+                    <table t-if="doc.assembly_file=='no'" class="table">
+                        <tr class="text-center">
+                            <td>Notice constructeur</td>
+                            
+                            <td>Carnet de maintenance</td>
+                        </tr>
+                        <tbody>
+                            <tbody>
+                                <tr class="text-center">
+                                    <td>
+                                        <t t-if="doc.notice_constructeur">Oui</t>
+                                        <t t-else="">Non</t>
+                                    </td>
+                                   
+                                    <td>
+                                        <t t-if="doc.maintenance_log">Oui</t>
+                                        <t t-else="">Non</t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </tbody>
+                    </table>
                 </div>
                 
                 <table class='borderless'>
