@@ -290,6 +290,10 @@ La présente mission est réalisée conformément au contrat référencé
                 <t t-if='doc.image5 or doc.image6' >
                     <br/><br/><br/><br/><br/>
                 </t>
+                <div style="border: 2px solid #5F5F5F; padding:10px; page-break-inside: avoid;" t-if="doc.comment_scaffolding_photographic_location">
+                    Commentaires:<br/>
+                    <span t-field="doc.comment_scaffolding_photographic_location"/>
+                </div>
                 <div style="page-break-inside: avoid;">
                 <div class="bloc_title" t-if="doc.inspection_type == 'echafaudage'">
                     3) Caractéristiques de l’échafaudage
@@ -346,7 +350,7 @@ La présente mission est réalisée conformément au contrat référencé
                         </t>
                     </tbody>
                 </table>
-                <div style="border: 2px solid #5F5F5F; padding:10px; page-break-inside: avoid;" t-if="doc.inspection_type == 'echafaudage'">
+                <div style="border: 2px solid #5F5F5F; padding:10px; page-break-inside: avoid;" t-if="doc.inspection_type == 'echafaudage' and doc.comment_scaffolding_characteristic">
                     Commentaires:<br/>
                     <span t-field="doc.comment_scaffolding_characteristic"/>
                 </div>
@@ -480,10 +484,6 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Nombre de personnes maximum</td>
                             <td t-foreach="doc.characteristic_suspended_platform_ids" t-as="charac"><span t-field="charac.nb_personne_max"/></td>
                         </tr>
-<!--                         <tr>
-                            <td>Commentaire</td>
-                            <td t-foreach="doc.characteristic_suspended_platform_ids" t-as="charac"><span t-field="charac.comment_cmu"/></td>
-                        </tr> -->
                     </t>
                     
                     <t t-if="doc.installation_type in ['PWM', 'ASC', 'PTR', 'MMA']">
@@ -665,10 +665,7 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>CMU autorisée (en kg)</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.autorized_cmu"/></td>
                         </tr>
-<!--                         <tr>
-                            <td>Commentaire</td>
-                            <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.comment_cmu"/></td>
-                        </tr> -->
+
                         
                     </t>
                     <t t-if="doc.installation_type in ['TRE', 'PAE', 'PAM']">
@@ -768,7 +765,7 @@ La présente mission est réalisée conformément au contrat référencé
                     </t>
                     
                 </table>
-                <div style="border: 2px solid #5F5F5F; padding:10px; page-break-inside: avoid;" t-if="doc.inspection_type == 'levage'">
+                <div style="border: 2px solid #5F5F5F; padding:10px; page-break-inside: avoid;" t-if="doc.inspection_type == 'levage' and doc.comment_levage_characteristic">
                     Commentaires:<br/>
                     <span t-field="doc.comment_levage_characteristic"/>
                 </div>
@@ -1003,7 +1000,7 @@ La présente mission est réalisée conformément au contrat référencé
                         </tr>
                     </table>
                 </div>
-                <div style="border: 2px solid #5F5F5F; padding:10px; page-break-inside: avoid;" t-if="doc.inspection_type == 'levage'">
+                <div style="border: 2px solid #5F5F5F; padding:10px; page-break-inside: avoid;" t-if="doc.inspection_type == 'levage' and doc.comment_assembly_exam">
                     
                     Commentaires:<br/>
                     <span t-field="doc.comment_assembly_exam"/>
@@ -1199,7 +1196,7 @@ La présente mission est réalisée conformément au contrat référencé
                         <td>Hauteur d'élévation (en m)</td>
                         <td><span t-field="doc.elevation_height_statique"/></td>
                     </tr>
-                    <tr>
+                    <tr t-if="doc.comment_epreuve_statique">
                         <td>Commentaires</td>
                         <td><span t-field="doc.comment_epreuve_statique"/></td>
                     </tr>
@@ -1269,7 +1266,7 @@ La présente mission est réalisée conformément au contrat référencé
                     </tr>
                     
                     
-                    <tr>
+                    <tr t-if="doc.comment_epreuve_dynamique">
                         <td>Commentaires</td>
                         <td><span t-field="doc.comment_epreuve_dynamique"/></td>
                     </tr>
