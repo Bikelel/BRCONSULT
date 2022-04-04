@@ -208,7 +208,7 @@
                                     
                                     <field name="contrat_ref" string="La mission est réalisée conformément au contrat réf" attrs="{'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}"/>
                                     <field name="prestation_id" attrs="{'invisible': [('verification_type', 'not in', ['RS', 'VP'])], 'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}" domain="[('inspection_type', '=', inspection_type), ('installation_type', '=', installation_type), ('is_report_sent', '=', True)]" options="{'no_create': True}"/>
-                                    <field name="autre_prestation" attrs="{'invisible': ['|', ('prestation_id', '!=', False), ('verification_type', 'not in', ['RS', 'VP'])], 'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}"/>
+                                    <field name="autre_prestation" attrs="{'invisible': ['|', ('prestation_id', '!=', False), ('verification_type', 'not in', ['RS', 'VP'])], 'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}" placeholder="Si le repport n'existe pas dans la base, mentionner manullement une réf ici!!"/>
                                     
                                     
                                     <field name="scope_mission_date" attrs="{'invisible':[('verification_type', 'not in', ['RS', 'VP'])], 'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}"/>
@@ -403,7 +403,7 @@
                                 </group>
                                 <group string="Constat (s)" attrs="{'invisible': [('inspection_type', '=', 'levage'), ('verification_type', '=', 'VP')]}">
                                     <field name="constat_assembly_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'assembly_exam'}">
-                                        <tree class="constat_class_table">
+                                        <tree>
                                             <field name="verification_point_id" options="{'no_create': True}"/>
                                             <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
@@ -431,7 +431,7 @@
 
                                 <group string="Constat (s)">
                                     <field name="constat_conservation_state_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'conservation_state_exam'}">
-                                        <tree class="constat_class_table">
+                                        <tree>
                                             <field name="verification_point_id" options="{'no_create': True}" />
                                             <field name="constat_observation_ids" widget="many2many_tags"  options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
@@ -458,7 +458,7 @@
 
                                 <group string="Constat (s)" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
                                     <field name="constat_good_functioning_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'good_functioning'}">
-                                        <tree class="constat_class_table">
+                                        <tree>
                                             <field name="verification_point_id" options="{'no_create': True}"/>
                                             <field name="constat_observation_ids" widget="many2many_tags"  options="{'color_field': 'color'}"/>
                                             <field name="precision"/>

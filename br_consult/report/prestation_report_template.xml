@@ -290,6 +290,7 @@ La présente mission est réalisée conformément au contrat référencé
                 <t t-if='doc.image5 or doc.image6' >
                     <br/><br/><br/><br/><br/>
                 </t>
+                <br/>
                 <div style="border: 2px solid #5F5F5F; padding:10px; page-break-inside: avoid;" t-if="doc.comment_scaffolding_photographic_location">
                     Commentaires:<br/>
                     <span t-field="doc.comment_scaffolding_photographic_location"/>
