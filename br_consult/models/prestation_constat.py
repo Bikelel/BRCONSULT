@@ -9,13 +9,13 @@ class PrestationConstat(models.Model):
 
     name = fields.Char("Nom", store=True, compute='compute_constat_name')
     prestation_id = fields.Many2one('prestation.prestation', 'Prestation')
-    type = fields.Selection(string="Type", related="verification_point_id.type", store=True)
+    type = fields.Selection(string="Type", related="verification_point_id.type")
     verification_point_id = fields.Many2one('prestation.verification.point', string="Point de vérification")
-    observation_ids = fields.Many2many('prestation.observation', string="Observations/réserves" )
+    observation_ids = fields.Many2many('prestation.observation', string="Observations/réserves OLD" )
     constat_observation_ids = fields.One2many('prestation.constat.observation', 'constat_id',string="Observations/réserves" )
     inspection_type = fields.Selection(related="prestation_id.inspection_type")
     installation_type = fields.Selection(related="prestation_id.installation_type")
-    reserve = fields.Text("Observations/réserves OLD")
+    reserve = fields.Text("Observations/réserves reserve")
     precision = fields.Text("Précisions")
     photo = fields.Binary("Photo")
     state = fields.Selection([

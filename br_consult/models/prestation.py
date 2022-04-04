@@ -191,13 +191,13 @@ class Prestation(models.Model):
     kanban_color = fields.Integer('Color Index', compute="change_colore_on_kanban", store=True)
     prestation_id = fields.Many2one('prestation.prestation', string="Référence du rapport précédent")
     #champ temp
-    autre_prestation = fields.Char(string="Autre référence", placeholder="Si le repport n'existe pas dans la base, mentionner manullement une réf ici!!")
+    autre_prestation = fields.Char(string="Autre référence")
     state_confirmation_sent = fields.Selection([
         ('draft', 'Pas encore envoyée'),
         ('sent', 'Confirmation envoyée au client'),
     ], string="Confirmation envoyée ?", default='draft', copy=False)
     email_partner_ids = fields.Many2many('res.partner', string="Emails")
-    #email_partner_ids = fields.One2many('prestation.contact.email', 'prestation_id', string="Emails")
+
     @api.onchange('prestation_id')
     def onchange_prestation(self):
         for presta in self:

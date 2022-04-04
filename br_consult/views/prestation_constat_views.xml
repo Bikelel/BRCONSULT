@@ -21,12 +21,13 @@
                             <field name="date"/>
                             
                         </group>
-                        <group string="Observations/réserves">
+                        <group string="Observations/réserves" attrs="{'invisible': [('verification_point_id', '=', False)]}">
                             <field name="constat_observation_ids"  context="{'default_verification_point_id':verification_point_id}" nolabel="1">
                                 <tree  editable='bottom'>
                                     <field name="observation_id" domain="[('verification_point_id', '=', verification_point_id)]"/>
                                     <field name="verification_point_id" invisible="1"/>
                                     <field name="reserve"/>
+                                    <field name="name" invisible="1"/>
                                 </tree>
                             </field>
                              
