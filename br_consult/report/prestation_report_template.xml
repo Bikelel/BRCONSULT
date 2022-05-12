@@ -351,7 +351,7 @@ La présente mission est réalisée conformément au contrat référencé
                     </tbody>
                 </table>
                 <div style="border: 2px solid #5F5F5F; padding:10px; page-break-inside: avoid;" t-if="doc.inspection_type == 'echafaudage' and doc.comment_scaffolding_characteristic">
-                    Commentaire:<br/>
+                    Commentaires:<br/>
                     <span t-field="doc.comment_scaffolding_characteristic"/>
                 </div>
                 
