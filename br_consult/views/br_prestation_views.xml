@@ -444,7 +444,7 @@
                                         </tree>
                                     </field>
                                 </group>
-                                <h1 class="headding_1" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">4.4- Examen du bon fonctionenement</h1>
+                                <h1 class="headding_1" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">4.4- Examen du bon fonctionnement</h1>
                                 <group attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
                                     <field name="good_functioning_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'in', ['phase1'])]}">
                                         <tree editable="bottom" delete="false" create="false">
