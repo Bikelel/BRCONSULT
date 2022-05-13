@@ -565,7 +565,7 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Type de la plate-forme</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.platform_type"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['ASC', 'MMA']">
+                        <tr t-if="doc.installation_type in ['ASC', 'MMA', 'PTR']">
                             <td>Modèle</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.modele"/></td>
                         </tr>
@@ -573,11 +573,11 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Numéro(s) de fabrication</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.num_fabrication"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['ASC', 'MMA']">
+                        <tr t-if="doc.installation_type in ['ASC', 'MMA', 'PTR']">
                             <td>Année de fabrication</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.fabrication_year"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['ASC', 'MMA']">
+                        <tr t-if="doc.installation_type in ['ASC', 'MMA', 'PTR']">
                             <td>Année de mise en circulation </td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.circulation_year"/></td>
                         </tr>
@@ -586,7 +586,7 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Alimentation électrique</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.alimentation"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['ASC', 'MMA']">
+                        <tr t-if="doc.installation_type in ['ASC', 'MMA', 'PTR']">
                             <td>Desserte des niveaux</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.level_service"/></td>
                         </tr>
@@ -654,7 +654,7 @@ La présente mission est réalisée conformément au contrat référencé
                             </td>
                         </tr>
                         <tr>
-                            <td>Vitesse maximale du vente autorisée en service</td>
+                            <td>Vitesse maximale du vent autorisée en service</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.wind_speed_max_id"/></td>
                         </tr>
                         <tr>
@@ -1290,7 +1290,7 @@ La présente mission est réalisée conformément au contrat référencé
                     
                     
                     <tr t-if="doc.comment_epreuve_dynamique">
-                        <td>Commentaires</td>
+                        <td>Commentaire</td>
                         <td><span t-field="doc.comment_epreuve_dynamique"/></td>
                     </tr>
                 </table>
