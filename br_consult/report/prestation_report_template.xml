@@ -1290,7 +1290,7 @@ La présente mission est réalisée conformément au contrat référencé
                     
                     
                     <tr t-if="doc.comment_epreuve_dynamique">
-                        <td>Commentaire</td>
+                        <td>Commentaires</td>
                         <td><span t-field="doc.comment_epreuve_dynamique"/></td>
                     </tr>
                 </table>
