@@ -228,7 +228,7 @@ La présente mission est réalisée conformément au contrat référencé
                     accessibles en sécurité. 
                     <br/>
                     <t t-if="doc.verification_type in ['RS', 'VP']">Motif de remise en service: <span t-field="doc.motif_rs_id"/><br/>
-                        <div class="row">
+                        <div class="row" t-if="doc.prestation_id">
                             <div class="col-6">Référence du rapport précédent : <span t-field="doc.prestation_id.name" t-if="doc.prestation_id"/><span t-field="doc.autre_prestation" t-if="not doc.prestation_id and doc.autre_prestation"/>
                                 
                             
