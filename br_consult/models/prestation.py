@@ -486,7 +486,10 @@ class Prestation(models.Model):
             if self.defavorable_opinion:
                 template = self.env.ref('br_consult.email_notification_prestation_avis_defavorable')
             elif self.favorable_opinion:
-                template = self.env.ref('br_consult.email_notification_prestation')
+                if self.opinion_with_observation:
+                    template = self.env.ref('br_consult.email_notification_prestation_avec_observation')
+                else:
+                    template = self.env.ref('br_consult.email_notification_prestation')
             
             else:
                 template = False
