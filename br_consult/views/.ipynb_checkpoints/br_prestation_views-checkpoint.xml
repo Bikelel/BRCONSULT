@@ -355,8 +355,8 @@
                                             <field name="installation_type" invisible="1"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
-                                            <field name="state"/>
-                                            <field name="date"/>
+                                            <field name="state" invisible="1"/>
+                                            <field name="date" invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object" />
 
                                         </tree>
@@ -414,8 +414,8 @@
                                             <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
-                                            <field name="state"/>
-                                            <field name="date"/>
+                                            <field name="state" invisible="1"/>
+                                            <field name="date" invisible="1"/>
                                             <field name='inspection_type' invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object" />
@@ -442,8 +442,8 @@
                                             <field name="constat_observation_ids" widget="many2many_tags"  options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
-                                            <field name="state"/>
-                                            <field name="date"/>
+                                            <field name="state" invisible="1"/>
+                                            <field name="date" invisible="1"/>
                                             <field name="inspection_type" invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object" />
@@ -469,8 +469,8 @@
                                             <field name="constat_observation_ids" widget="many2many_tags"  options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
-                                            <field name="state"/>
-                                            <field name="date"/>
+                                            <field name="state" invisible="1"/>
+                                            <field name="date" invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object" />
                                         </tree>
@@ -498,8 +498,8 @@
                                             <field name="constat_observation_ids"  widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
-                                            <field name="state"/>
-                                            <field name="date"/>
+                                            <field name="state" invisible="1"/>
+                                            <field name="date" invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object" />
                                         </tree>
@@ -522,8 +522,8 @@
                                             <field name="constat_observation_ids"  widget="many2many_tags"  options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
-                                            <field name="state"/>
-                                            <field name="date"/>
+                                            <field name="state" invisible="1"/>
+                                            <field name="date" invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object" />
                                         </tree>

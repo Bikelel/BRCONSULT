@@ -862,8 +862,8 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Observations/Réserves </td>
                             <td>Précisions </td>
                             <td class="text-center">Photos </td>
-                            <td>Statut </td>
-                            <td>Date </td>
+<!--                             <td>Statut </td>
+                            <td>Date </td> -->
                         </tr>
                         <tbody>
                             <t t-foreach="doc.constat_adequacy_exam_ids" t-as="constat">
@@ -883,8 +883,8 @@ La présente mission est réalisée conformément au contrat référencé
                                     <td><span t-field="constat.precision"/></td>
                                     <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
                                         </td>
-                                    <td><span t-field="constat.state"/></td>
-                                    <td><span t-field="constat.date"/></td>
+<!--                                     <td><span t-field="constat.state"/></td>
+                                    <td><span t-field="constat.date"/></td> -->
                                 </tr>
                             </t>
                         </tbody>
@@ -1039,8 +1039,8 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Observations/Réserves </td>
                             <td>Précisions </td>
                             <td class="text-center">Photos </td>
-                            <td>Statut </td>
-                            <td>Date </td>
+<!--                             <td>Statut </td>
+                            <td>Date </td> -->
                         </tr>
                         <tbody>
                             <t t-foreach="doc.constat_assembly_exam_ids" t-as="constat">
@@ -1060,8 +1060,8 @@ La présente mission est réalisée conformément au contrat référencé
                                     <td><span t-field="constat.precision"/></td>
                                     <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
                                         </td>
-                                    <td><span t-field="constat.state"/></td>
-                                    <td><span t-field="constat.date"/></td>
+<!--                                     <td><span t-field="constat.state"/></td>
+                                    <td><span t-field="constat.date"/></td> -->
                                 </tr>
                             </t>
                         </tbody>
@@ -1098,8 +1098,8 @@ La présente mission est réalisée conformément au contrat référencé
                         <td>Observations/Réserves </td>
                         <td>Précisions </td>
                         <td class="text-center">Photos </td>
-                        <td>Statut </td>
-                        <td>Date </td>
+<!--                         <td>Statut </td>
+                        <td>Date </td> -->
                     </tr>
                     <tbody>
                         <t t-foreach="doc.constat_conservation_state_exam_ids" t-as="constat">
@@ -1119,8 +1119,8 @@ La présente mission est réalisée conformément au contrat référencé
                                 <td><span t-field="constat.precision"/></td>
                                 <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
                                     </td>
-                                <td><span t-field="constat.state"/></td>
-                                <td><span t-field="constat.date"/></td>
+<!--                                 <td><span t-field="constat.state"/></td>
+                                <td><span t-field="constat.date"/></td> -->
                             </tr>
                         </t>
                     </tbody>
@@ -1156,8 +1156,8 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Observations/Réserves </td>
                             <td>Précisions </td>
                             <td class="text-center">Photos </td>
-                            <td>Statut </td>
-                            <td>Date </td>
+<!--                             <td>Statut </td>
+                            <td>Date </td> -->
                         </tr>
                         <tbody>
                             <t t-foreach="doc.constat_good_functioning_exam_ids" t-as="constat">
@@ -1177,8 +1177,8 @@ La présente mission est réalisée conformément au contrat référencé
                                     <td><span t-field="constat.precision"/></td>
                                     <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
                                         </td>
-                                    <td><span t-field="constat.state"/></td>
-                                    <td><span t-field="constat.date"/></td>
+<!--                                     <td><span t-field="constat.state"/></td>
+                                    <td><span t-field="constat.date"/></td> -->
                                 </tr>
                             </t>
                         </tbody>
@@ -1235,8 +1235,8 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Observations/Réserves </td>
                             <td>Précisions </td>
                             <td class="text-center">Photos </td>
-                            <td>Statut </td>
-                            <td>Date </td>
+<!--                             <td>Statut </td>
+                            <td>Date </td> -->
                         </tr>
                         <tbody>
                             <t t-foreach="doc.constat_epreuve_statique_ids" t-as="constat">
@@ -1256,8 +1256,8 @@ La présente mission est réalisée conformément au contrat référencé
                                     <td><span t-field="constat.precision"/></td>
                                     <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
                                         </td>
-                                    <td><span t-field="constat.state"/></td>
-                                    <td><span t-field="constat.date"/></td>
+<!--                                     <td><span t-field="constat.state"/></td>
+                                    <td><span t-field="constat.date"/></td> -->
                                 </tr>
                             </t>
                         </tbody>
@@ -1305,8 +1305,8 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Observations/Réserves </td>
                             <td>Précisions </td>
                             <td class="text-center">Photos </td>
-                            <td>Statut </td>
-                            <td>Date </td>
+<!--                             <td>Statut </td>
+                            <td>Date </td> -->
                         </tr>
                         <tbody>
                             <t t-foreach="doc.constat_epreuve_dynamique_ids" t-as="constat">
@@ -1326,8 +1326,8 @@ La présente mission est réalisée conformément au contrat référencé
                                     <td><span t-field="constat.precision"/></td>
                                     <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
                                         </td>
-                                    <td><span t-field="constat.state"/></td>
-                                    <td><span t-field="constat.date"/></td>
+<!--                                     <td><span t-field="constat.state"/></td>
+                                    <td><span t-field="constat.date"/></td> -->
                                 </tr>
                             </t>
                         </tbody>

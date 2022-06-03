@@ -65,6 +65,7 @@ class Prestation(models.Model):
         ('TRE', 'Treuil'),
         ('PAE', 'Palan motorisé'),
         ('PAM', 'Palan manuel'),
+        ('TUB', 'Echafaudage'),
     ], string="Type d'installation")
     verification_type = fields.Selection([
         ('MS', 'Mise en service'),
@@ -288,6 +289,19 @@ class Prestation(models.Model):
     def write(self, vals):
         user = self.env.user
         stages = user.stage_ids
+        ## Modification de deux paramètres
+        if 'inspection_type' in vals and 'installation_type' in vals:
+            if vals.get('inspection_type') =='levage' and vals.get('installation_type') == 'TUB':
+                raise UserError(_("Vous pouvez pas sélectionner le type d'installation echafaudage pour une inspection levage")) 
+        #modification uniquement de type d'inspection
+        if 'inspection_type' in vals and 'installation_type' not in vals:
+            if vals.get('inspection_type') =='levage' and self.installation_type == 'TUB':
+           
+                raise UserError(_("Vous pouvez pas sélectionner le type d'installation echafaudage pour une inspection levage"))
+        if 'inspection_type' not in vals and 'installation_type' in vals:
+            if self.inspection_type =='levage' and vals.get('installation_type') == 'TUB':
+                raise UserError(_("Vous pouvez pas sélectionner le type d'installation echafaudage pour une inspection levage"))
+            
         if 'stage_id' in vals:
             stage_id = vals.get('stage_id')
             stage_obj_id = self.env['prestation.stage'].browse(int(stage_id))
@@ -299,18 +313,21 @@ class Prestation(models.Model):
             if not self.favorable_opinion and not self.defavorable_opinion:
                 if self.state in ['phase2', 'phase3'] and stage_obj_id.state != 'phase1':
                     raise UserError(_('Vous devez selectionner soit avis favorable, avis défavorable ou les deux!'))
-                    
+
         if 'installation_type' in vals:
+            
             new_installation_type =  vals.get('installation_type')
             installation_type = self.installation_type
-            new_name = self.name.replace(installation_type, new_installation_type)
-            self.update({'name': new_name})
+            if new_installation_type and installation_type and self.name:
+                new_name = self.name.replace(installation_type, new_installation_type)
+                self.update({'name': new_name})
         
         if 'verification_type' in vals:
             new_verification_type =  vals.get('verification_type')
             verification_type = self.verification_type
-            new_name = self.name.replace(verification_type, new_verification_type)
-            self.update({'name': new_name})
+            if new_verification_type and verification_type and self.name:
+                new_name = self.name.replace(verification_type, new_verification_type)
+                self.update({'name': new_name})
         
         
         result = super(Prestation, self).write(vals)
@@ -627,6 +644,15 @@ class Prestation(models.Model):
             else:
                 code = "20"
         return code
+    
+    @api.onchange('inspection_type')
+    def onchange_inspection_type(self):
+        if self.inspection_type == 'echafaudage':
+            self.update({'installation_type': 'TUB'})
+        if self.inspection_type == 'levage':
+            self.update({'installation_type': None})
+    
+    
 
-        
+
                 
