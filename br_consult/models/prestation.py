@@ -76,7 +76,7 @@ class Prestation(models.Model):
     requested_date = fields.Date('Date de la demande')
     verification_date = fields.Datetime('Date de vérification', default=fields.Datetime.now, tracking=True)
     end_date_verification = fields.Datetime("Fin de la date de vérification", store=True, compute='_compute_end_date')
-    verification_date_tz = fields.Datetime('Date de vérification TZ', compute='_compute_verification_date_tz', store=True)
+    verification_date_tz = fields.Datetime('Date de vérification TZ', store=True)
     prestation_duration = fields.Float("Durée d'une prestation", store=True, related="company_id.prestation_duration")
     partner_contact = fields.Char("Représentée par")
     user_id = fields.Many2one('res.users', 'Inspecteur', default=default_user, tracking=True, required=True)
@@ -562,16 +562,16 @@ class Prestation(models.Model):
         if self.stage_id not in stages:
             raise UserError(_('You don t have the privilege to change stage'))
     
-    @api.depends('verification_date')
-    def _compute_verification_date_tz(self):
-        DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
-        for rec in self:
-            user = self.env.user
-            tz = user.tz
-            tz = pytz.timezone(self.env.user.tz) or pytz.utc
-            verification_date_tz = pytz.utc.localize(rec.verification_date).astimezone(tz)
-            _logger.info("################## verification_date_tz %s", verification_date_tz)
-            #rec.update({'verification_date_tz': verification_date_tz})
+#     @api.depends('verification_date')
+#     def _compute_verification_date_tz(self):
+#         DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+#         for rec in self:
+#             user = self.env.user
+#             tz = user.tz
+#             tz = pytz.timezone(self.env.user.tz) or pytz.utc
+#             verification_date_tz = pytz.utc.localize(rec.verification_date).astimezone(tz)
+#             _logger.info("################## verification_date_tz %s", verification_date_tz)
+#             #rec.update({'verification_date_tz': verification_date_tz})
     
     @api.depends("zip", "country_id", "country_id.code")
     # If a department code changes, it will have to be manually recomputed
