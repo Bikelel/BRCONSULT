@@ -170,6 +170,12 @@
                                         <field name="partner_contact" attrs="{'readonly': [('state', 'not in', ['phase1'])]}"/>
                                         <field name="email_partner_ids" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2', 'phase3'])]}" widget="many2many_tags_email" domain="[('parent_id', '=', partner_id)]"/>
                                         <field name="site_address" required="1" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase3'])]}"/>
+                                        <field name="zip"/>
+                                        <field name="department_id"/>
+                                        
+                                        
+                                        <field name="country_id"/>
+                                        
                                         <field name="site_localisation" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2'])]}"/>
                                     </group>
                                     <group>

@@ -17,7 +17,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'portal', 'contacts', 'report_qweb_element_page_visibility', 'project', 'mail'],
+    'depends': ['base', 'portal', 'contacts', 'report_qweb_element_page_visibility', 'project', 'mail', 'l10n_fr_department'],
 
     # always loaded
     'data': [
