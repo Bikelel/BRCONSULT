@@ -23,6 +23,7 @@ class PrestationMessageLabel(models.Model):
         ('TRE', 'Treuil'),
         ('PAE', 'Palant motorisé'),
         ('PAM', 'Palant manuel'),
+        ('TUB', 'Echafaudage'),
     ], copy=False, string="Type d'installation")
     verification_type = fields.Selection([
         ('MS', 'Mise en service'),
