@@ -18,5 +18,6 @@ class PrestationLevageMaxUse(models.Model):
         ('TRE', 'Treuil'),
         ('PAE', 'Palan motorisé'),
         ('PAM', 'Palan manuel'),
+        ('TUB', 'Echafaudage'),
     ], string="Type d'installation")
     sequence = fields.Integer('Séquence', default=10)

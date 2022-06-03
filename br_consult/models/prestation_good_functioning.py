@@ -21,4 +21,5 @@ class PrestationGoodFunctioning(models.Model):
         ('TRE', 'Treuil'),
         ('PAE', 'Palant motorisé'),
         ('PAM', 'Palant manuel'),
+        ('TUB', 'Echafaudage'),
     ], string="Type d'installation", required=True)

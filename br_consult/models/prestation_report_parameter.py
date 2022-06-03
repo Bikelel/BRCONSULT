@@ -22,6 +22,7 @@ class PrestationReportParameter(models.Model):
         ('TRE', 'Treuil'),
         ('PAE', 'Palan motorisé'),
         ('PAM', 'Palan manuel'),
+        ('TUB', 'Echafaudage'),
     ], copy=False, string="Type d'installation")
     installation_compliance = fields.Html("Conformité de l'installation")
     scope_mission = fields.Html("Périmètre de la mission")
