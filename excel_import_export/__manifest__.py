@@ -18,9 +18,14 @@
         "wizard/report_xlsx_wizard.xml",
         "views/xlsx_template_view.xml",
         "views/xlsx_report.xml",
-        "views/webclient_templates.xml",
+        #"views/webclient_templates.xml",
     ],
     "installable": True,
     "development_status": "Beta",
     "maintainers": ["kittiu"],
+    "assets": {
+        "web.assets_backend": [
+            "/excel_import_export/static/src/js/report/action_manager_report.js"
+        ]
+    }
 }
