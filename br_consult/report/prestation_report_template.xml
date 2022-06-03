@@ -160,8 +160,8 @@
                             <tr>
                                 <td style="width: 50%; border: none; padding-top:40px;padding-bottom:40px;" >
                                     <div style="margin-bottom:20px;">
-                                        <input type="checkbox" t-att-checked="'checked' if doc.favorable_opinion else None"/> 
-                                        <t t-if="doc.favorable_opinion" >
+                                        <input type="checkbox" t-att-checked="'checked' if doc.opinion in ['favorable_opinion', 'opinion_with_observation', 'mixte'] else None"/> 
+                                        <t t-if="doc.opinion in ['favorable_opinion', 'opinion_with_observation']" >
                                             <span style="color:green;">AVIS FAVORABLE</span>
                                         </t>
                                         <t t-else="">
@@ -169,7 +169,7 @@
                                         </t>
                                     </div>
                                     <div style="margin-bottom:20px;">
-                                        <input type="checkbox" t-att-checked="'checked' if doc.opinion_with_observation else None"/> Avec observation(s)
+                                        <input type="checkbox" t-att-checked="'checked' if doc.opinion in ['opinion_with_observation', 'mixte'] else None"/> Avec observation(s)
 <!--                                         <div t-if="doc.opinion_with_observation">
                                             (Levée d’observations recommandée)
                                         </div> -->
@@ -178,8 +178,8 @@
                                 <td style="width: 50%; border: none; padding-top:40px; padding-bottom:40px;">
                                     
                                     <div style="margin-bottom:20px;">
-                                        <input type="checkbox" t-att-checked="'checked' if doc.defavorable_opinion else None"/> 
-                                         <t t-if="doc.defavorable_opinion" >
+                                        <input type="checkbox" t-att-checked="'checked' if doc.opinion in ['defavorable_opinion', 'mixte'] else None"/> 
+                                         <t t-if=" doc.opinion == 'defavorable_opinion'" >
                                             <span style="color:red;">AVIS DEFAVORABLE</span>
                                         </t>
                                         <t t-else="">

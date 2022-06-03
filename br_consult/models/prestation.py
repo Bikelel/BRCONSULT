@@ -98,6 +98,12 @@ class Prestation(models.Model):
     favorable_opinion = fields.Boolean('Avis favorable', tracking=True)
     opinion_with_observation = fields.Boolean('Avec observation', tracking=True)
     defavorable_opinion = fields.Boolean('Avis defavorable', tracking=True)
+    opinion = fields.Selection([
+        ('favorable_opinion', 'Avis favorable'),
+        ('opinion_with_observation', 'Avis favorable avec observation'),
+        ('defavorable_opinion', 'Avis defavorable'),
+        ('mixte', 'Mixte'),
+    ], string="Avis")
     comment_observation_fiche = fields.Html("Commentaires Observation")
     visa_user = fields.Binary('Visa inspecteur', related='user_id.visa_user')
     contrat_ref = fields.Char('Contrat réf')
@@ -310,9 +316,6 @@ class Prestation(models.Model):
                 raise UserError(_('Vous ne pouvez pas modifier la phase sans envoyer une confirmation de planning au client!'))
             if stage_id not in stages.ids:
                 raise UserError(_('You don t have the privilege to change stage'))
-            if not self.favorable_opinion and not self.defavorable_opinion:
-                if self.state in ['phase2', 'phase3'] and stage_obj_id.state != 'phase1':
-                    raise UserError(_('Vous devez selectionner soit avis favorable, avis défavorable ou les deux!'))
 
         if 'installation_type' in vals:
             
@@ -516,14 +519,12 @@ class Prestation(models.Model):
 
     def button_send_report(self):
         if self.email_partner_ids:
-            if self.defavorable_opinion:
+            if self.opinion in ['defavorable_opinion', 'mixte']:
                 template = self.env.ref('br_consult.email_notification_prestation_avis_defavorable')
-            elif self.favorable_opinion:
-                if self.opinion_with_observation:
-                    template = self.env.ref('br_consult.email_notification_prestation_avec_observation')
-                else:
-                    template = self.env.ref('br_consult.email_notification_prestation')
-            
+            elif self.opinion == 'favorable_opinion':
+                template = self.env.ref('br_consult.email_notification_prestation')
+            elif self.opinion == 'opinion_with_observation':
+                template = self.env.ref('br_consult.email_notification_prestation_avec_observation')
             else:
                 template = False
             

@@ -191,13 +191,16 @@
                                     </group>
                                 </group>
                                 <group string="Conformité de l’installation">
-                                    <group>
-                                        <field name="favorable_opinion" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
-                                        <field name="opinion_with_observation" attrs="{'readonly': [('state', 'not in', [ 'phase2', 'phase3'])]}"/>
-                                    </group>
-                                    <group>
-                                        <field name="defavorable_opinion" attrs="{'readonly': [('state', 'not in', [ 'phase2', 'phase3'])]}"/>
-                                    </group>
+<!--                                     <group> -->
+                                        <field name="opinion" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])], 'required': [('state', 'in', ['phase2', 'phase3'])]}"/>
+                                        
+<!--                                         <field name="favorable_opinion" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                        <field name="opinion_with_observation" attrs="{'readonly': [('state', 'not in', [ 'phase2', 'phase3'])]}"/> -->
+<!--                                     </group> -->
+<!--                                     <group> -->
+<!--                                         <field name="defavorable_opinion" attrs="{'readonly': [('state', 'not in', [ 'phase2', 'phase3'])]}"/> -->
+                                        
+<!--                                     </group> -->
                                 </group>
                                 <group string="Commentaires">
                                     <field name="comment_observation_fiche" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
