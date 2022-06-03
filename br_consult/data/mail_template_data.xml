@@ -35,8 +35,49 @@
                 </div>
             </field>
             <field name="report_template" ref="action_report_prestation"/>
-            <field name="report_name">{{ (object.name or '').replace('/','_') }}</field>
+            <field name="report_name">{{ ('Prestation - %s - %s - %s' % (object.name, object.site_address, object.partner_id.name) or '')}}</field>
 <!--             <field name="lang">{{object.partner_id.lang}}</field> -->
+            
+            <field name="auto_delete" eval="True"/>
+        </record>
+        
+        <record id="email_notification_prestation_avec_observation" model="mail.template">
+            <field name="name">Mail d'envoie du rapport au client avis favorable avec observation</field>
+            <field name="model_id" ref="br_consult.model_prestation_prestation"/>
+            <field name="email_from"></field>
+            <field name="partner_to"></field>
+            <field name="subject"> {{object.site_address}} - Avis favorable avec observation</field>
+            <field name="body_html" type="html">
+                
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Bonjour,
+                        <br/><br/>
+                        Vous trouverez ci-joint(s) le(s) rapport(s) d’inspection du chantier cité en objet.
+                        Nous vous souhaitons une bonne réception,
+                        <br/>
+                        Bien cordialement.
+                        <br/><br/>
+                        <strong>BR CONSULT</strong>
+                        <br/>
+                        <strong>Département Inspection Technique</strong>
+                        <br/>
+                        Tél: 01 45 11 71 50
+                        <br/>
+                        E-mail : ControleBR@brconsult.fr 
+                        <br/><br/>
+                        16-18 Boulevard de Créteil
+                        <br/>
+                        94100 Saint-Maur-des-Fossés
+                        <br/>
+                        www.brconsult.com
+                    </p>
+                </div>
+            </field>
+            <field name="report_template" ref="action_report_prestation"/>
+            <field name="report_name">{{ ('Prestation - %s - %s - %s' % (object.name, object.site_address, object.partner_id.name) or '')}}</field>
+<!--             <field name="lang">{{object.partner_id.lang}}</field> -->
+            
             <field name="auto_delete" eval="True"/>
         </record>
         
@@ -77,7 +118,7 @@
                 </div>
             </field>
             <field name="report_template" ref="action_report_prestation"/>
-            <field name="report_name">{{ (object.name or '').replace('/','_') }}</field>
+            <field name="report_name">{{ ('Prestation - %s - %s - %s' % (object.name, object.site_address, object.partner_id.name) or '') }}</field>
 <!--             <field name="lang">{{object.partner_id.lang}}</field> -->
             <field name="auto_delete" eval="True"/>
         </record>
