@@ -99,15 +99,15 @@ class Prestation(models.Model):
     motif_rs_id = fields.Many2one('prestation.motif.rs', string="Motif de remise en service")
     scope_mission_date = fields.Date(string="Date du rapport précédent")
     comment_scope_mission = fields.Html("Commentaires Périmètre de la mission")
-    scaffolding_mark_ids = fields.One2many('prestation.scaffolding.mark', 'prestation_id', 'Marques')
-    scaffolding_characteristic_ids = fields.One2many('prestation.scaffolding.characteristic', 'prestation_id', string="Caracteristiques", default=get_default_characteristic)
+    scaffolding_mark_ids = fields.One2many('prestation.scaffolding.mark', 'prestation_id', 'Marques', copy=True)
+    scaffolding_characteristic_ids = fields.One2many('prestation.scaffolding.characteristic', 'prestation_id', string="Caracteristiques", default=get_default_characteristic, copy=True)
     
     comment_scaffolding_characteristic = fields.Html("Commentaires Caractéristique de l'échafaudage")
-    adequacy_exam_ids = fields.One2many('prestation.adequacy.exam', 'prestation_id', "Examen d'adéquation")
+    adequacy_exam_ids = fields.One2many('prestation.adequacy.exam', 'prestation_id', "Examen d'adéquation", copy=True)
     is_pare_gravats = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Présence d'un pare-gravats")
     is_other_device = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Présence d'un dispositif de protection")
     other_device_id = fields.Many2one('prestation.other.device', string='Autre dispositif')
-    scaffolding_operating_load_ids = fields.One2many('prestation.scaffolding.operating.load', 'prestation_id', "Charge d'exploitation de l'échafaudage par défaut")
+    scaffolding_operating_load_ids = fields.One2many('prestation.scaffolding.operating.load', 'prestation_id', "Charge d'exploitation de l'échafaudage par défaut", copy=True)
     security_register = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Registre de sécurité")
     assembly_file = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition du dossier de montage")
     manufacturer_instructions = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition de la notice du constructeur")
@@ -139,11 +139,11 @@ class Prestation(models.Model):
     covering_nature_data = fields.Selection([
         ('transmitted', 'Transmises'), 
         ('observed_site', 'Constatées sur place')], string="Données relatives à la nature du bâchage éventuel")
-    conservation_state_exam_ids = fields.One2many('prestation.conservation.state.exam', 'prestation_id', string="Examen d'état de conservation")
-    good_functioning_exam_ids = fields.One2many('prestation.good.functioning.exam', 'prestation_id', string="Examen du bon fonctionnement")
+    conservation_state_exam_ids = fields.One2many('prestation.conservation.state.exam', 'prestation_id', string="Examen d'état de conservation", copy=True)
+    good_functioning_exam_ids = fields.One2many('prestation.good.functioning.exam', 'prestation_id', string="Examen du bon fonctionnement", copy=True)
     
     location_diagram = fields.Binary("Schéma de l’emplacement")
-    image_ids = fields.One2many('prestation.image', 'prestation_id' ,"Photographies")
+    image_ids = fields.One2many('prestation.image', 'prestation_id' ,"Photographies", copy=True)
     image1 = fields.Binary("Image 1")
     image2 = fields.Binary("Image 2")
     image3 = fields.Binary("Image 3")
@@ -152,9 +152,9 @@ class Prestation(models.Model):
     image6 = fields.Binary("Image 6")
     comment_scaffolding_photographic_location = fields.Html("Commentaires localisation photographique de l'échafaudage")
     
-    constat_adequacy_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'adéquation", domain=[('type', '=', 'adequacy_exam')])
-    constat_assembly_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de montage et d'installation", domain=[('type', '=', 'assembly_exam')])
-    constat_conservation_state_exam_ids = fields.One2many('prestation.constat', 'prestation_id', string="Constat Examen de l'état de conservation", domain=[('type', '=', 'conservation_state_exam')])
+    constat_adequacy_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'adéquation", domain=[('type', '=', 'adequacy_exam')], copy=True)
+    constat_assembly_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de montage et d'installation", domain=[('type', '=', 'assembly_exam')], copy=True)
+    constat_conservation_state_exam_ids = fields.One2many('prestation.constat', 'prestation_id', string="Constat Examen de l'état de conservation", domain=[('type', '=', 'conservation_state_exam')], copy=True)
     ############### Levage Fields ##################
     announced_installation_number = fields.Integer("Nombre d'installation annoncée(s)")
     inspected_installation_number = fields.Integer("Nombre d'installation inspectée(s)", compute="_compute_inspected_installation_number", store=True)
@@ -163,7 +163,7 @@ class Prestation(models.Model):
     comment_protection_dispositif = fields.Html("Commentaires dispositif de protection")
     comment_assembly_exam = fields.Html("Commentaires examen de montage")
     
-    constat_good_functioning_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de bon fonctionnement", domain=[('type', '=', 'good_functioning')])
+    constat_good_functioning_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de bon fonctionnement", domain=[('type', '=', 'good_functioning')], copy=True)
     
     installation_use_id = fields.Many2one('prestation.levage.installation.use', "Utilisation de l'installation")
     #max_use_id = fields.Many2one('prestation.levage.max.use', "Charge maximale d’utilisation (CMU)")
@@ -174,22 +174,22 @@ class Prestation(models.Model):
     test_duration_statique = fields.Float("Durée d’épreuve statique (en minutes)")
     elevation_height_statique = fields.Float("Hauteur d'élévation (en m)")
     comment_epreuve_statique = fields.Html("Commentaires Epreuve")
-    constat_epreuve_statique_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'épreuve statique", domain=[('type', '=', 'epreuve_statique')])
+    constat_epreuve_statique_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'épreuve statique", domain=[('type', '=', 'epreuve_statique')], copy=True)
     coefficient_dynamique = fields.Float("Coefficient dynamique")
     autorised_cmu_dynamique = fields.Float("CMU Autorisée dynamique (en KG)")
     theoretical_test_load_dynamique = fields.Float("Charge d'épreuve théorique dynamique (en KG)", store="True", compute='_compute_theoretical_test_load_dynamique')
     reel_test_load_dynamique = fields.Float("Charge d'épreuve réelle dynamique (en KG)")
     comment_epreuve_dynamique = fields.Html("Commentaires Epreuve dynamique")
-    constat_epreuve_dynamique_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat d'épreuve dynamique", domain=[('type', '=', 'epreuve_dynamique')])
+    constat_epreuve_dynamique_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat d'épreuve dynamique", domain=[('type', '=', 'epreuve_dynamique')], copy=True)
     
     # PSE et PSM
-    characteristic_suspended_platform_ids = fields.One2many('prestation.levage.characteristic.suspended.platform', 'prestation_id', "Caractéristique de la plateforme suspendue")
+    characteristic_suspended_platform_ids = fields.One2many('prestation.levage.characteristic.suspended.platform', 'prestation_id', "Caractéristique de la plateforme suspendue", copy=True)
     
     # PWM ASC PTR MMA
-    characteristic_platform_ids = fields.One2many('prestation.levage.characteristic.platform', 'prestation_id', "Caractéristique de l'installation")
+    characteristic_platform_ids = fields.One2many('prestation.levage.characteristic.platform', 'prestation_id', "Caractéristique de l'installation", copy=True)
     
     # TRE PAE PAM
-    characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de l'installation")
+    characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de l'installation", copy=True)
     comment_levage_characteristic = fields.Html("Commentaires Caractéristique de levage")
     is_report_sent = fields.Boolean("Rapport envoyé", copy=False)
     kanban_color = fields.Integer('Color Index', compute="change_colore_on_kanban", store=True)
