@@ -300,7 +300,19 @@ class Prestation(models.Model):
                 if self.state in ['phase2', 'phase3'] and stage_obj_id.state != 'phase1':
                     raise UserError(_('Vous devez selectionner soit avis favorable, avis défavorable ou les deux!'))
                     
-                
+        if 'installation_type' in vals:
+            new_installation_type =  vals.get('installation_type')
+            installation_type = self.installation_type
+            new_name = self.name.replace(installation_type, new_installation_type)
+            self.update({'name': new_name})
+        
+        if 'verification_type' in vals:
+            new_verification_type =  vals.get('verification_type')
+            verification_type = self.verification_type
+            new_name = self.name.replace(verification_type, new_verification_type)
+            self.update({'name': new_name})
+        
+        
         result = super(Prestation, self).write(vals)
         
         return result
