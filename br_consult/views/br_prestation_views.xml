@@ -441,7 +441,7 @@
                                         <tree editable="bottom" delete="false" create="false">
                                             <field name="conservation_state_id" invisible="1"/>
                                             <field name="name" readonly="1" widget="html"/>
-                                            <field name="opinion"/>
+                                            <field name="opinion" force_save="1"/>
                                             
                                         </tree>
                                     </field>
@@ -468,7 +468,7 @@
                                         <tree editable="bottom" delete="false" create="false">
                                             <field name="good_functioning_id" invisible="1"/>
                                             <field name="name" readonly="1" widget='html'/>
-                                            <field name="opinion"/>
+                                            <field name="opinion" force_save="1"/>
                                             
                                         </tree>
                                     </field>

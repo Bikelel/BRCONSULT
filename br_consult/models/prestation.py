@@ -266,14 +266,14 @@ class Prestation(models.Model):
         else:
             attributes_conservation_state = None
 
-        if attributes_conservation_state:
+        if attributes_conservation_state and not self.conservation_state_exam_ids:
             lines = []
             for line in attributes_conservation_state:
                 lines.append((0, 0, {'conservation_state_id': line.id,
                                      'name': line.name}))
 
             vals.update({'conservation_state_exam_ids': lines})
-        if attributes_good_functioning:
+        if attributes_good_functioning and not self.good_functioning_exam_ids:
             lines = []
             for line in attributes_good_functioning:
                 lines.append((0, 0, {'good_functioning_id': line.id,
@@ -295,7 +295,17 @@ class Prestation(models.Model):
                 vals.update({'characteristic_palan_ids': lines})
         result = super(Prestation, self).create(vals)
         return result
+    
+    def copy_data(self, default=None):
+        if default is None:
+            default = {}
+        if 'conservation_state_exam_ids' not in default:
+            default['conservation_state_exam_ids'] = [(0, 0, line.copy_data()[0]) for line in self.conservation_state_exam_ids]
+        if 'good_functioning_exam_ids' not in default:
+            default['good_functioning_exam_ids'] = [(0, 0, line.copy_data()[0]) for line in self.good_functioning_exam_ids]
 
+        return super(Prestation, self).copy_data(default)
+    
     def write(self, vals):
         user = self.env.user
         stages = user.stage_ids
