@@ -166,7 +166,7 @@ class Prestation(models.Model):
     image5 = fields.Binary("Image 5")
     image6 = fields.Binary("Image 6")
     comment_scaffolding_photographic_location = fields.Html("Commentaires localisation photographique de l'échafaudage")
-    
+    verification_point_ids = fields.Many2many('prestation.verification.point', string="Points de verification", store=True, compute="_compute_verification_point")
     constat_adequacy_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'adéquation", domain=[('type', '=', 'adequacy_exam')], copy=True)
     constat_assembly_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de montage et d'installation", domain=[('type', '=', 'assembly_exam')], copy=True)
     constat_conservation_state_exam_ids = fields.One2many('prestation.constat', 'prestation_id', string="Constat Examen de l'état de conservation", domain=[('type', '=', 'conservation_state_exam')], copy=True)
@@ -692,6 +692,39 @@ class Prestation(models.Model):
             self.update({'installation_type': 'TUB'})
         if self.inspection_type == 'levage':
             self.update({'installation_type': None})
+    
+    @api.depends('constat_adequacy_exam_ids', 
+                 'constat_assembly_exam_ids', 
+                 'constat_conservation_state_exam_ids', 
+                 'constat_good_functioning_exam_ids', 
+                 'constat_epreuve_statique_ids', 
+                 'constat_epreuve_dynamique_ids',
+                 'constat_adequacy_exam_ids.verification_point_id', 
+                 'constat_assembly_exam_ids.verification_point_id', 
+                 'constat_conservation_state_exam_ids.verification_point_id', 
+                 'constat_good_functioning_exam_ids.verification_point_id', 
+                 'constat_epreuve_statique_ids.verification_point_id', 
+                 'constat_epreuve_dynamique_ids.verification_point_id',
+                )
+    def _compute_verification_point(self):
+        for prestation in self:
+            verification_point_ids = self.env['prestation.verification.point']
+            if prestation.constat_adequacy_exam_ids:
+                verification_point_ids = prestation.constat_adequacy_exam_ids.mapped('verification_point_id')
+            if prestation.constat_assembly_exam_ids:
+                verification_point_ids += prestation.constat_assembly_exam_ids.mapped('verification_point_id')
+            if prestation.constat_conservation_state_exam_ids:
+                verification_point_ids += prestation.constat_conservation_state_exam_ids.mapped('verification_point_id') 
+            if prestation.constat_good_functioning_exam_ids:
+                verification_point_ids += prestation.constat_good_functioning_exam_ids.mapped('verification_point_id') 
+            if prestation.constat_epreuve_statique_ids:
+                verification_point_ids += prestation.constat_epreuve_statique_ids.mapped('verification_point_id') 
+            if prestation.constat_epreuve_dynamique_ids:
+                verification_point_ids += prestation.constat_epreuve_dynamique_ids.mapped('verification_point_id')
+            prestation.verification_point_ids = verification_point_ids
+            
+            
+            
     
     
 

@@ -182,10 +182,13 @@
                                     </group>
                                     <group>
                                         <field name="date" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2'])]}"/>
+                                        
                                         <field name="verification_date" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase3'])]}"/>
                                         <field name="end_date_verification" invisible="1"/>
                                         <field name="chantier_duration" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2', 'phase3'])]}"/>
                                         <field name="end_date_chantier" invisible="1"/>
+                                        <field name="verification_point_ids" widget="many2many_tags"/>
+                                        
                                         <field name="sent_alert_end_chantier" invisible="1"/>
                                         
                                         <field name="user_id" domain="[('is_inspector', '=', True)]" attrs="{'readonly': [('state', 'not in', ['phase1'])]}"/>
@@ -502,7 +505,7 @@
                                 </group>
                                 <group string="Constat (s)" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}">
                                     <field name="constat_epreuve_statique_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'epreuve_statique'}">
-                                        <tree style="max-width:90%;">
+                                        <tree>
                                             <field name="verification_point_id" options="{'no_create': True}" />
                                             <field name="constat_observation_ids"  widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
@@ -526,7 +529,7 @@
                                 </group>
                                 <group string="Constat (s)" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}">
                                     <field name="constat_epreuve_dynamique_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'epreuve_dynamique'}">
-                                        <tree style="max-width:90%;">
+                                        <tree>
                                             <field name="verification_point_id" options="{'no_create': True}" />
                                             <field name="constat_observation_ids"  widget="many2many_tags"  options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
@@ -605,7 +608,7 @@
     
     <menuitem id="br_consult_stat_menu"
         name="Statistique"
-        parent="br_consult_menu_root"
+        parent="br_consult_statistiques_menu"
         action="action_prestation_prestation_stat"
         groups="base.group_system"
         sequence="35"/>
