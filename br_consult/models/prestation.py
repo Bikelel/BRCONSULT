@@ -5,6 +5,7 @@ import logging
 _logger = logging.getLogger(__name__)
 from odoo.exceptions import UserError
 from datetime import timedelta, datetime
+from dateutil.relativedelta import relativedelta
 import datetime
 from odoo.tools import float_round
 import pytz
@@ -78,6 +79,9 @@ class Prestation(models.Model):
     end_date_verification = fields.Datetime("Fin de la date de vérification", store=True, compute='_compute_end_date')
     verification_date_tz = fields.Datetime('Date de vérification TZ', store=True)
     prestation_duration = fields.Float("Durée d'une prestation", store=True, related="company_id.prestation_duration")
+    chantier_duration = fields.Integer("Durée du chantier (mois)")
+    end_date_chantier = fields.Datetime("Date de fin du chantier", compute='_compute_end_date_chantier', store=True)
+    sent_alert_end_chantier = fields.Boolean("Alerte de fin chantier est envoyée", copy=False)
     partner_contact = fields.Char("Représentée par")
     user_id = fields.Many2one('res.users', 'Inspecteur', default=default_user, tracking=True, required=True)
 
@@ -464,9 +468,16 @@ class Prestation(models.Model):
     @api.depends('verification_date')
     def _compute_end_date(self):
         for rec in self:
-            company = rec.company_id
-            duration = company.prestation_duration
+            #company = rec.company_id
+            duration = rec.company_id.prestation_duration
             rec.end_date_verification = rec.verification_date + timedelta(hours=duration)
+
+    @api.depends('verification_date', 'chantier_duration')
+    def _compute_end_date_chantier(self):
+        for rec in self:
+            #company = rec.company_id
+            duration = rec.chantier_duration
+            rec.end_date_chantier = rec.verification_date + relativedelta(months=duration)
     
     def button_phase2(self):
         for prestation in self:
@@ -489,14 +500,18 @@ class Prestation(models.Model):
     @api.depends('inspection_type')
     def change_colore_on_kanban(self):   
         for record in self:
-             color = 0
-             if record.inspection_type == 'echafaudage':
-                 color = 10
-             elif record.inspection_type == 'levage':
-                 color = 6
-             else:
-                 color=0
-             record.kanban_color = color
+            color = 0
+            duration = 0
+            if record.inspection_type == 'echafaudage':
+                color = 10
+                duration = 3
+            elif record.inspection_type == 'levage':
+                color = 6
+                duration = 6
+            else:
+                color=0
+            record.kanban_color = color
+            record.chantier_duration = duration
     
     def button_send_confirmation_prestation(self):
         if self.email_partner_ids and self.partner_id:
@@ -547,6 +562,31 @@ class Prestation(models.Model):
         prestations = self.search([('state', '=', 'phase4'), ('is_report_sent', '=', False)])
         for prestation in prestations:
             prestation.sudo().button_send_report()
+    
+    def button_send_alert_end_chantier(self):
+        if self.email_partner_ids:
+            template = self.env.ref('br_consult.email_alert_end_chantier')
+            if template:
+                receipt_list = []
+                for partner in self.email_partner_ids:
+                    receipt_list.append(partner.email)
+                email_values = {
+                    'email_from': 'controlebr@brconsult.fr',
+                    'email_to': ';'.join(map(lambda x: x, receipt_list)),
+                    'email_cc': 'controlebr@brconsult.fr',
+                    'auto_delete': True,
+                    'recipient_ids': [],
+                    'partner_ids': [],
+                    'scheduled_date': False,}
+                template.sudo().send_mail(self.id, force_send=True, email_values=email_values)
+                self.write({'sent_alert_end_chantier': True})
+    
+    def cron_send_alert_end_chantier(self):
+        now = fields.Datetime.now()
+        prestations = self.search([('state', '=', 'phase4'), ('sent_alert_end_chantier', '=', False), ('end_date_chantier', '<', now)])
+        _logger.info("############ %s", prestations)
+        for prestation in prestations:
+            prestation.sudo().button_send_alert_end_chantier()
     
     @api.onchange('partner_id')
     def onchange_partner_id(self):

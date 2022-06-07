@@ -136,6 +136,8 @@
                         <button name="button_phase4" string="Envoyer vers Phase 4" type="object" attrs="{'invisible': [('state', '!=', 'phase3')]}" class="btn-primary"/>
                         <button name="button_send_report" string="Envoyer le rapport" type="object" attrs="{'invisible': ['|',('state', '!=', 'phase4'), ('is_report_sent', '=', True)]}" class="btn-primary"/>
                         <button name="button_send_report" string="Envoyer le rapport" type="object" attrs="{'invisible': [('is_report_sent', '=', False)]}" groups="base.group_system"/>
+                        <button name="button_send_alert_end_chantier" string="Envoyer l'alerte manuellement" type="object" attrs="{'invisible': ['|',('sent_alert_end_chantier', '=', True), ('is_report_sent', '=', False)]}" class="btn-primary"/>
+                        <button name="button_send_alert_end_chantier" string="Renvoyer l'alerte manuellement" type="object" attrs="{'invisible': [('sent_alert_end_chantier', '=', False)]}"/>
                     </header>
                     <sheet>
                         <div class="prestation_sheet_header">
@@ -182,6 +184,10 @@
                                         <field name="date" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2'])]}"/>
                                         <field name="verification_date" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase3'])]}"/>
                                         <field name="end_date_verification" invisible="1"/>
+                                        <field name="chantier_duration" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2', 'phase3'])]}"/>
+                                        <field name="end_date_chantier" invisible="1"/>
+                                        <field name="sent_alert_end_chantier" invisible="1"/>
+                                        
                                         <field name="user_id" domain="[('is_inspector', '=', True)]" attrs="{'readonly': [('state', 'not in', ['phase1'])]}"/>
                                         <field name="prensent_contact" attrs="{'readonly': [('state', 'not in', ['phase3', 'phase2'])]}"/>
                                         <field name="scaffolding_surface" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')], 'readonly': [('state', 'not in', ['phase1'])]}"/>

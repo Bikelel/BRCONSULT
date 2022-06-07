@@ -13,5 +13,17 @@
             <field name="active">True</field>
             <field eval="False" name="doall" />
         </record>
+        <record  id="cron_alert_end_chantier" model="ir.cron">
+            <field name="name">Alert Fin chantier</field>
+            <field name="user_id" ref="base.user_root" />
+            <field name="model_id" ref="br_consult.model_prestation_prestation"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_send_alert_end_chantier()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active">False</field>
+            <field eval="False" name="doall" />
+        </record>
     </data>
 </odoo>
