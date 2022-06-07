@@ -4,8 +4,12 @@ from odoo import models, fields, api, _, SUPERUSER_ID, tools
 import logging
 _logger = logging.getLogger(__name__)
 from odoo.exceptions import UserError
-from datetime import timedelta
+from datetime import timedelta, datetime
+from dateutil.relativedelta import relativedelta
+import datetime
 from odoo.tools import float_round
+import pytz
+from pytz import timezone, utc
 
 class Prestation(models.Model):
     _name = 'prestation.prestation'
@@ -62,6 +66,7 @@ class Prestation(models.Model):
         ('TRE', 'Treuil'),
         ('PAE', 'Palan motorisé'),
         ('PAM', 'Palan manuel'),
+        ('TUB', 'Echafaudage'),
     ], string="Type d'installation")
     verification_type = fields.Selection([
         ('MS', 'Mise en service'),
@@ -72,7 +77,11 @@ class Prestation(models.Model):
     requested_date = fields.Date('Date de la demande')
     verification_date = fields.Datetime('Date de vérification', default=fields.Datetime.now, tracking=True)
     end_date_verification = fields.Datetime("Fin de la date de vérification", store=True, compute='_compute_end_date')
+    verification_date_tz = fields.Datetime('Date de vérification TZ', store=True)
     prestation_duration = fields.Float("Durée d'une prestation", store=True, related="company_id.prestation_duration")
+    chantier_duration = fields.Integer("Durée du chantier (mois)")
+    end_date_chantier = fields.Datetime("Date de fin du chantier", compute='_compute_end_date_chantier', store=True)
+    sent_alert_end_chantier = fields.Boolean("Alerte de fin chantier est envoyée", copy=False)
     partner_contact = fields.Char("Représentée par")
     user_id = fields.Many2one('res.users', 'Inspecteur', default=default_user, tracking=True, required=True)
 
@@ -82,6 +91,10 @@ class Prestation(models.Model):
     title_label = fields.Text("Titre de prestation", store = True)
     message_label = fields.Text("Code de l'article", store = True)
     site_address = fields.Char("Adresse de chantier")
+    zip = fields.Char(change_default=True, string='Code postal')
+    department_id = fields.Many2one("res.country.department", compute="_compute_department", string="Department", store=True)
+    country_id = fields.Many2one('res.country', string='Pays', ondelete='restrict', default=75)
+    country_code = fields.Char(related='country_id.code', string="Country Code")
     site_localisation = fields.Char("Localisation")
     prensent_contact = fields.Char("Nom de la personne présente")
     scaffolding_surface = fields.Float("Surface d'échafaudage annoncée (m2)")
@@ -89,21 +102,27 @@ class Prestation(models.Model):
     favorable_opinion = fields.Boolean('Avis favorable', tracking=True)
     opinion_with_observation = fields.Boolean('Avec observation', tracking=True)
     defavorable_opinion = fields.Boolean('Avis defavorable', tracking=True)
+    opinion = fields.Selection([
+        ('favorable_opinion', 'Avis favorable'),
+        ('opinion_with_observation', 'Avis favorable avec observation'),
+        ('defavorable_opinion', 'Avis defavorable'),
+        ('mixte', 'Mixte'),
+    ], string="Avis")
     comment_observation_fiche = fields.Html("Commentaires Observation")
     visa_user = fields.Binary('Visa inspecteur', related='user_id.visa_user')
     contrat_ref = fields.Char('Contrat réf')
     motif_rs_id = fields.Many2one('prestation.motif.rs', string="Motif de remise en service")
     scope_mission_date = fields.Date(string="Date du rapport précédent")
     comment_scope_mission = fields.Html("Commentaires Périmètre de la mission")
-    scaffolding_mark_ids = fields.One2many('prestation.scaffolding.mark', 'prestation_id', 'Marques')
-    scaffolding_characteristic_ids = fields.One2many('prestation.scaffolding.characteristic', 'prestation_id', string="Caracteristiques", default=get_default_characteristic)
+    scaffolding_mark_ids = fields.One2many('prestation.scaffolding.mark', 'prestation_id', 'Marques', copy=True)
+    scaffolding_characteristic_ids = fields.One2many('prestation.scaffolding.characteristic', 'prestation_id', string="Caracteristiques", default=get_default_characteristic, copy=True)
     
     comment_scaffolding_characteristic = fields.Html("Commentaires Caractéristique de l'échafaudage")
-    adequacy_exam_ids = fields.One2many('prestation.adequacy.exam', 'prestation_id', "Examen d'adéquation")
+    adequacy_exam_ids = fields.One2many('prestation.adequacy.exam', 'prestation_id', "Examen d'adéquation", copy=True)
     is_pare_gravats = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Présence d'un pare-gravats")
     is_other_device = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Présence d'un dispositif de protection")
     other_device_id = fields.Many2one('prestation.other.device', string='Autre dispositif')
-    scaffolding_operating_load_ids = fields.One2many('prestation.scaffolding.operating.load', 'prestation_id', "Charge d'exploitation de l'échafaudage par défaut")
+    scaffolding_operating_load_ids = fields.One2many('prestation.scaffolding.operating.load', 'prestation_id', "Charge d'exploitation de l'échafaudage par défaut", copy=True)
     security_register = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Registre de sécurité")
     assembly_file = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition du dossier de montage")
     manufacturer_instructions = fields.Selection([('yes', 'Oui'), ('no', 'Non')], string="Mise à disposition de la notice du constructeur")
@@ -135,11 +154,11 @@ class Prestation(models.Model):
     covering_nature_data = fields.Selection([
         ('transmitted', 'Transmises'), 
         ('observed_site', 'Constatées sur place')], string="Données relatives à la nature du bâchage éventuel")
-    conservation_state_exam_ids = fields.One2many('prestation.conservation.state.exam', 'prestation_id', string="Examen d'état de conservation")
-    good_functioning_exam_ids = fields.One2many('prestation.good.functioning.exam', 'prestation_id', string="Examen du bon fonctionnement")
+    conservation_state_exam_ids = fields.One2many('prestation.conservation.state.exam', 'prestation_id', string="Examen d'état de conservation", copy=True)
+    good_functioning_exam_ids = fields.One2many('prestation.good.functioning.exam', 'prestation_id', string="Examen du bon fonctionnement", copy=True)
     
     location_diagram = fields.Binary("Schéma de l’emplacement")
-    image_ids = fields.One2many('prestation.image', 'prestation_id' ,"Photographies")
+    image_ids = fields.One2many('prestation.image', 'prestation_id' ,"Photographies", copy=True)
     image1 = fields.Binary("Image 1")
     image2 = fields.Binary("Image 2")
     image3 = fields.Binary("Image 3")
@@ -147,10 +166,10 @@ class Prestation(models.Model):
     image5 = fields.Binary("Image 5")
     image6 = fields.Binary("Image 6")
     comment_scaffolding_photographic_location = fields.Html("Commentaires localisation photographique de l'échafaudage")
-    
-    constat_adequacy_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'adéquation", domain=[('type', '=', 'adequacy_exam')])
-    constat_assembly_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de montage et d'installation", domain=[('type', '=', 'assembly_exam')])
-    constat_conservation_state_exam_ids = fields.One2many('prestation.constat', 'prestation_id', string="Constat Examen de l'état de conservation", domain=[('type', '=', 'conservation_state_exam')])
+    verification_point_ids = fields.Many2many('prestation.verification.point', string="Points de verification", store=True, compute="_compute_verification_point")
+    constat_adequacy_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'adéquation", domain=[('type', '=', 'adequacy_exam')], copy=True)
+    constat_assembly_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de montage et d'installation", domain=[('type', '=', 'assembly_exam')], copy=True)
+    constat_conservation_state_exam_ids = fields.One2many('prestation.constat', 'prestation_id', string="Constat Examen de l'état de conservation", domain=[('type', '=', 'conservation_state_exam')], copy=True)
     ############### Levage Fields ##################
     announced_installation_number = fields.Integer("Nombre d'installation annoncée(s)")
     inspected_installation_number = fields.Integer("Nombre d'installation inspectée(s)", compute="_compute_inspected_installation_number", store=True)
@@ -159,7 +178,7 @@ class Prestation(models.Model):
     comment_protection_dispositif = fields.Html("Commentaires dispositif de protection")
     comment_assembly_exam = fields.Html("Commentaires examen de montage")
     
-    constat_good_functioning_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de bon fonctionnement", domain=[('type', '=', 'good_functioning')])
+    constat_good_functioning_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de bon fonctionnement", domain=[('type', '=', 'good_functioning')], copy=True)
     
     installation_use_id = fields.Many2one('prestation.levage.installation.use', "Utilisation de l'installation")
     #max_use_id = fields.Many2one('prestation.levage.max.use', "Charge maximale d’utilisation (CMU)")
@@ -170,34 +189,34 @@ class Prestation(models.Model):
     test_duration_statique = fields.Float("Durée d’épreuve statique (en minutes)")
     elevation_height_statique = fields.Float("Hauteur d'élévation (en m)")
     comment_epreuve_statique = fields.Html("Commentaires Epreuve")
-    constat_epreuve_statique_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'épreuve statique", domain=[('type', '=', 'epreuve_statique')])
+    constat_epreuve_statique_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'épreuve statique", domain=[('type', '=', 'epreuve_statique')], copy=True)
     coefficient_dynamique = fields.Float("Coefficient dynamique")
     autorised_cmu_dynamique = fields.Float("CMU Autorisée dynamique (en KG)")
     theoretical_test_load_dynamique = fields.Float("Charge d'épreuve théorique dynamique (en KG)", store="True", compute='_compute_theoretical_test_load_dynamique')
     reel_test_load_dynamique = fields.Float("Charge d'épreuve réelle dynamique (en KG)")
     comment_epreuve_dynamique = fields.Html("Commentaires Epreuve dynamique")
-    constat_epreuve_dynamique_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat d'épreuve dynamique", domain=[('type', '=', 'epreuve_dynamique')])
+    constat_epreuve_dynamique_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat d'épreuve dynamique", domain=[('type', '=', 'epreuve_dynamique')], copy=True)
     
     # PSE et PSM
-    characteristic_suspended_platform_ids = fields.One2many('prestation.levage.characteristic.suspended.platform', 'prestation_id', "Caractéristique de la plateforme suspendue")
+    characteristic_suspended_platform_ids = fields.One2many('prestation.levage.characteristic.suspended.platform', 'prestation_id', "Caractéristique de la plateforme suspendue", copy=True)
     
     # PWM ASC PTR MMA
-    characteristic_platform_ids = fields.One2many('prestation.levage.characteristic.platform', 'prestation_id', "Caractéristique de l'installation")
+    characteristic_platform_ids = fields.One2many('prestation.levage.characteristic.platform', 'prestation_id', "Caractéristique de l'installation", copy=True)
     
     # TRE PAE PAM
-    characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de l'installation")
+    characteristic_palan_ids = fields.One2many('prestation.levage.characteristic.palan', 'prestation_id', "Caractéristique de l'installation", copy=True)
     comment_levage_characteristic = fields.Html("Commentaires Caractéristique de levage")
     is_report_sent = fields.Boolean("Rapport envoyé", copy=False)
     kanban_color = fields.Integer('Color Index', compute="change_colore_on_kanban", store=True)
     prestation_id = fields.Many2one('prestation.prestation', string="Référence du rapport précédent")
     #champ temp
-    autre_prestation = fields.Char(string="Autre référence", placeholder="Si le repport n'existe pas dans la base, mentionner manullement une réf ici!!")
+    autre_prestation = fields.Char(string="Autre référence")
     state_confirmation_sent = fields.Selection([
         ('draft', 'Pas encore envoyée'),
         ('sent', 'Confirmation envoyée au client'),
     ], string="Confirmation envoyée ?", default='draft', copy=False)
     email_partner_ids = fields.Many2many('res.partner', string="Emails")
-    #email_partner_ids = fields.One2many('prestation.contact.email', 'prestation_id', string="Emails")
+
     @api.onchange('prestation_id')
     def onchange_prestation(self):
         for presta in self:
@@ -280,6 +299,19 @@ class Prestation(models.Model):
     def write(self, vals):
         user = self.env.user
         stages = user.stage_ids
+        ## Modification de deux paramètres
+        if 'inspection_type' in vals and 'installation_type' in vals:
+            if vals.get('inspection_type') =='levage' and vals.get('installation_type') == 'TUB':
+                raise UserError(_("Vous pouvez pas sélectionner le type d'installation echafaudage pour une inspection levage")) 
+        #modification uniquement de type d'inspection
+        if 'inspection_type' in vals and 'installation_type' not in vals:
+            if vals.get('inspection_type') =='levage' and self.installation_type == 'TUB':
+           
+                raise UserError(_("Vous pouvez pas sélectionner le type d'installation echafaudage pour une inspection levage"))
+        if 'inspection_type' not in vals and 'installation_type' in vals:
+            if self.inspection_type =='levage' and vals.get('installation_type') == 'TUB':
+                raise UserError(_("Vous pouvez pas sélectionner le type d'installation echafaudage pour une inspection levage"))
+            
         if 'stage_id' in vals:
             stage_id = vals.get('stage_id')
             stage_obj_id = self.env['prestation.stage'].browse(int(stage_id))
@@ -288,11 +320,23 @@ class Prestation(models.Model):
                 raise UserError(_('Vous ne pouvez pas modifier la phase sans envoyer une confirmation de planning au client!'))
             if stage_id not in stages.ids:
                 raise UserError(_('You don t have the privilege to change stage'))
-            if not self.favorable_opinion and not self.defavorable_opinion:
-                if self.state in ['phase2', 'phase3'] and stage_obj_id.state != 'phase1':
-                    raise UserError(_('Vous devez selectionner soit avis favorable, avis défavorable ou les deux!'))
-                    
-                
+
+        if 'installation_type' in vals:
+            
+            new_installation_type =  vals.get('installation_type')
+            installation_type = self.installation_type
+            if new_installation_type and installation_type and self.name:
+                new_name = self.name.replace(installation_type, new_installation_type)
+                self.update({'name': new_name})
+        
+        if 'verification_type' in vals:
+            new_verification_type =  vals.get('verification_type')
+            verification_type = self.verification_type
+            if new_verification_type and verification_type and self.name:
+                new_name = self.name.replace(verification_type, new_verification_type)
+                self.update({'name': new_name})
+        
+        
         result = super(Prestation, self).write(vals)
         
         return result
@@ -424,9 +468,16 @@ class Prestation(models.Model):
     @api.depends('verification_date')
     def _compute_end_date(self):
         for rec in self:
-            company = rec.company_id
-            duration = company.prestation_duration
+            #company = rec.company_id
+            duration = rec.company_id.prestation_duration
             rec.end_date_verification = rec.verification_date + timedelta(hours=duration)
+
+    @api.depends('verification_date', 'chantier_duration')
+    def _compute_end_date_chantier(self):
+        for rec in self:
+            #company = rec.company_id
+            duration = rec.chantier_duration
+            rec.end_date_chantier = rec.verification_date + relativedelta(months=duration)
     
     def button_phase2(self):
         for prestation in self:
@@ -449,14 +500,18 @@ class Prestation(models.Model):
     @api.depends('inspection_type')
     def change_colore_on_kanban(self):   
         for record in self:
-             color = 0
-             if record.inspection_type == 'echafaudage':
-                 color = 10
-             elif record.inspection_type == 'levage':
-                 color = 6
-             else:
-                 color=0
-             record.kanban_color = color
+            color = 0
+            duration = 0
+            if record.inspection_type == 'echafaudage':
+                color = 10
+                duration = 3
+            elif record.inspection_type == 'levage':
+                color = 6
+                duration = 6
+            else:
+                color=0
+            record.kanban_color = color
+            record.chantier_duration = duration
     
     def button_send_confirmation_prestation(self):
         if self.email_partner_ids and self.partner_id:
@@ -479,11 +534,12 @@ class Prestation(models.Model):
 
     def button_send_report(self):
         if self.email_partner_ids:
-            if self.defavorable_opinion:
+            if self.opinion in ['defavorable_opinion', 'mixte']:
                 template = self.env.ref('br_consult.email_notification_prestation_avis_defavorable')
-            elif self.favorable_opinion:
+            elif self.opinion == 'favorable_opinion':
                 template = self.env.ref('br_consult.email_notification_prestation')
-            
+            elif self.opinion == 'opinion_with_observation':
+                template = self.env.ref('br_consult.email_notification_prestation_avec_observation')
             else:
                 template = False
             
@@ -507,6 +563,31 @@ class Prestation(models.Model):
         for prestation in prestations:
             prestation.sudo().button_send_report()
     
+    def button_send_alert_end_chantier(self):
+        if self.email_partner_ids:
+            template = self.env.ref('br_consult.email_alert_end_chantier')
+            if template:
+                receipt_list = []
+                for partner in self.email_partner_ids:
+                    receipt_list.append(partner.email)
+                email_values = {
+                    'email_from': 'controlebr@brconsult.fr',
+                    'email_to': ';'.join(map(lambda x: x, receipt_list)),
+                    'email_cc': 'controlebr@brconsult.fr',
+                    'auto_delete': True,
+                    'recipient_ids': [],
+                    'partner_ids': [],
+                    'scheduled_date': False,}
+                template.sudo().send_mail(self.id, force_send=True, email_values=email_values)
+                self.write({'sent_alert_end_chantier': True})
+    
+    def cron_send_alert_end_chantier(self):
+        now = fields.Datetime.now()
+        prestations = self.search([('state', '=', 'phase4'), ('sent_alert_end_chantier', '=', False), ('end_date_chantier', '<', now)])
+        _logger.info("############ %s", prestations)
+        for prestation in prestations:
+            prestation.sudo().button_send_alert_end_chantier()
+    
     @api.onchange('partner_id')
     def onchange_partner_id(self):
         for presta in self:
@@ -521,4 +602,131 @@ class Prestation(models.Model):
         stages = user.stage_ids
         if self.stage_id not in stages:
             raise UserError(_('You don t have the privilege to change stage'))
+    
+#     @api.depends('verification_date')
+#     def _compute_verification_date_tz(self):
+#         DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+#         for rec in self:
+#             user = self.env.user
+#             tz = user.tz
+#             tz = pytz.timezone(self.env.user.tz) or pytz.utc
+#             verification_date_tz = pytz.utc.localize(rec.verification_date).astimezone(tz)
+#             _logger.info("################## verification_date_tz %s", verification_date_tz)
+#             #rec.update({'verification_date_tz': verification_date_tz})
+    
+    @api.depends("zip", "country_id", "country_id.code")
+    # If a department code changes, it will have to be manually recomputed
+    def _compute_department(self):
+        rcdo = self.env["res.country.department"]
+        fr_country_ids = (
+            self.env["res.country"]
+            .search([("code", "in", ("FR", "GP", "MQ", "GF", "RE", "YT"))])
+            .ids
+        )
+        for partner in self:
+            dpt_id = False
+            zipcode = partner.zip
+            if (
+                partner.country_id
+                and partner.country_id.id in fr_country_ids
+                and zipcode
+                and len(zipcode) == 5
+            ):
+                zipcode = partner.zip.strip().replace(" ", "").rjust(5, "0")
+                code = self._fr_zipcode_to_department_code(zipcode)
+                dpt = rcdo.search(
+                    [
+                        ("code", "=", code),
+                        ("country_id", "in", fr_country_ids),
+                    ],
+                    limit=1,
+                )
+                dpt_id = dpt and dpt.id or False
+            partner.department_id = dpt_id
+
+    def _fr_zipcode_to_department_code(self, zipcode):
+        code = zipcode[0:2]
+        # https://fr.wikipedia.org/wiki/Liste_des_communes_de_France_dont_le_code_postal_ne_correspond_pas_au_d%C3%A9partement  # noqa
+        special_zipcodes = {
+            "42620": "03",
+            "05110": "04",
+            "05130": "04",
+            "05160": "04",
+            "06260": "04",
+            "48250": "07",
+            "43450": "15",
+            "36260": "18",
+            "33220": "24",
+            "05700": "26",
+            "73670": "38",
+            "01410": "39",
+            "01590": "39",
+            "52100": "51",
+            "21340": "71",
+            "01200": "74",
+            "13780": "83",
+            "37160": "86",
+            "94390": "91",
+        }
+        if zipcode in special_zipcodes:
+            return special_zipcodes[zipcode]
+        if code == "97":
+            code = zipcode[0:3]
+        elif code == "20":
+            try:
+                zipcode = int(zipcode)
+            except ValueError:
+                return "20"
+            if 20000 <= zipcode < 20200:
+                # Corse du Sud / 2A
+                code = "2A"
+            elif 20200 <= zipcode <= 20620:
+                code = "2B"
+            else:
+                code = "20"
+        return code
+    
+    @api.onchange('inspection_type')
+    def onchange_inspection_type(self):
+        if self.inspection_type == 'echafaudage':
+            self.update({'installation_type': 'TUB'})
+        if self.inspection_type == 'levage':
+            self.update({'installation_type': None})
+    
+    @api.depends('constat_adequacy_exam_ids', 
+                 'constat_assembly_exam_ids', 
+                 'constat_conservation_state_exam_ids', 
+                 'constat_good_functioning_exam_ids', 
+                 'constat_epreuve_statique_ids', 
+                 'constat_epreuve_dynamique_ids',
+                 'constat_adequacy_exam_ids.verification_point_id', 
+                 'constat_assembly_exam_ids.verification_point_id', 
+                 'constat_conservation_state_exam_ids.verification_point_id', 
+                 'constat_good_functioning_exam_ids.verification_point_id', 
+                 'constat_epreuve_statique_ids.verification_point_id', 
+                 'constat_epreuve_dynamique_ids.verification_point_id',
+                )
+    def _compute_verification_point(self):
+        for prestation in self:
+            verification_point_ids = self.env['prestation.verification.point']
+            if prestation.constat_adequacy_exam_ids:
+                verification_point_ids = prestation.constat_adequacy_exam_ids.mapped('verification_point_id')
+            if prestation.constat_assembly_exam_ids:
+                verification_point_ids += prestation.constat_assembly_exam_ids.mapped('verification_point_id')
+            if prestation.constat_conservation_state_exam_ids:
+                verification_point_ids += prestation.constat_conservation_state_exam_ids.mapped('verification_point_id') 
+            if prestation.constat_good_functioning_exam_ids:
+                verification_point_ids += prestation.constat_good_functioning_exam_ids.mapped('verification_point_id') 
+            if prestation.constat_epreuve_statique_ids:
+                verification_point_ids += prestation.constat_epreuve_statique_ids.mapped('verification_point_id') 
+            if prestation.constat_epreuve_dynamique_ids:
+                verification_point_ids += prestation.constat_epreuve_dynamique_ids.mapped('verification_point_id')
+            prestation.verification_point_ids = verification_point_ids
+            
+            
+            
+    
+    
+
+
                 

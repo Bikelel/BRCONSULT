@@ -9,7 +9,7 @@
                 <t t-set="report_name_brconsult" t-value='doc.name'/>
                 <t t-set="partner_id_name_brconsult" t-value='doc.partner_id.name' t-if='doc.partner_id'/>
                 <t t-set="site_address_brconsult" t-value='doc.site_address' t-if='doc.site_address'/>
-                
+                <t t-set="num_verification_point" t-value="0"/>
                 <div class='row'>
                     <div class='col-2'>
                         <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" style="max-height: 130px;"/>
@@ -160,8 +160,8 @@
                             <tr>
                                 <td style="width: 50%; border: none; padding-top:40px;padding-bottom:40px;" >
                                     <div style="margin-bottom:20px;">
-                                        <input type="checkbox" t-att-checked="'checked' if doc.favorable_opinion else None"/> 
-                                        <t t-if="doc.favorable_opinion" >
+                                        <input type="checkbox" t-att-checked="'checked' if doc.opinion in ['favorable_opinion', 'opinion_with_observation', 'mixte'] else None"/> 
+                                        <t t-if="doc.opinion in ['favorable_opinion', 'opinion_with_observation']" >
                                             <span style="color:green;">AVIS FAVORABLE</span>
                                         </t>
                                         <t t-else="">
@@ -169,7 +169,7 @@
                                         </t>
                                     </div>
                                     <div style="margin-bottom:20px;">
-                                        <input type="checkbox" t-att-checked="'checked' if doc.opinion_with_observation else None"/> Avec observation(s)
+                                        <input type="checkbox" t-att-checked="'checked' if doc.opinion in ['opinion_with_observation', 'mixte'] else None"/> Avec observation(s)
 <!--                                         <div t-if="doc.opinion_with_observation">
                                             (Levée d’observations recommandée)
                                         </div> -->
@@ -178,8 +178,8 @@
                                 <td style="width: 50%; border: none; padding-top:40px; padding-bottom:40px;">
                                     
                                     <div style="margin-bottom:20px;">
-                                        <input type="checkbox" t-att-checked="'checked' if doc.defavorable_opinion else None"/> 
-                                         <t t-if="doc.defavorable_opinion" >
+                                        <input type="checkbox" t-att-checked="'checked' if doc.opinion in ['defavorable_opinion', 'mixte'] else None"/> 
+                                         <t t-if=" doc.opinion == 'defavorable_opinion'" >
                                             <span style="color:red;">AVIS DEFAVORABLE</span>
                                         </t>
                                         <t t-else="">
@@ -228,7 +228,7 @@ La présente mission est réalisée conformément au contrat référencé
                     accessibles en sécurité. 
                     <br/>
                     <t t-if="doc.verification_type in ['RS', 'VP']">Motif de remise en service: <span t-field="doc.motif_rs_id"/><br/>
-                        <div class="row">
+                        <div class="row" t-if="doc.prestation_id">
                             <div class="col-6">Référence du rapport précédent : <span t-field="doc.prestation_id.name" t-if="doc.prestation_id"/><span t-field="doc.autre_prestation" t-if="not doc.prestation_id and doc.autre_prestation"/>
                                 
                             
@@ -290,6 +290,7 @@ La présente mission est réalisée conformément au contrat référencé
                 <t t-if='doc.image5 or doc.image6' >
                     <br/><br/><br/><br/><br/>
                 </t>
+                <br/>
                 <div style="border: 2px solid #5F5F5F; padding:10px; page-break-inside: avoid;" t-if="doc.comment_scaffolding_photographic_location">
                     Commentaires:<br/>
                     <span t-field="doc.comment_scaffolding_photographic_location"/>
@@ -564,7 +565,7 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Type de la plate-forme</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.platform_type"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['ASC', 'MMA']">
+                        <tr t-if="doc.installation_type in ['ASC', 'MMA', 'PTR']">
                             <td>Modèle</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.modele"/></td>
                         </tr>
@@ -572,11 +573,11 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Numéro(s) de fabrication</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.num_fabrication"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['ASC', 'MMA']">
+                        <tr t-if="doc.installation_type in ['ASC', 'MMA', 'PTR', 'PWM']">
                             <td>Année de fabrication</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.fabrication_year"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['ASC', 'MMA']">
+                        <tr t-if="doc.installation_type in ['ASC', 'MMA', 'PTR', 'PWM']">
                             <td>Année de mise en circulation </td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.circulation_year"/></td>
                         </tr>
@@ -585,7 +586,7 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Alimentation électrique</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.alimentation"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['ASC', 'MMA']">
+                        <tr t-if="doc.installation_type in ['ASC', 'MMA', 'PTR']">
                             <td>Desserte des niveaux</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.level_service"/></td>
                         </tr>
@@ -653,7 +654,7 @@ La présente mission est réalisée conformément au contrat référencé
                             </td>
                         </tr>
                         <tr>
-                            <td>Vitesse maximale du vente autorisée en service</td>
+                            <td>Vitesse maximale du vent autorisée en service</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.wind_speed_max_id"/></td>
                         </tr>
                         <tr>
@@ -857,16 +858,19 @@ La présente mission est réalisée conformément au contrat référencé
                     </div>
                     <table class='table' style="margin-top:20px;" t-if="doc.constat_adequacy_exam_ids">
                         <tr>
+                            <td></td>
                             <td>Points de vérification</td>
                             <td>Observations/Réserves </td>
                             <td>Précisions </td>
                             <td class="text-center">Photos </td>
-                            <td>Statut </td>
-                            <td>Date </td>
+<!--                             <td>Statut </td>
+                            <td>Date </td> -->
                         </tr>
                         <tbody>
                             <t t-foreach="doc.constat_adequacy_exam_ids" t-as="constat">
                                 <tr>
+                                    
+                                    <td><span t-esc="num_verification_point + 1"/></td>
                                     <td ><span t-field="constat.verification_point_id"/></td>
                                     <td>
                                         <ol>
@@ -882,9 +886,11 @@ La présente mission est réalisée conformément au contrat référencé
                                     <td><span t-field="constat.precision"/></td>
                                     <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
                                         </td>
-                                    <td><span t-field="constat.state"/></td>
-                                    <td><span t-field="constat.date"/></td>
+<!--                                     <td><span t-field="constat.state"/></td>
+                                    <td><span t-field="constat.date"/></td> -->
                                 </tr>
+                                
+                                <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
                             </t>
                         </tbody>
                     </table>
@@ -932,6 +938,28 @@ La présente mission est réalisée conformément au contrat référencé
                                         <t t-if="doc.calculation_notice">Oui</t>
                                         <t t-else="">Non</t>
                                     </td>
+                                    <td>
+                                        <t t-if="doc.maintenance_log">Oui</t>
+                                        <t t-else="">Non</t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </tbody>
+                    </table>
+                    <table t-if="doc.assembly_file=='no'" class="table">
+                        <tr class="text-center">
+                            <td>Notice constructeur</td>
+                            
+                            <td>Carnet de maintenance</td>
+                        </tr>
+                        <tbody>
+                            <tbody>
+                                <tr class="text-center">
+                                    <td>
+                                        <t t-if="doc.notice_constructeur">Oui</t>
+                                        <t t-else="">Non</t>
+                                    </td>
+                                   
                                     <td>
                                         <t t-if="doc.maintenance_log">Oui</t>
                                         <t t-else="">Non</t>
@@ -1012,20 +1040,22 @@ La présente mission est réalisée conformément au contrat référencé
 
                     <table class='table' style="margin-top:20px;" t-if="doc.constat_assembly_exam_ids">
                         <tr>
+                            <td></td>
                             <td>Points de vérification</td>
                             <td>Observations/Réserves </td>
                             <td>Précisions </td>
                             <td class="text-center">Photos </td>
-                            <td>Statut </td>
-                            <td>Date </td>
+<!--                             <td>Statut </td>
+                            <td>Date </td> -->
                         </tr>
                         <tbody>
                             <t t-foreach="doc.constat_assembly_exam_ids" t-as="constat">
                                 <tr>
+                                    <td><span t-esc="num_verification_point+1"/></td>
                                     <td ><span t-field="constat.verification_point_id"/></td>
                                     <td>
                                         <ol>
-                                            <t t-foreach="constat.observation_ids" t-as="observation">
+                                            <t t-foreach="constat.constat_observation_ids" t-as="observation">
                                                 <li><t t-if="observation.reserve">
                                                     <span style="font-weight:bold;" t-field="observation.name"/>
                                                      </t>
@@ -1037,9 +1067,10 @@ La présente mission est réalisée conformément au contrat référencé
                                     <td><span t-field="constat.precision"/></td>
                                     <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
                                         </td>
-                                    <td><span t-field="constat.state"/></td>
-                                    <td><span t-field="constat.date"/></td>
+<!--                                     <td><span t-field="constat.state"/></td>
+                                    <td><span t-field="constat.date"/></td> -->
                                 </tr>
+                                <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
                             </t>
                         </tbody>
                     </table>
@@ -1071,20 +1102,22 @@ La présente mission est réalisée conformément au contrat référencé
                 </div>
                 <table class='table' style="margin-top:20px;" t-if="doc.constat_conservation_state_exam_ids">
                     <tr>
+                        <td></td>
                         <td>Points de vérification</td>
                         <td>Observations/Réserves </td>
                         <td>Précisions </td>
                         <td class="text-center">Photos </td>
-                        <td>Statut </td>
-                        <td>Date </td>
+<!--                         <td>Statut </td>
+                        <td>Date </td> -->
                     </tr>
                     <tbody>
                         <t t-foreach="doc.constat_conservation_state_exam_ids" t-as="constat">
                             <tr>
+                                <td><span t-esc="num_verification_point+1"/></td>
                                 <td ><span t-field="constat.verification_point_id"/></td>
                                 <td>
                                     <ol>
-                                        <t t-foreach="constat.observation_ids" t-as="observation">
+                                        <t t-foreach="constat.constat_observation_ids" t-as="observation">
                                             <li><t t-if="observation.reserve">
                                                     <span style="font-weight:bold;" t-field="observation.name"/>
                                                  </t>
@@ -1096,9 +1129,10 @@ La présente mission est réalisée conformément au contrat référencé
                                 <td><span t-field="constat.precision"/></td>
                                 <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
                                     </td>
-                                <td><span t-field="constat.state"/></td>
-                                <td><span t-field="constat.date"/></td>
+<!--                                 <td><span t-field="constat.state"/></td>
+                                <td><span t-field="constat.date"/></td> -->
                             </tr>
+                            <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
                         </t>
                     </tbody>
                 </table>
@@ -1129,20 +1163,22 @@ La présente mission est réalisée conformément au contrat référencé
                     </div>
                     <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.constat_good_functioning_exam_ids">
                         <tr>
+                            <td></td>
                             <td>Points de vérification</td>
                             <td>Observations/Réserves </td>
                             <td>Précisions </td>
                             <td class="text-center">Photos </td>
-                            <td>Statut </td>
-                            <td>Date </td>
+<!--                             <td>Statut </td>
+                            <td>Date </td> -->
                         </tr>
                         <tbody>
                             <t t-foreach="doc.constat_good_functioning_exam_ids" t-as="constat">
                                 <tr>
+                                    <td><span t-esc="num_verification_point+1"/></td>
                                     <td ><span t-field="constat.verification_point_id"/></td>
                                     <td>
                                         <ol>
-                                            <t t-foreach="constat.observation_ids" t-as="observation">
+                                            <t t-foreach="constat.constat_observation_ids" t-as="observation">
                                                 <li><t t-if="observation.reserve">
                                                         <span style="font-weight:bold;" t-field="observation.name"/>
                                                      </t>
@@ -1154,9 +1190,10 @@ La présente mission est réalisée conformément au contrat référencé
                                     <td><span t-field="constat.precision"/></td>
                                     <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
                                         </td>
-                                    <td><span t-field="constat.state"/></td>
-                                    <td><span t-field="constat.date"/></td>
+<!--                                     <td><span t-field="constat.state"/></td>
+                                    <td><span t-field="constat.date"/></td> -->
                                 </tr>
+                                <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
                             </t>
                         </tbody>
                     </table>
@@ -1208,20 +1245,22 @@ La présente mission est réalisée conformément au contrat référencé
                     </div>
                     <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.verification_type in ['MS', 'RS'] and doc.constat_epreuve_statique_ids">
                         <tr>
+                            <td></td>
                             <td>Points de vérification</td>
                             <td>Observations/Réserves </td>
                             <td>Précisions </td>
                             <td class="text-center">Photos </td>
-                            <td>Statut </td>
-                            <td>Date </td>
+<!--                             <td>Statut </td>
+                            <td>Date </td> -->
                         </tr>
                         <tbody>
                             <t t-foreach="doc.constat_epreuve_statique_ids" t-as="constat">
                                 <tr>
+                                    <td><span t-esc="num_verification_point+1"/></td>
                                     <td ><span t-field="constat.verification_point_id"/></td>
                                     <td>
                                         <ol>
-                                            <t t-foreach="constat.observation_ids" t-as="observation">
+                                            <t t-foreach="constat.constat_observation_ids" t-as="observation">
                                                 <li><t t-if="observation.reserve">
                                                         <span style="font-weight:bold;" t-field="observation.name"/>
                                                      </t>
@@ -1233,9 +1272,10 @@ La présente mission est réalisée conformément au contrat référencé
                                     <td><span t-field="constat.precision"/></td>
                                     <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
                                         </td>
-                                    <td><span t-field="constat.state"/></td>
-                                    <td><span t-field="constat.date"/></td>
+<!--                                     <td><span t-field="constat.state"/></td>
+                                    <td><span t-field="constat.date"/></td> -->
                                 </tr>
+                                <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
                             </t>
                         </tbody>
                     </table>
@@ -1278,20 +1318,22 @@ La présente mission est réalisée conformément au contrat référencé
                     </div>
                     <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.verification_type in ['MS', 'RS'] and doc.constat_epreuve_dynamique_ids">
                         <tr>
+                            <td></td>
                             <td>Points de vérification</td>
                             <td>Observations/Réserves </td>
                             <td>Précisions </td>
                             <td class="text-center">Photos </td>
-                            <td>Statut </td>
-                            <td>Date </td>
+<!--                             <td>Statut </td>
+                            <td>Date </td> -->
                         </tr>
                         <tbody>
                             <t t-foreach="doc.constat_epreuve_dynamique_ids" t-as="constat">
                                 <tr>
+                                    <td><span t-esc="num_verification_point+1"/></td>
                                     <td ><span t-field="constat.verification_point_id"/></td>
                                     <td>
                                         <ol>
-                                            <t t-foreach="constat.observation_ids" t-as="observation">
+                                            <t t-foreach="constat.constat_observation_ids" t-as="observation">
                                                 <li><t t-if="observation.reserve">
                                                         <span style="font-weight:bold;" t-field="observation.name"/>
                                                      </t>
@@ -1303,9 +1345,10 @@ La présente mission est réalisée conformément au contrat référencé
                                     <td><span t-field="constat.precision"/></td>
                                     <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
                                         </td>
-                                    <td><span t-field="constat.state"/></td>
-                                    <td><span t-field="constat.date"/></td>
+<!--                                     <td><span t-field="constat.state"/></td>
+                                    <td><span t-field="constat.date"/></td> -->
                                 </tr>
+                                <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
                             </t>
                         </tbody>
                     </table>

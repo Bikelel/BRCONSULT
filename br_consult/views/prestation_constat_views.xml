@@ -9,30 +9,98 @@
                 <form string="Constat">
                     <sheet>
                         <group col="4">
-                            
-                            <field name="verification_point_id" options="{'no_create': True,  'no_open':False}" domain="[('type', '=', 'adequacy_exam'), ('inspection_type', '=', inspection_type), ('installation_type', '=', installation_type)]"/>
-                            <field name="type"/>
-                            <field name="precision"/>
-                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
-                            <field name="state"/>
-                            <field name="date"/>
+                            <field name="type" invisible="1"/>
                             <field name="name" invisible="1"/>
                             <field name="inspection_type" invisible="1"/>
                             <field name="installation_type" invisible="1"/>
+                            <field name="verification_point_id" options="{'no_create': True,  'no_open':False}" domain="[('type', '=', type), ('inspection_type', '=', inspection_type), ('installation_type', '=', installation_type)]"/>
+                            
+                            <field name="precision"/>
+                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+<!--                             <field name="state"/>
+                            <field name="date"/> -->
+                            
                         </group>
-                        <group string="Observations/réserves">
+                        <group string="Observations/réserves" attrs="{'invisible': [('verification_point_id', '=', False)]}">
                             <field name="constat_observation_ids"  context="{'default_verification_point_id':verification_point_id}" nolabel="1">
                                 <tree  editable='bottom'>
                                     <field name="observation_id" domain="[('verification_point_id', '=', verification_point_id)]"/>
                                     <field name="verification_point_id" invisible="1"/>
                                     <field name="reserve"/>
+                                    <field name="name" invisible="1"/>
+                                    
+                                    
                                 </tree>
                             </field>
+                             
                         </group>
                     </sheet>
                 </form>
             </field>
         </record>
+        <record id="view_prestation_constat_search_form" model="ir.ui.view">
+            <field name="name">prestation.constat.search.form</field>
+            <field name="model">prestation.constat</field>
+            <field name="arch" type="xml">
+               <search string="Constat">
+                    <field name="name" string="Prestation"/>
+                    <field name="partner_id"/>
+
+                    <filter string="Echafaudage" name="echafaudage" domain="[('inspection_type', '=', 'echafaudage')]"/>
+                    <separator/>
+                    <filter string="Levage" name="levage" domain="[('inspection_type', '=', 'levage')]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Entreprise" name="customer" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Point de verification" name="verifcation_point" context="{'group_by': 'verification_point_id'}"/>
+
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="view_prestation_constat_list" model="ir.ui.view">
+            <field name="name">prestation.constat.list</field>
+            <field name="model">prestation.constat</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="verification_point_id" decoration-bf="1"/>
+                    <field name="prestation_id"/>
+                   
+                    <field name="inspection_type" decoration-success="inspection_type == 'echafaudage'" decoration-info="inspection_type == 'levage'" widget="badge" optional="show"/>
+                    <field name="partner_id" optional="show"/>
+                    <field name="installation_type"/>
+                    <field name="verification_type"/>
+                    <field name="precision" optional="hide"/>
+                    <field name="photo" optional="hide" options='{"size":[0,90]}' widget='image'/>
+                   
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_prestation_constat_graph">
+            <field name="name">prestation.constat.graph</field>
+            <field name="model">prestation.constat</field>
+            <field name="arch" type="xml">
+                <graph string="Constat" sample="1">
+                    <field name="partner_id"/>
+                    <field name="verification_point_id"/>
+                </graph>
+            </field>
+        </record>
+        
+        <record id="action_prestation_constat_list" model="ir.actions.act_window">
+            <field name="name">Constat</field>
+            <field name="res_model">prestation.constat</field>
+            <field name="context">{'search_default_customer': 1, 'search_default_verifcation_point': 1}</field>
+            <field name="domain">[('prestation_id', '!=', False)]</field>
+            <field name="view_mode">graph,tree,form</field>
+        </record>
+        
+        <menuitem id="br_consult_constat_list_menu"
+        name="Statistiques constat"
+        parent="br_consult_statistiques_menu"
+        action="action_prestation_constat_list"
+        groups="base.group_system"
+        sequence="35"/>
+         
         
 
   </data>

@@ -136,6 +136,8 @@
                         <button name="button_phase4" string="Envoyer vers Phase 4" type="object" attrs="{'invisible': [('state', '!=', 'phase3')]}" class="btn-primary"/>
                         <button name="button_send_report" string="Envoyer le rapport" type="object" attrs="{'invisible': ['|',('state', '!=', 'phase4'), ('is_report_sent', '=', True)]}" class="btn-primary"/>
                         <button name="button_send_report" string="Envoyer le rapport" type="object" attrs="{'invisible': [('is_report_sent', '=', False)]}" groups="base.group_system"/>
+                        <button name="button_send_alert_end_chantier" string="Envoyer l'alerte manuellement" type="object" attrs="{'invisible': ['|',('sent_alert_end_chantier', '=', True), ('is_report_sent', '=', False)]}" class="btn-primary"/>
+                        <button name="button_send_alert_end_chantier" string="Renvoyer l'alerte manuellement" type="object" attrs="{'invisible': [('sent_alert_end_chantier', '=', False)]}"/>
                     </header>
                     <sheet>
                         <div class="prestation_sheet_header">
@@ -170,12 +172,25 @@
                                         <field name="partner_contact" attrs="{'readonly': [('state', 'not in', ['phase1'])]}"/>
                                         <field name="email_partner_ids" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2', 'phase3'])]}" widget="many2many_tags_email" domain="[('parent_id', '=', partner_id)]"/>
                                         <field name="site_address" required="1" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase3'])]}"/>
+                                        <field name="zip"/>
+                                        <field name="department_id"/>
+                                        
+                                        
+                                        <field name="country_id"/>
+                                        
                                         <field name="site_localisation" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2'])]}"/>
                                     </group>
                                     <group>
                                         <field name="date" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2'])]}"/>
+                                        
                                         <field name="verification_date" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase3'])]}"/>
                                         <field name="end_date_verification" invisible="1"/>
+                                        <field name="chantier_duration" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2', 'phase3'])]}"/>
+                                        <field name="end_date_chantier" invisible="1"/>
+                                        <field name="verification_point_ids" widget="many2many_tags"/>
+                                        
+                                        <field name="sent_alert_end_chantier" invisible="1"/>
+                                        
                                         <field name="user_id" domain="[('is_inspector', '=', True)]" attrs="{'readonly': [('state', 'not in', ['phase1'])]}"/>
                                         <field name="prensent_contact" attrs="{'readonly': [('state', 'not in', ['phase3', 'phase2'])]}"/>
                                         <field name="scaffolding_surface" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')], 'readonly': [('state', 'not in', ['phase1'])]}"/>
@@ -185,13 +200,16 @@
                                     </group>
                                 </group>
                                 <group string="Conformité de l’installation">
-                                    <group>
-                                        <field name="favorable_opinion" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
-                                        <field name="opinion_with_observation" attrs="{'readonly': [('state', 'not in', [ 'phase2', 'phase3'])]}"/>
-                                    </group>
-                                    <group>
-                                        <field name="defavorable_opinion" attrs="{'readonly': [('state', 'not in', [ 'phase2', 'phase3'])]}"/>
-                                    </group>
+<!--                                     <group> -->
+                                        <field name="opinion" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])], 'required': [('state', 'in', ['phase2', 'phase3'])]}"/>
+                                        
+<!--                                         <field name="favorable_opinion" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                        <field name="opinion_with_observation" attrs="{'readonly': [('state', 'not in', [ 'phase2', 'phase3'])]}"/> -->
+<!--                                     </group> -->
+<!--                                     <group> -->
+<!--                                         <field name="defavorable_opinion" attrs="{'readonly': [('state', 'not in', [ 'phase2', 'phase3'])]}"/> -->
+                                        
+<!--                                     </group> -->
                                 </group>
                                 <group string="Commentaires">
                                     <field name="comment_observation_fiche" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
@@ -208,7 +226,7 @@
                                     
                                     <field name="contrat_ref" string="La mission est réalisée conformément au contrat réf" attrs="{'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}"/>
                                     <field name="prestation_id" attrs="{'invisible': [('verification_type', 'not in', ['RS', 'VP'])], 'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}" domain="[('inspection_type', '=', inspection_type), ('installation_type', '=', installation_type), ('is_report_sent', '=', True)]" options="{'no_create': True}"/>
-                                    <field name="autre_prestation" attrs="{'invisible': ['|', ('prestation_id', '!=', False), ('verification_type', 'not in', ['RS', 'VP'])], 'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}"/>
+                                    <field name="autre_prestation" attrs="{'invisible': ['|', ('prestation_id', '!=', False), ('verification_type', 'not in', ['RS', 'VP'])], 'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}" placeholder="Si le repport n'existe pas dans la base, mentionner manullement une réf ici!!"/>
                                     
                                     
                                     <field name="scope_mission_date" attrs="{'invisible':[('verification_type', 'not in', ['RS', 'VP'])], 'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}"/>
@@ -341,17 +359,18 @@
                                     </field>
                                 </group>
                                 <group string="Constat (s)" attrs="{'invisible': [('inspection_type', '=', 'levage'), ('verification_type', '=', 'VP')]}">
-                                    <field name="constat_adequacy_exam_ids" nolabel="1" context="{'default_prestation_id':active_id}" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
+                                    <field name="constat_adequacy_exam_ids" nolabel="1" context="{'default_prestation_id':active_id, 'default_type': 'adequacy_exam'}" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
                                         <tree>
-                                            <field name="verification_point_id" options="{'no_create': True,  'no_open':False}" domain="[('type', '=', 'adequacy_exam'), ('inspection_type', '=', inspection_type), ('installation_type', '=', installation_type)]"/>
+                                            <field name="verification_point_id" />
                                             <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="inspection_type" invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
-                                            <field name="state"/>
-                                            <field name="date"/>
+                                            <field name="state" invisible="1"/>
+                                            <field name="date" invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object" />
+
                                         </tree>
                                     </field>
                                 </group>
@@ -401,17 +420,18 @@
                                     <field name="comment_assembly_exam" string="Commentaires" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" force_save="1"/>
                                 </group>
                                 <group string="Constat (s)" attrs="{'invisible': [('inspection_type', '=', 'levage'), ('verification_type', '=', 'VP')]}">
-                                    <field name="constat_assembly_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
-                                        <tree editable='bottom' class="constat_class_table">
-                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'assembly_exam'), ('inspection_type', '=', inspection_type), ('installation_type', '=', installation_type)]"/>
-                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" context = "{'default_verification_point_id':verification_point_id}" options="{'color_field': 'color'}"/>
+                                    <field name="constat_assembly_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'assembly_exam'}">
+                                        <tree>
+                                            <field name="verification_point_id" options="{'no_create': True}"/>
+                                            <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
-                                            <field name="state"/>
-                                            <field name="date"/>
+                                            <field name="state" invisible="1"/>
+                                            <field name="date" invisible="1"/>
                                             <field name='inspection_type' invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object" />
+
                                         </tree>
                                     </field>
                                 </group>
@@ -428,21 +448,21 @@
                                 </group>
 
                                 <group string="Constat (s)">
-                                    <field name="constat_conservation_state_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
-                                        <tree editable='bottom' class="constat_class_table">
-                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'conservation_state_exam'), ('inspection_type', '=', inspection_type), ('installation_type', '=', installation_type)]"/>
-                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" context = "{'default_verification_point_id':verification_point_id}" options="{'color_field': 'color'}"/>
+                                    <field name="constat_conservation_state_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'conservation_state_exam'}">
+                                        <tree>
+                                            <field name="verification_point_id" options="{'no_create': True}" />
+                                            <field name="constat_observation_ids" widget="many2many_tags"  options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
-                                            <field name="state"/>
-                                            <field name="date"/>
+                                            <field name="state" invisible="1"/>
+                                            <field name="date" invisible="1"/>
                                             <field name="inspection_type" invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object" />
                                         </tree>
                                     </field>
                                 </group>
-                                <h1 class="headding_1" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">4.4- Examen du bon fonctionenement</h1>
+                                <h1 class="headding_1" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">4.4- Examen du bon fonctionnement</h1>
                                 <group attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
                                     <field name="good_functioning_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'in', ['phase1'])]}">
                                         <tree editable="bottom" delete="false" create="false">
@@ -455,14 +475,14 @@
                                 </group>
 
                                 <group string="Constat (s)" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
-                                    <field name="constat_good_functioning_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
-                                        <tree editable='bottom' class="constat_class_table">
-                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'good_functioning'), ('installation_type', '=', installation_type)]"/>
-                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" context = "{'default_verification_point_id':verification_point_id}" options="{'color_field': 'color'}"/>
+                                    <field name="constat_good_functioning_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'good_functioning'}">
+                                        <tree>
+                                            <field name="verification_point_id" options="{'no_create': True}"/>
+                                            <field name="constat_observation_ids" widget="many2many_tags"  options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
-                                            <field name="state"/>
-                                            <field name="date"/>
+                                            <field name="state" invisible="1"/>
+                                            <field name="date" invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object" />
                                         </tree>
@@ -484,14 +504,14 @@
                                     
                                 </group>
                                 <group string="Constat (s)" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}">
-                                    <field name="constat_epreuve_statique_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
-                                        <tree editable='bottom' style="max-width:90%;">
-                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'epreuve_statique'), ('installation_type', '=', installation_type)]"/>
-                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" context = "{'default_verification_point_id':verification_point_id}" options="{'color_field': 'color'}"/>
+                                    <field name="constat_epreuve_statique_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'epreuve_statique'}">
+                                        <tree>
+                                            <field name="verification_point_id" options="{'no_create': True}" />
+                                            <field name="constat_observation_ids"  widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
-                                            <field name="state"/>
-                                            <field name="date"/>
+                                            <field name="state" invisible="1"/>
+                                            <field name="date" invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object" />
                                         </tree>
@@ -508,14 +528,14 @@
                                     
                                 </group>
                                 <group string="Constat (s)" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}">
-                                    <field name="constat_epreuve_dynamique_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
-                                        <tree editable='bottom' style="max-width:90%;">
-                                            <field name="verification_point_id" options="{'no_create': True}" domain="[('type', '=', 'epreuve_dynamique'), ('installation_type', '=', installation_type)]"/>
-                                            <field name="observation_ids" domain="[('verification_point_id', '=', verification_point_id)]" widget="many2many_tags" context = "{'default_verification_point_id':verification_point_id}" options="{'color_field': 'color'}"/>
+                                    <field name="constat_epreuve_dynamique_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'epreuve_dynamique'}">
+                                        <tree>
+                                            <field name="verification_point_id" options="{'no_create': True}" />
+                                            <field name="constat_observation_ids"  widget="many2many_tags"  options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options='{"size":[0,90]}' widget='image'/>
-                                            <field name="state"/>
-                                            <field name="date"/>
+                                            <field name="state" invisible="1"/>
+                                            <field name="date" invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object" />
                                         </tree>
@@ -588,7 +608,7 @@
     
     <menuitem id="br_consult_stat_menu"
         name="Statistique"
-        parent="br_consult_menu_root"
+        parent="br_consult_statistiques_menu"
         action="action_prestation_prestation_stat"
         groups="base.group_system"
         sequence="35"/>

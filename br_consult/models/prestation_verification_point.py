@@ -31,6 +31,7 @@ class PrestationVerificationPoint(models.Model):
         ('TRE', 'Treuil'),
         ('PAE', 'Palan motorisé'),
         ('PAM', 'Palan manuel'),
+        ('TUB', 'Echafaudage'),
     ], string="Type d'installation")
     
    

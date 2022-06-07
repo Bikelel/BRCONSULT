@@ -7,6 +7,11 @@
             name="Prestation"
             web_icon="br_consult,static/description/icon.png"
             sequence="40"/>
+    <menuitem id="br_consult_statistiques_menu"
+        name="Statistiques"
+        parent="br_consult_menu_root"
+        groups="base.group_system"
+        sequence="35"/>
     
     <menuitem
         id="br_consult_settings_menu"
