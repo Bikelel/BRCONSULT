@@ -52,6 +52,7 @@ class Prestation(models.Model):
     report_parameter_id = fields.Many2one('prestation.report.parameter',string="Parametre du rapport")
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
     partner_id = fields.Many2one('res.partner', string="Entreprise")
+    mentor_id = fields.Many2one('res.partner', string="Monteur")
     inspection_type = fields.Selection([
         ('echafaudage', 'Echafaudage'),
         ('levage', 'Levage'),
