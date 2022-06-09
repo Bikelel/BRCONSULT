@@ -9,7 +9,7 @@ class PrestationObservation(models.Model):
 
     name = fields.Char("Name", required=True)
     verification_point_id = fields.Many2one('prestation.verification.point', string="Point de vérification")
-    type = fields.Selection(related="verification_point_id.type")
+    type = fields.Selection(related="verification_point_id.type", store=True)
     reserve = fields.Boolean("Reserve")
     temp_save = fields.Boolean("Enregisrement temporaire")
     color = fields.Integer("Couleur", compute = '_get_observation_color', store=True)

@@ -104,7 +104,7 @@ class Prestation(models.Model):
     defavorable_opinion = fields.Boolean('Avis defavorable', tracking=True)
     opinion = fields.Selection([
         ('favorable_opinion', 'Avis favorable'),
-        ('opinion_with_observation', 'Avis favorable avec observation'),
+        ('opinion_with_observation', 'Avis favorable avec observation(s)'),
         ('defavorable_opinion', 'Avis defavorable'),
         ('mixte', 'Mixte'),
     ], string="Avis")
