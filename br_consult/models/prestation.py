@@ -79,6 +79,7 @@ class Prestation(models.Model):
     verification_date = fields.Datetime('Date de vérification', default=fields.Datetime.now, tracking=True)
     end_date_verification = fields.Datetime("Fin de la date de vérification", store=True, compute='_compute_end_date')
     verification_date_tz = fields.Datetime('Date de vérification TZ', store=True)
+    verification_date_without_time = fields.Date('Date de vérification (sans heures)', store=True, compute="_compute_verification_date_without_time")
     prestation_duration = fields.Float("Durée d'une prestation", store=True, related="company_id.prestation_duration")
     chantier_duration = fields.Integer("Durée du chantier (mois)")
     end_date_chantier = fields.Datetime("Date de fin du chantier", compute='_compute_end_date_chantier', store=True)
@@ -733,11 +734,10 @@ class Prestation(models.Model):
             if prestation.constat_epreuve_dynamique_ids:
                 verification_point_ids += prestation.constat_epreuve_dynamique_ids.mapped('verification_point_id')
             prestation.verification_point_ids = verification_point_ids
-            
-            
-            
-    
-    
 
-
-                
+    @api.depends('verification_date')        
+    def _compute_verification_date_without_time(self):
+        for rec in self:
+            if rec.verification_date:
+                rec.update({'verification_date_without_time': rec.verification_date.date()})
+            
