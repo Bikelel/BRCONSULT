@@ -187,7 +187,7 @@
                                         <field name="end_date_verification" invisible="1"/>
                                         <field name="chantier_duration" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2', 'phase3'])]}"/>
                                         <field name="end_date_chantier" invisible="1"/>
-                                        <field name="verification_point_ids" widget="many2many_tags"/>
+                                        <field name="verification_point_ids" widget="many2many_tags" invisible="1"/>
                                         
                                         <field name="sent_alert_end_chantier" invisible="1"/>
                                         
