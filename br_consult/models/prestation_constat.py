@@ -18,7 +18,7 @@ class PrestationConstat(models.Model):
     verification_type = fields.Selection(related="prestation_id.verification_type")
     reserve = fields.Text("Observations/réserves reserve")
     precision = fields.Text("Précisions")
-    photo = fields.Binary("Photo")
+    photo = fields.Image("Photo", max_width=512, max_height=512)
     state = fields.Selection([
         ('to_lift', "A lever"),
         ('lifted', "Levée")], string="Statut")
