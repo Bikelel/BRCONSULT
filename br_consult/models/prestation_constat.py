@@ -15,6 +15,7 @@ class PrestationConstat(models.Model):
     constat_observation_ids = fields.One2many('prestation.constat.observation', 'constat_id',string="Observations/réserves" )
     inspection_type = fields.Selection(related="prestation_id.inspection_type")
     installation_type = fields.Selection(related="prestation_id.installation_type")
+    verification_type = fields.Selection(related="prestation_id.verification_type")
     reserve = fields.Text("Observations/réserves reserve")
     precision = fields.Text("Précisions")
     photo = fields.Binary("Photo")
@@ -22,6 +23,7 @@ class PrestationConstat(models.Model):
         ('to_lift', "A lever"),
         ('lifted', "Levée")], string="Statut")
     date = fields.Date('Date')
+    partner_id = fields.Many2one('res.partner', related="prestation_id.partner_id", store=True)
     
 
     def action_show_details(self):

@@ -5,6 +5,7 @@ import logging
 _logger = logging.getLogger(__name__)
 from odoo.exceptions import UserError
 from datetime import timedelta, datetime
+from dateutil.relativedelta import relativedelta
 import datetime
 from odoo.tools import float_round
 import pytz
@@ -78,6 +79,9 @@ class Prestation(models.Model):
     end_date_verification = fields.Datetime("Fin de la date de vérification", store=True, compute='_compute_end_date')
     verification_date_tz = fields.Datetime('Date de vérification TZ', store=True)
     prestation_duration = fields.Float("Durée d'une prestation", store=True, related="company_id.prestation_duration")
+    chantier_duration = fields.Integer("Durée du chantier (mois)")
+    end_date_chantier = fields.Datetime("Date de fin du chantier", compute='_compute_end_date_chantier', store=True)
+    sent_alert_end_chantier = fields.Boolean("Alerte de fin chantier est envoyée", copy=False)
     partner_contact = fields.Char("Représentée par")
     user_id = fields.Many2one('res.users', 'Inspecteur', default=default_user, tracking=True, required=True)
 
@@ -98,6 +102,12 @@ class Prestation(models.Model):
     favorable_opinion = fields.Boolean('Avis favorable', tracking=True)
     opinion_with_observation = fields.Boolean('Avec observation', tracking=True)
     defavorable_opinion = fields.Boolean('Avis defavorable', tracking=True)
+    opinion = fields.Selection([
+        ('favorable_opinion', 'Avis favorable'),
+        ('opinion_with_observation', 'Avis favorable avec observation'),
+        ('defavorable_opinion', 'Avis defavorable'),
+        ('mixte', 'Mixte'),
+    ], string="Avis")
     comment_observation_fiche = fields.Html("Commentaires Observation")
     visa_user = fields.Binary('Visa inspecteur', related='user_id.visa_user')
     contrat_ref = fields.Char('Contrat réf')
@@ -156,7 +166,7 @@ class Prestation(models.Model):
     image5 = fields.Binary("Image 5")
     image6 = fields.Binary("Image 6")
     comment_scaffolding_photographic_location = fields.Html("Commentaires localisation photographique de l'échafaudage")
-    
+    verification_point_ids = fields.Many2many('prestation.verification.point', string="Points de verification", store=True, compute="_compute_verification_point")
     constat_adequacy_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'adéquation", domain=[('type', '=', 'adequacy_exam')], copy=True)
     constat_assembly_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen de montage et d'installation", domain=[('type', '=', 'assembly_exam')], copy=True)
     constat_conservation_state_exam_ids = fields.One2many('prestation.constat', 'prestation_id', string="Constat Examen de l'état de conservation", domain=[('type', '=', 'conservation_state_exam')], copy=True)
@@ -256,14 +266,14 @@ class Prestation(models.Model):
         else:
             attributes_conservation_state = None
 
-        if attributes_conservation_state:
+        if attributes_conservation_state and not self.conservation_state_exam_ids:
             lines = []
             for line in attributes_conservation_state:
                 lines.append((0, 0, {'conservation_state_id': line.id,
                                      'name': line.name}))
 
             vals.update({'conservation_state_exam_ids': lines})
-        if attributes_good_functioning:
+        if attributes_good_functioning and not self.good_functioning_exam_ids:
             lines = []
             for line in attributes_good_functioning:
                 lines.append((0, 0, {'good_functioning_id': line.id,
@@ -285,7 +295,17 @@ class Prestation(models.Model):
                 vals.update({'characteristic_palan_ids': lines})
         result = super(Prestation, self).create(vals)
         return result
+    
+    def copy_data(self, default=None):
+        if default is None:
+            default = {}
+        if 'conservation_state_exam_ids' not in default:
+            default['conservation_state_exam_ids'] = [(0, 0, line.copy_data()[0]) for line in self.conservation_state_exam_ids]
+        if 'good_functioning_exam_ids' not in default:
+            default['good_functioning_exam_ids'] = [(0, 0, line.copy_data()[0]) for line in self.good_functioning_exam_ids]
 
+        return super(Prestation, self).copy_data(default)
+    
     def write(self, vals):
         user = self.env.user
         stages = user.stage_ids
@@ -310,9 +330,6 @@ class Prestation(models.Model):
                 raise UserError(_('Vous ne pouvez pas modifier la phase sans envoyer une confirmation de planning au client!'))
             if stage_id not in stages.ids:
                 raise UserError(_('You don t have the privilege to change stage'))
-            if not self.favorable_opinion and not self.defavorable_opinion:
-                if self.state in ['phase2', 'phase3'] and stage_obj_id.state != 'phase1':
-                    raise UserError(_('Vous devez selectionner soit avis favorable, avis défavorable ou les deux!'))
 
         if 'installation_type' in vals:
             
@@ -461,9 +478,16 @@ class Prestation(models.Model):
     @api.depends('verification_date')
     def _compute_end_date(self):
         for rec in self:
-            company = rec.company_id
-            duration = company.prestation_duration
+            #company = rec.company_id
+            duration = rec.company_id.prestation_duration
             rec.end_date_verification = rec.verification_date + timedelta(hours=duration)
+
+    @api.depends('verification_date', 'chantier_duration')
+    def _compute_end_date_chantier(self):
+        for rec in self:
+            #company = rec.company_id
+            duration = rec.chantier_duration
+            rec.end_date_chantier = rec.verification_date + relativedelta(months=duration)
     
     def button_phase2(self):
         for prestation in self:
@@ -486,14 +510,18 @@ class Prestation(models.Model):
     @api.depends('inspection_type')
     def change_colore_on_kanban(self):   
         for record in self:
-             color = 0
-             if record.inspection_type == 'echafaudage':
-                 color = 10
-             elif record.inspection_type == 'levage':
-                 color = 6
-             else:
-                 color=0
-             record.kanban_color = color
+            color = 0
+            duration = 0
+            if record.inspection_type == 'echafaudage':
+                color = 10
+                duration = 3
+            elif record.inspection_type == 'levage':
+                color = 6
+                duration = 6
+            else:
+                color=0
+            record.kanban_color = color
+            record.chantier_duration = duration
     
     def button_send_confirmation_prestation(self):
         if self.email_partner_ids and self.partner_id:
@@ -516,14 +544,12 @@ class Prestation(models.Model):
 
     def button_send_report(self):
         if self.email_partner_ids:
-            if self.defavorable_opinion:
+            if self.opinion in ['defavorable_opinion', 'mixte']:
                 template = self.env.ref('br_consult.email_notification_prestation_avis_defavorable')
-            elif self.favorable_opinion:
-                if self.opinion_with_observation:
-                    template = self.env.ref('br_consult.email_notification_prestation_avec_observation')
-                else:
-                    template = self.env.ref('br_consult.email_notification_prestation')
-            
+            elif self.opinion == 'favorable_opinion':
+                template = self.env.ref('br_consult.email_notification_prestation')
+            elif self.opinion == 'opinion_with_observation':
+                template = self.env.ref('br_consult.email_notification_prestation_avec_observation')
             else:
                 template = False
             
@@ -546,6 +572,31 @@ class Prestation(models.Model):
         prestations = self.search([('state', '=', 'phase4'), ('is_report_sent', '=', False)])
         for prestation in prestations:
             prestation.sudo().button_send_report()
+    
+    def button_send_alert_end_chantier(self):
+        if self.email_partner_ids:
+            template = self.env.ref('br_consult.email_alert_end_chantier')
+            if template:
+                receipt_list = []
+                for partner in self.email_partner_ids:
+                    receipt_list.append(partner.email)
+                email_values = {
+                    'email_from': 'controlebr@brconsult.fr',
+                    'email_to': ';'.join(map(lambda x: x, receipt_list)),
+                    'email_cc': 'controlebr@brconsult.fr',
+                    'auto_delete': True,
+                    'recipient_ids': [],
+                    'partner_ids': [],
+                    'scheduled_date': False,}
+                template.sudo().send_mail(self.id, force_send=True, email_values=email_values)
+                self.write({'sent_alert_end_chantier': True})
+    
+    def cron_send_alert_end_chantier(self):
+        now = fields.Datetime.now()
+        prestations = self.search([('state', '=', 'phase4'), ('sent_alert_end_chantier', '=', False), ('end_date_chantier', '<', now)])
+        _logger.info("############ %s", prestations)
+        for prestation in prestations:
+            prestation.sudo().button_send_alert_end_chantier()
     
     @api.onchange('partner_id')
     def onchange_partner_id(self):
@@ -651,6 +702,39 @@ class Prestation(models.Model):
             self.update({'installation_type': 'TUB'})
         if self.inspection_type == 'levage':
             self.update({'installation_type': None})
+    
+    @api.depends('constat_adequacy_exam_ids', 
+                 'constat_assembly_exam_ids', 
+                 'constat_conservation_state_exam_ids', 
+                 'constat_good_functioning_exam_ids', 
+                 'constat_epreuve_statique_ids', 
+                 'constat_epreuve_dynamique_ids',
+                 'constat_adequacy_exam_ids.verification_point_id', 
+                 'constat_assembly_exam_ids.verification_point_id', 
+                 'constat_conservation_state_exam_ids.verification_point_id', 
+                 'constat_good_functioning_exam_ids.verification_point_id', 
+                 'constat_epreuve_statique_ids.verification_point_id', 
+                 'constat_epreuve_dynamique_ids.verification_point_id',
+                )
+    def _compute_verification_point(self):
+        for prestation in self:
+            verification_point_ids = self.env['prestation.verification.point']
+            if prestation.constat_adequacy_exam_ids:
+                verification_point_ids = prestation.constat_adequacy_exam_ids.mapped('verification_point_id')
+            if prestation.constat_assembly_exam_ids:
+                verification_point_ids += prestation.constat_assembly_exam_ids.mapped('verification_point_id')
+            if prestation.constat_conservation_state_exam_ids:
+                verification_point_ids += prestation.constat_conservation_state_exam_ids.mapped('verification_point_id') 
+            if prestation.constat_good_functioning_exam_ids:
+                verification_point_ids += prestation.constat_good_functioning_exam_ids.mapped('verification_point_id') 
+            if prestation.constat_epreuve_statique_ids:
+                verification_point_ids += prestation.constat_epreuve_statique_ids.mapped('verification_point_id') 
+            if prestation.constat_epreuve_dynamique_ids:
+                verification_point_ids += prestation.constat_epreuve_dynamique_ids.mapped('verification_point_id')
+            prestation.verification_point_ids = verification_point_ids
+            
+            
+            
     
     
 

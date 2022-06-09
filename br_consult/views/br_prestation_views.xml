@@ -136,6 +136,8 @@
                         <button name="button_phase4" string="Envoyer vers Phase 4" type="object" attrs="{'invisible': [('state', '!=', 'phase3')]}" class="btn-primary"/>
                         <button name="button_send_report" string="Envoyer le rapport" type="object" attrs="{'invisible': ['|',('state', '!=', 'phase4'), ('is_report_sent', '=', True)]}" class="btn-primary"/>
                         <button name="button_send_report" string="Envoyer le rapport" type="object" attrs="{'invisible': [('is_report_sent', '=', False)]}" groups="base.group_system"/>
+                        <button name="button_send_alert_end_chantier" string="Envoyer l'alerte manuellement" type="object" attrs="{'invisible': ['|',('sent_alert_end_chantier', '=', True), ('is_report_sent', '=', False)]}" class="btn-primary"/>
+                        <button name="button_send_alert_end_chantier" string="Renvoyer l'alerte manuellement" type="object" attrs="{'invisible': [('sent_alert_end_chantier', '=', False)]}"/>
                     </header>
                     <sheet>
                         <div class="prestation_sheet_header">
@@ -180,8 +182,15 @@
                                     </group>
                                     <group>
                                         <field name="date" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2'])]}"/>
+                                        
                                         <field name="verification_date" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase3'])]}"/>
                                         <field name="end_date_verification" invisible="1"/>
+                                        <field name="chantier_duration" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2', 'phase3'])]}"/>
+                                        <field name="end_date_chantier" invisible="1"/>
+                                        <field name="verification_point_ids" widget="many2many_tags" invisible="1"/>
+                                        
+                                        <field name="sent_alert_end_chantier" invisible="1"/>
+                                        
                                         <field name="user_id" domain="[('is_inspector', '=', True)]" attrs="{'readonly': [('state', 'not in', ['phase1'])]}"/>
                                         <field name="prensent_contact" attrs="{'readonly': [('state', 'not in', ['phase3', 'phase2'])]}"/>
                                         <field name="scaffolding_surface" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')], 'readonly': [('state', 'not in', ['phase1'])]}"/>
@@ -191,13 +200,16 @@
                                     </group>
                                 </group>
                                 <group string="Conformité de l’installation">
-                                    <group>
-                                        <field name="favorable_opinion" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
-                                        <field name="opinion_with_observation" attrs="{'readonly': [('state', 'not in', [ 'phase2', 'phase3'])]}"/>
-                                    </group>
-                                    <group>
-                                        <field name="defavorable_opinion" attrs="{'readonly': [('state', 'not in', [ 'phase2', 'phase3'])]}"/>
-                                    </group>
+<!--                                     <group> -->
+                                        <field name="opinion" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])], 'required': [('state', 'in', ['phase2', 'phase3'])]}"/>
+                                        
+<!--                                         <field name="favorable_opinion" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                        <field name="opinion_with_observation" attrs="{'readonly': [('state', 'not in', [ 'phase2', 'phase3'])]}"/> -->
+<!--                                     </group> -->
+<!--                                     <group> -->
+<!--                                         <field name="defavorable_opinion" attrs="{'readonly': [('state', 'not in', [ 'phase2', 'phase3'])]}"/> -->
+                                        
+<!--                                     </group> -->
                                 </group>
                                 <group string="Commentaires">
                                     <field name="comment_observation_fiche" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
@@ -429,7 +441,7 @@
                                         <tree editable="bottom" delete="false" create="false">
                                             <field name="conservation_state_id" invisible="1"/>
                                             <field name="name" readonly="1" widget="html"/>
-                                            <field name="opinion"/>
+                                            <field name="opinion" force_save="1"/>
                                             
                                         </tree>
                                     </field>
@@ -456,7 +468,7 @@
                                         <tree editable="bottom" delete="false" create="false">
                                             <field name="good_functioning_id" invisible="1"/>
                                             <field name="name" readonly="1" widget='html'/>
-                                            <field name="opinion"/>
+                                            <field name="opinion" force_save="1"/>
                                             
                                         </tree>
                                     </field>
@@ -493,7 +505,7 @@
                                 </group>
                                 <group string="Constat (s)" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}">
                                     <field name="constat_epreuve_statique_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'epreuve_statique'}">
-                                        <tree style="max-width:90%;">
+                                        <tree>
                                             <field name="verification_point_id" options="{'no_create': True}" />
                                             <field name="constat_observation_ids"  widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
@@ -517,7 +529,7 @@
                                 </group>
                                 <group string="Constat (s)" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}">
                                     <field name="constat_epreuve_dynamique_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'epreuve_dynamique'}">
-                                        <tree style="max-width:90%;">
+                                        <tree>
                                             <field name="verification_point_id" options="{'no_create': True}" />
                                             <field name="constat_observation_ids"  widget="many2many_tags"  options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
@@ -596,7 +608,7 @@
     
     <menuitem id="br_consult_stat_menu"
         name="Statistique"
-        parent="br_consult_menu_root"
+        parent="br_consult_statistiques_menu"
         action="action_prestation_prestation_stat"
         groups="base.group_system"
         sequence="35"/>

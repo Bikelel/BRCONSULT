@@ -13,5 +13,5 @@ class PrestationConservationStateExam(models.Model):
     prestation_id = fields.Many2one("prestation.prestation", string="Prestation")
     opinion = fields.Selection([('yes', 'Satisfaisant'), 
                                 ('no', 'Non Satisfaisant'),
-                                ('wo', 'Sans Objet')], string="Avis")
+                                ('wo', 'Sans Objet')], string="Avis", copy=True)
 

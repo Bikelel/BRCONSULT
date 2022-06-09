@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+
         <record id="email_notification_prestation" model="mail.template">
             <field name="name">Mail d'envoie du rapport au client avis favorable</field>
             <field name="model_id" ref="br_consult.model_prestation_prestation"/>
@@ -18,19 +19,32 @@
                         <br/>
                         Bien cordialement.
                         <br/><br/>
-                        <strong>BR CONSULT</strong>
-                        <br/>
-                        <strong>Département Inspection Technique</strong>
-                        <br/>
-                        Tél: 01 45 11 71 50
-                        <br/>
-                        E-mail : ControleBR@brconsult.fr 
-                        <br/><br/>
-                        16-18 Boulevard de Créteil
-                        <br/>
-                        94100 Saint-Maur-des-Fossés
-                        <br/>
-                        www.brconsult.com
+                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 5px 0px 4px 0px;"/>
+                        <table>
+                            <tr>
+                                <td valign="top">
+                                    <img t-att-src="'/logo.png?company=%s' % (object.company_id.id or 0)" style="padding: 0px; margin: 0px; width: 60px;" t-att-alt="'%s' % object.company_id.name" />
+                                </td>
+                                <td style="font-size:12px">
+                                    <strong>BR CONSULT</strong>
+                                    <br/>
+                                    <strong>Département Inspection Technique</strong>
+                                    <br/>
+                                    Tél: 01 45 11 71 50
+                                    <br/>
+                                    E-mail : ControleBR@brconsult.fr 
+                                    <br/><br/>
+                                    16-18 Boulevard de Créteil
+                                    <br/>
+                                    94100 Saint-Maur-des-Fossés
+                                    <br/>
+                                    www.brconsult.com
+                                
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        
                     </p>
                 </div>
             </field>
@@ -42,11 +56,11 @@
         </record>
         
         <record id="email_notification_prestation_avec_observation" model="mail.template">
-            <field name="name">Mail d'envoie du rapport au client avis favorable avec observation</field>
+            <field name="name">Mail d'envoie du rapport au client avis favorable avec observation(s)</field>
             <field name="model_id" ref="br_consult.model_prestation_prestation"/>
             <field name="email_from"></field>
             <field name="partner_to"></field>
-            <field name="subject"> {{object.site_address}} - Avis favorable avec observation</field>
+            <field name="subject"> {{object.site_address}} - Avis favorable avec observation(s)</field>
             <field name="body_html" type="html">
                 
                 <div style="margin: 0px; padding: 0px;">
@@ -58,19 +72,30 @@
                         <br/>
                         Bien cordialement.
                         <br/><br/>
-                        <strong>BR CONSULT</strong>
-                        <br/>
-                        <strong>Département Inspection Technique</strong>
-                        <br/>
-                        Tél: 01 45 11 71 50
-                        <br/>
-                        E-mail : ControleBR@brconsult.fr 
-                        <br/><br/>
-                        16-18 Boulevard de Créteil
-                        <br/>
-                        94100 Saint-Maur-des-Fossés
-                        <br/>
-                        www.brconsult.com
+                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 5px 0px 4px 0px;"/>
+                        <table>
+                            <tr>
+                                <td valign="top">
+                                    <img t-att-src="'/logo.png?company=%s' % (object.company_id.id or 0)" style="padding: 0px; margin: 0px; width: 60px;" t-att-alt="'%s' % object.company_id.name" />
+                                </td>
+                                <td style="font-size:12px">
+                                    <strong>BR CONSULT</strong>
+                                    <br/>
+                                    <strong>Département Inspection Technique</strong>
+                                    <br/>
+                                    Tél: 01 45 11 71 50
+                                    <br/>
+                                    E-mail : ControleBR@brconsult.fr 
+                                    <br/><br/>
+                                    16-18 Boulevard de Créteil
+                                    <br/>
+                                    94100 Saint-Maur-des-Fossés
+                                    <br/>
+                                    www.brconsult.com
+                                
+                                </td>
+                            </tr>
+                        </table>
                     </p>
                 </div>
             </field>
@@ -101,19 +126,30 @@
                         Nous vous souhaitons une bonne réception,<br />
                         Bien cordialement.<br />
                        <br/><br/>
-                        <strong>BR CONSULT</strong>
-                        <br/>
-                        <strong>Département Inspection Technique</strong>
-                        <br/>
-                        Tél: 01 45 11 71 50
-                        <br/>
-                        E-mail : ControleBR@brconsult.fr 
-                        <br/><br/>
-                        16-18 Boulevard de Créteil
-                        <br/>
-                        94100 Saint-Maur-des-Fossés
-                        <br/>
-                        www.brconsult.com      
+                       <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 5px 0px 4px 0px;"/>
+                        <table>
+                            <tr>
+                                <td valign="top">
+                                    <img t-att-src="'/logo.png?company=%s' % (object.company_id.id or 0)" style="padding: 0px; margin: 0px; width: 60px;" t-att-alt="'%s' % object.company_id.name" />
+                                </td>
+                                <td style="font-size:12px">
+                                    <strong>BR CONSULT</strong>
+                                    <br/>
+                                    <strong>Département Inspection Technique</strong>
+                                    <br/>
+                                    Tél: 01 45 11 71 50
+                                    <br/>
+                                    E-mail : ControleBR@brconsult.fr 
+                                    <br/><br/>
+                                    16-18 Boulevard de Créteil
+                                    <br/>
+                                    94100 Saint-Maur-des-Fossés
+                                    <br/>
+                                    www.brconsult.com
+                                
+                                </td>
+                            </tr>
+                        </table>
                     </p>
                 </div>
             </field>
@@ -123,6 +159,54 @@
             <field name="auto_delete" eval="True"/>
         </record>
         
+        <record id="email_alert_end_chantier" model="mail.template">
+            <field name="name">Alerte fin chantier</field>
+            <field name="model_id" ref="br_consult.model_prestation_prestation"/>
+            <field name="email_from"></field>
+            <field name="partner_to"></field>
+            <field name="subject"> {{object.site_address}} - Alerte fin chantier</field>
+            <field name="body_html" type="html">
+                
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Bonjour,
+                        <br /><br />
+                        Votre installation est en place depuis bientôt <t t-out="object.chantier_duration" /> mois, pensez à programmer la vérification périodique en nous envoyant le bon de commande<br/>
+                        
+                        Bien cordialement.<br />
+                       <br/><br/>
+                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 5px 0px 4px 0px;"/>
+                        <table>
+                            <tr>
+                                <td valign="top">
+                                    <img t-att-src="'/logo.png?company=%s' % (object.company_id.id or 0)" style="padding: 0px; margin: 0px; width: 60px;" t-att-alt="'%s' % object.company_id.name" />
+                                </td>
+                                <td style="font-size:12px">
+                                    <strong>BR CONSULT</strong>
+                                    <br/>
+                                    <strong>Département Inspection Technique</strong>
+                                    <br/>
+                                    Tél: 01 45 11 71 50
+                                    <br/>
+                                    E-mail : ControleBR@brconsult.fr 
+                                    <br/><br/>
+                                    16-18 Boulevard de Créteil
+                                    <br/>
+                                    94100 Saint-Maur-des-Fossés
+                                    <br/>
+                                    www.brconsult.com
+                                
+                                </td>
+                            </tr>
+                        </table>   
+                    </p>
+                </div>
+            </field>
+            <field name="report_template" ref="action_report_prestation"/>
+            <field name="report_name">{{ ('Prestation - %s - %s - %s' % (object.name, object.site_address, object.partner_id.name) or '') }}</field>
+<!--             <field name="lang">{{object.partner_id.lang}}</field> -->
+            <field name="auto_delete" eval="True"/>
+        </record>
         <record id="email_confirmation_prestation" model="mail.template">
             <field name="name">Mail CONFIRMATION DE VOTRE RDV</field>
             <field name="model_id" ref="br_consult.model_prestation_prestation"/>
