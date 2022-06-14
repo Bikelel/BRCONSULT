@@ -10,9 +10,9 @@ class Prestation(models.Model):
     
     @api.depends('name', 'verification_date', 'user_id')
     def sync_prestation_event(self):
-
-        if not self.event_id:
-            self.create_prestation_calendar()
+        for rec in self:
+            if not self.event_id:
+                rec.create_prestation_calendar()
 
 
     def create_prestation_calendar(self):
