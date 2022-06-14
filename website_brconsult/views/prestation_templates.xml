@@ -1,0 +1,372 @@
+<odoo>
+    <data>
+        <template id="portal_my_home_menu_prestation" name="Portal layout : prestations" inherit_id="portal.portal_breadcrumbs" priority="20">
+            <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+                <li t-if="page_name == 'prestation'" t-attf-class="breadcrumb-item #{'active ' if not prestation else ''}">
+                    <a t-if="prestation" t-attf-href="/my/prestations?{{ keep_query() }}">Prestations</a>
+                    <t t-else="">Prestations</t>
+                </li>
+            </xpath>
+        </template>
+
+        <template id="portal_my_home_prestation" name="Afficher Prestations" customize_show="True" inherit_id="portal.portal_my_home" priority="20">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Prestations</t>
+                    <t t-set="url" t-value="'/my/prestations'"/>
+                    <t t-set="placeholder_count" t-value="'prestation_count'"/>
+                </t>
+            </xpath>
+        </template>
+        <template id="portal_my_prestations" name="Mes prestations">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Prestations</t>
+                </t>
+                <t t-if="not prestations">
+                    <p>There are currently no prestations for your account.</p>
+                </t>
+                <t t-if="prestations" t-call="portal.portal_table">
+                    <thead>
+                        <tr class="active">
+                            <th>N° Rapport #</th>
+                            <th>Avis</th>
+                            <th>Adresse de chantier</th>
+                            <th>Date de vérification </th>
+                            <th>Type d'inspection</th>
+                            <th>Type d'installation</th>
+                            <th>Nom du monteur</th>
+                        </tr>
+                    </thead>
+                    <t t-foreach="prestations" t-as="prestation">
+                        <tr>
+                            <td><a t-att-href="prestation.get_portal_url()"><t t-esc="prestation.name"/></a></td>
+                            <td><span t-field="prestation.opinion"/></td>
+                            <td><span t-field="prestation.site_address"/></td>
+                            <td><span t-field="prestation.verification_date"/></td>
+                            <td><span t-field="prestation.inspection_type"/></td>
+                            <td><span t-field="prestation.installation_type"/></td>
+                            <td><span t-field="prestation.mentor_id"/></td>
+
+                        </tr>
+                    </t>
+                </t>
+            </t>
+        </template>
+        <template id="prestation_portal_template" name="Ma prestation">
+            <t t-call="portal.portal_layout">
+<!--                 <t t-set="o_portal_fullwidth_alert" groups="project.group_project_user">
+                    <t t-call="portal.portal_back_in_edit_mode">
+                        <t t-set="backend_url" t-value="'/web#model=project.task&amp;id=%s&amp;view_type=form' % (task.id)"/>
+                    </t>
+                </t> -->
+
+                <t t-call="portal.portal_record_layout">
+                    <t t-set="card_header">
+                        <div class="row no-gutters">
+                            <div class="col-12">
+                                <h5 class="d-flex mb-1 mb-md-0 row">
+                                    <div class="col-6">
+                                        <span t-field="prestation.name" class="text-truncate"/>
+                                    </div>
+                                    <div class="col-3 text-right">
+                                        <small class="text-right">Type d'inspection:</small>
+                                        <span t-field="prestation.inspection_type" class=" badge badge-pill badge-info"/>
+                                    </div>
+                                    <div class="col-3 text-right" t-if="prestation.inspection_type == 'levage'">
+                                        <small class="text-right">Type d'installation:</small>
+                                        <span t-field="prestation.installation_type" class=" badge badge-pill badge-info"/>
+                                    </div>
+                                </h5>
+                            </div>
+                        </div>
+                    </t>
+                    <t t-set="card_body">
+                        <t t-set="num_verification_point" t-value="0"/>
+                        <div class="col-12 col-md-12 pb-2 row">
+                            <div class="col-6 col-md-6 pb-2">
+                                <span><strong>Adresse de chantier:</strong></span>
+                                <span t-field="prestation.site_address"/>
+                            </div>
+                            <div class="col-6 col-md-6 pb-2">
+                                <span><strong>Avis:</strong></span>
+                                <span t-field="prestation.opinion"/>
+                            </div>
+                        </div>
+                        <div>
+                            <section style="page-break-inside: auto;" class="mt32" t-if="prestation.constat_adequacy_exam_ids">
+                                <h3>Constat - Examen d’adéquation</h3>
+                                <table t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token" class="table table-sm">
+                                    <thead class="bg-100">
+                                        <tr>
+                                            <th/>
+                                            <th class="text-left">Point de vérification</th>
+                                            <th>Observations/réserves</th>
+                                            <th>Précision</th>
+                                            <th>Photo</th>
+                                            <th>Statut </th>
+                                            <td>Date </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="prestation.constat_adequacy_exam_ids" t-as="constat">
+                                            <tr>
+
+                                                <td><span t-esc="num_verification_point + 1"/></td>
+                                                <td ><span t-field="constat.verification_point_id"/></td>
+                                                <td>
+                                                    <ol>
+                                                        <t t-foreach="constat.constat_observation_ids" t-as="observation">
+                                                            <li><t t-if="observation.reserve">
+                                                                    <span style="font-weight:bold;" t-field="observation.name"/>
+                                                                 </t>
+                                                                <t t-else=""><span t-field="observation.name"/></t>
+                                                            </li>
+                                                        </t>
+                                                    </ol>
+                                                </td>
+                                                <td><span t-field="constat.precision"/></td>
+                                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                                    </td>
+                                                <td><span t-field="constat.state"/></td>
+                                                <td><span t-field="constat.date"/></td>
+                                            </tr>
+
+                                            <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </section>
+                            <section style="page-break-inside: auto;" class="mt32" t-if="prestation.constat_assembly_exam_ids">
+                                <h3>Constat - Examen de montage et d'exploitation</h3>
+                                <table t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token" class="table table-sm">
+                                    <thead class="bg-100">
+                                        <tr>
+                                            <th/>
+                                            <th class="text-left">Point de vérification</th>
+                                            <th>Observations/réserves</th>
+                                            <th>Précision</th>
+                                            <th>Photo</th>
+                                            <th>Statut </th>
+                                            <td>Date </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="prestation.constat_assembly_exam_ids" t-as="constat">
+                                            <tr>
+
+                                                <td><span t-esc="num_verification_point + 1"/></td>
+                                                <td ><span t-field="constat.verification_point_id"/></td>
+                                                <td>
+                                                    <ol>
+                                                        <t t-foreach="constat.constat_observation_ids" t-as="observation">
+                                                            <li><t t-if="observation.reserve">
+                                                                    <span style="font-weight:bold;" t-field="observation.name"/>
+                                                                 </t>
+                                                                <t t-else=""><span t-field="observation.name"/></t>
+                                                            </li>
+                                                        </t>
+                                                    </ol>
+                                                </td>
+                                                <td><span t-field="constat.precision"/></td>
+                                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                                    </td>
+                                                <td><span t-field="constat.state"/></td>
+                                                <td><span t-field="constat.date"/></td>
+                                            </tr>
+
+                                            <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </section>
+                            <section style="page-break-inside: auto;" class="mt32" t-if="prestation.constat_conservation_state_exam_ids">
+                                <h3>Constat - Examen de l'etat de conservation</h3>
+                                <table t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token" class="table table-sm">
+                                    <thead class="bg-100">
+                                        <tr>
+                                            <th/>
+                                            <th class="text-left">Point de vérification</th>
+                                            <th>Observations/réserves</th>
+                                            <th>Précision</th>
+                                            <th>Photo</th>
+                                            <th>Statut </th>
+                                            <td>Date </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="prestation.constat_conservation_state_exam_ids" t-as="constat">
+                                            <tr>
+
+                                                <td><span t-esc="num_verification_point + 1"/></td>
+                                                <td ><span t-field="constat.verification_point_id"/></td>
+                                                <td>
+                                                    <ol>
+                                                        <t t-foreach="constat.constat_observation_ids" t-as="observation">
+                                                            <li><t t-if="observation.reserve">
+                                                                    <span style="font-weight:bold;" t-field="observation.name"/>
+                                                                 </t>
+                                                                <t t-else=""><span t-field="observation.name"/></t>
+                                                            </li>
+                                                        </t>
+                                                    </ol>
+                                                </td>
+                                                <td><span t-field="constat.precision"/></td>
+                                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                                    </td>
+                                                <td><span t-field="constat.state"/></td>
+                                                <td><span t-field="constat.date"/></td>
+                                            </tr>
+
+                                            <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </section>
+                            <section style="page-break-inside: auto;" class="mt32" t-if="prestation.constat_good_functioning_exam_ids">
+                                <h3>Constat - Examen de bon fonctionnement </h3>
+                                <table t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token" class="table table-sm">
+                                    <thead class="bg-100">
+                                        <tr>
+                                            <th/>
+                                            <th class="text-left">Point de vérification</th>
+                                            <th>Observations/réserves</th>
+                                            <th>Précision</th>
+                                            <th>Photo</th>
+                                            <th>Statut </th>
+                                            <td>Date </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="prestation.constat_good_functioning_exam_ids" t-as="constat">
+                                            <tr>
+
+                                                <td><span t-esc="num_verification_point + 1"/></td>
+                                                <td ><span t-field="constat.verification_point_id"/></td>
+                                                <td>
+                                                    <ol>
+                                                        <t t-foreach="constat.constat_observation_ids" t-as="observation">
+                                                            <li><t t-if="observation.reserve">
+                                                                    <span style="font-weight:bold;" t-field="observation.name"/>
+                                                                 </t>
+                                                                <t t-else=""><span t-field="observation.name"/></t>
+                                                            </li>
+                                                        </t>
+                                                    </ol>
+                                                </td>
+                                                <td><span t-field="constat.precision"/></td>
+                                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                                    </td>
+                                                <td><span t-field="constat.state"/></td>
+                                                <td><span t-field="constat.date"/></td>
+                                            </tr>
+
+                                            <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </section>
+                            <section style="page-break-inside: auto;" class="mt32" t-if="prestation.constat_epreuve_statique_ids">
+                                <h3>Constat - Epreuves statiques</h3>
+                                <table t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token" class="table table-sm">
+                                    <thead class="bg-100">
+                                        <tr>
+                                            <th/>
+                                            <th class="text-left">Point de vérification</th>
+                                            <th>Observations/réserves</th>
+                                            <th>Précision</th>
+                                            <th>Photo</th>
+                                            <th>Statut </th>
+                                            <td>Date </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="prestation.constat_epreuve_statique_ids" t-as="constat">
+                                            <tr>
+
+                                                <td><span t-esc="num_verification_point + 1"/></td>
+                                                <td ><span t-field="constat.verification_point_id"/></td>
+                                                <td>
+                                                    <ol>
+                                                        <t t-foreach="constat.constat_observation_ids" t-as="observation">
+                                                            <li><t t-if="observation.reserve">
+                                                                    <span style="font-weight:bold;" t-field="observation.name"/>
+                                                                 </t>
+                                                                <t t-else=""><span t-field="observation.name"/></t>
+                                                            </li>
+                                                        </t>
+                                                    </ol>
+                                                </td>
+                                                <td><span t-field="constat.precision"/></td>
+                                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                                    </td>
+                                                <td><span t-field="constat.state"/></td>
+                                                <td><span t-field="constat.date"/></td>
+                                            </tr>
+
+                                            <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </section>
+                            <section style="page-break-inside: auto;" class="mt32" t-if="prestation.constat_epreuve_dynamique_ids">
+                                <h3>Constat - Epreuves dynamiques</h3>
+                                <table t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token" class="table table-sm">
+                                    <thead class="bg-100">
+                                        <tr>
+                                            <th/>
+                                            <th class="text-left">Point de vérification</th>
+                                            <th>Observations/réserves</th>
+                                            <th>Précision</th>
+                                            <th>Photo</th>
+                                            <th>Statut </th>
+                                            <td>Date </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="prestation.constat_epreuve_dynamique_ids" t-as="constat">
+                                            <tr>
+
+                                                <td><span t-esc="num_verification_point + 1"/></td>
+                                                <td ><span t-field="constat.verification_point_id"/></td>
+                                                <td>
+                                                    <ol>
+                                                        <t t-foreach="constat.constat_observation_ids" t-as="observation">
+                                                            <li><t t-if="observation.reserve">
+                                                                    <span style="font-weight:bold;" t-field="observation.name"/>
+                                                                 </t>
+                                                                <t t-else=""><span t-field="observation.name"/></t>
+                                                            </li>
+                                                        </t>
+                                                    </ol>
+                                                </td>
+                                                <td><span t-field="constat.precision"/></td>
+                                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                                    </td>
+                                                <td><span t-field="constat.state"/></td>
+                                                <td><span t-field="constat.date"/></td>
+                                            </tr>
+
+                                            <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </section>
+                        </div>
+                    </t>
+                </t>
+
+                <!-- chatter -->
+               <div id="prestation_communication" class="mt-4">
+                  <h2>Communication</h2>
+                  <t t-call="portal.message_thread">
+                      <t t-set="object" t-value="prestation"/>
+                  </t>
+              </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>

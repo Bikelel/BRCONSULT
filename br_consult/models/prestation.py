@@ -17,6 +17,7 @@ class Prestation(models.Model):
     _order = 'id desc'
     _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin', 'format.address.mixin']
     
+    
     def default_stage(self):
         phase1 = self.env['prestation.stage'].search([('state', '=', 'phase1')], limit=1)
         return phase1.id
@@ -740,4 +741,9 @@ class Prestation(models.Model):
         for rec in self:
             if rec.verification_date:
                 rec.update({'verification_date_without_time': rec.verification_date.date()})
+    
+    def _compute_access_url(self):
+        super(Prestation, self)._compute_access_url()
+        for order in self:
+            order.access_url = '/my/prestation/%s' % (order.id)
             
