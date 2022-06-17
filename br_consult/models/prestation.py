@@ -95,7 +95,7 @@ class Prestation(models.Model):
     title_label = fields.Text("Titre de prestation", store = True)
     message_label = fields.Text("Code de l'article", store = True)
     site_address = fields.Char("Adresse de chantier")
-    zip = fields.Char(change_default=True, string='Code postal')
+    zip = fields.Char(change_default=True, string='Code postal', size=5)
     department_id = fields.Many2one("res.country.department", compute="_compute_department", string="Department", store=True)
     country_id = fields.Many2one('res.country', string='Pays', ondelete='restrict', default=75)
     country_code = fields.Char(related='country_id.code', string="Country Code")
@@ -759,4 +759,11 @@ class Prestation(models.Model):
         super(Prestation, self)._compute_access_url()
         for order in self:
             order.access_url = '/my/prestation/%s' % (order.id)
+    
+    @api.constrains('zip')
+    def _check_zip(self):
+        for rec in self:
+            if rec.zip and len(rec.zip) != 5:
+                raise UserError(_('Le code postal doit contenir 5 caractères!'))
+                
             
