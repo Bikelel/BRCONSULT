@@ -32,7 +32,7 @@
                     <thead>
                         <tr class="active">
                             <th>N° Rapport #</th>
-                            <th>Avis</th>
+                            <th width="35%">Avis</th>
                             <th>Adresse de chantier</th>
                             <th>Date de vérification </th>
                             <th>Type d'inspection</th>
@@ -43,9 +43,14 @@
                     <t t-foreach="prestations" t-as="prestation">
                         <tr>
                             <td><a t-att-href="prestation.get_portal_url()"><t t-esc="prestation.name"/></a></td>
-                            <td><span t-field="prestation.opinion"/></td>
+                            <td>
+                                <span t-if="prestation.opinion == 'favorable_opinion'" class="badge badge-pill badge-success"><i class="fa fa-fw fa-check"/> Avis favorable</span>
+                                <span t-if="prestation.opinion == 'opinion_with_observation'" class="badge badge-pill badge-warning"><i class="fa fa-fw fa-clock-o"/> Favorable avec observation(s)</span>
+                                <span t-if="prestation.opinion == 'defavorable_opinion'" class="badge badge-pill badge-danger"><i class="fa fa-fw fa-remove"/> Avis defavorable</span>
+                                <span t-if="prestation.opinion == 'defavorable_opinion'" class="badge badge-pill badge-danger"><i class="fa fa-fw fa-remove"/> Mixte</span>
+                            </td>
                             <td><span t-field="prestation.site_address"/></td>
-                            <td><span t-field="prestation.verification_date"/></td>
+                            <td><span t-field="prestation.verification_date" t-options='{"widget": "date"}'/></td>
                             <td><span t-field="prestation.inspection_type"/></td>
                             <td><span t-field="prestation.installation_type"/></td>
                             <td><span t-field="prestation.mentor_id"/></td>
@@ -57,28 +62,23 @@
         </template>
         <template id="prestation_portal_template" name="Ma prestation">
             <t t-call="portal.portal_layout">
-<!--                 <t t-set="o_portal_fullwidth_alert" groups="project.group_project_user">
-                    <t t-call="portal.portal_back_in_edit_mode">
-                        <t t-set="backend_url" t-value="'/web#model=project.task&amp;id=%s&amp;view_type=form' % (task.id)"/>
-                    </t>
-                </t> -->
-
                 <t t-call="portal.portal_record_layout">
                     <t t-set="card_header">
                         <div class="row no-gutters">
                             <div class="col-12">
                                 <h5 class="d-flex mb-1 mb-md-0 row">
-                                    <div class="col-6">
+                                    <div class="col-7">
                                         <span t-field="prestation.name" class="text-truncate"/>
                                     </div>
-                                    <div class="col-3 text-right">
-                                        <small class="text-right">Type d'inspection:</small>
-                                        <span t-field="prestation.inspection_type" class=" badge badge-pill badge-info"/>
+                                    <div class="col-5 text-right">
+                                        <small class="text-right">Avis:</small>
+                                        <span t-if="prestation.opinion == 'favorable_opinion'" class="badge badge-pill badge-success"><i class="fa fa-fw fa-check"/> Avis favorable</span>
+                                <span t-if="prestation.opinion == 'opinion_with_observation'" class="badge badge-pill badge-warning"><i class="fa fa-fw fa-clock-o"/> Favorable avec observation(s)</span>
+                                <span t-if="prestation.opinion == 'defavorable_opinion'" class="badge badge-pill badge-danger"><i class="fa fa-fw fa-remove"/> Avis defavorable</span>
+                                <span t-if="prestation.opinion == 'defavorable_opinion'" class="badge badge-pill badge-danger"><i class="fa fa-fw fa-remove"/> Mixte</span>
+                                        
                                     </div>
-                                    <div class="col-3 text-right" t-if="prestation.inspection_type == 'levage'">
-                                        <small class="text-right">Type d'installation:</small>
-                                        <span t-field="prestation.installation_type" class=" badge badge-pill badge-info"/>
-                                    </div>
+                                    
                                 </h5>
                             </div>
                         </div>
@@ -87,12 +87,30 @@
                         <t t-set="num_verification_point" t-value="0"/>
                         <div class="col-12 col-md-12 pb-2 row">
                             <div class="col-6 col-md-6 pb-2">
-                                <span><strong>Adresse de chantier:</strong></span>
-                                <span t-field="prestation.site_address"/>
+                                <div>
+                                    <span><strong>Type d'inspection:</strong></span>
+                                    <span t-field="prestation.inspection_type"/>
+                                </div>
+                                <div>
+                                    <span><strong>Type d'installation:</strong></span>
+                                    <span t-field="prestation.installation_type"/>
+                                </div>
+                                <div>
+                                    <span><strong>Adresse de chantier:</strong></span>
+                                    <span t-field="prestation.site_address"/>
+                                </div>
                             </div>
                             <div class="col-6 col-md-6 pb-2">
-                                <span><strong>Avis:</strong></span>
-                                <span t-field="prestation.opinion"/>
+                                <span><strong>Monteur:</strong></span>
+                                <span t-field="prestation.mentor_id"/>
+                                <div>
+                                    <a t-attf-href="/update_mentor/#{slug(prestation)}">
+                                         <span class="badge badge-pill">
+                                            <i class="fa fa-fw fa-edit" title="Modifier le monteur" role="button" />
+                                             <span>Cliquez ici pour modifier ou créer un monteur</span>
+                                         </span>
+                                     </a>
+                                </div>
                             </div>
                         </div>
                         <div>
@@ -107,7 +125,7 @@
                                             <th>Précision</th>
                                             <th>Photo</th>
                                             <th>Statut </th>
-                                            <td>Date </td>
+                                            <th>Date </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -150,7 +168,7 @@
                                             <th>Précision</th>
                                             <th>Photo</th>
                                             <th>Statut </th>
-                                            <td>Date </td>
+                                            <th>Date </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -193,7 +211,7 @@
                                             <th>Précision</th>
                                             <th>Photo</th>
                                             <th>Statut </th>
-                                            <td>Date </td>
+                                            <th>Date </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -236,7 +254,7 @@
                                             <th>Précision</th>
                                             <th>Photo</th>
                                             <th>Statut </th>
-                                            <td>Date </td>
+                                            <th>Date </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -279,7 +297,7 @@
                                             <th>Précision</th>
                                             <th>Photo</th>
                                             <th>Statut </th>
-                                            <td>Date </td>
+                                            <th>Date </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -322,7 +340,7 @@
                                             <th>Précision</th>
                                             <th>Photo</th>
                                             <th>Statut </th>
-                                            <td>Date </td>
+                                            <th>Date </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -366,6 +384,115 @@
                   </t>
               </div>
             </t>
+        </template>
+        
+        <template id="update_mentor_page">
+             
+            <div id="wrap">
+                <t t-call="portal.portal_layout">
+                    <div class="oe_structure">
+                        <section class="pt8 pb8">
+                            <div class="container">
+                                <div class="row s_nb_column_fixed">
+                                    <div class="col-lg-12 s_title pt16 pb16"><h2>Mettre à jour le monteur pour <span t-field="prestation.name"/></h2></div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="container mt-2">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <form id="update_mentor_form" action="/update_mentor/confirm" method="post"  t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="prestation" t-att-value="prestation.id"/>
+                                    <div class="form-group row form-field o_website_form_custom o_website_form_required_custom" >
+                                        <div class="col-lg-3 col-md-4"><label class="col-form-label" for="monteur">Monteur</label></div>
+                                        <div class="col-lg-7 col-md-8">
+                                            <select name="monteur" class="form-control" aria-label="Tapper sur un caractère de votre clavier pour parcourir plus vite la liste" title="Tapper sur un caractère de votre clavier pour parcourir plus vite la liste">                                           
+                                                <option  selected="1" disabled="1" >Choisissez...</option>
+                                                <t t-if="'mentor_id' in reload">
+                                                    <t t-foreach="mentors or []" t-as="mentor">
+                                                        <t t-if="int(reload['mentor_id']) == mentor.id">
+                                                            <option t-att-value="mentor.id" selected="1"><t t-esc="mentor.name"/></option>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <option t-att-value="mentor.id"><t t-esc="mentor.name"/></option>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-foreach="mentors or []" t-as="mentor">
+                                                        <option t-att-value="mentor.id"><t t-esc="mentor.name"/></option>
+                                                    </t>
+                                                </t>
+                                            </select>
+                                        </div>
+                                        <div style="margin-top:30px; margin-left:30px;">
+                                            <a t-attf-href="/create_mentor/#{slug(prestation)}">
+                                                 <span class="badge badge-pill">
+                                                    <i class="fa fa-fw fa-plus" title="Créer le monteur" role="button" />
+                                                     <span>Si votre monteur n'existe pas dans la liste, cliquez ici pour créer un nouveau</span>
+                                                 </span>
+                                             </a>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="offset-lg-3 offset-md-4 col-md-8 col-lg-7">
+                                            <button role="button" href="#" class="btn btn-primary mb32 a-submit btn-sm" type="submit"><span>Enregistrer </span><i class="fa fa-chevron-right"/></button>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </template>
+        
+        <template id="create_mentor_page">
+             
+            <div id="wrap">
+                <t t-call="portal.portal_layout">
+                    <div class="oe_structure">
+                        <section class="pt8 pb8">
+                            <div class="container">
+                                <div class="row s_nb_column_fixed">
+                                    <div class="col-lg-12 s_title pt16 pb16"><h2>Créer un nouveau monteur et l'affecter à <span t-field="prestation.name"/></h2></div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="container mt-2">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <form id="update_mentor_form" action="/create_mentor/confirm" method="post">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="prestation" t-att-value="prestation.id"/>
+                                    <div class="form-group row form-field s_website_form_custom s_website_form_required_custom" >
+                                        <div class="col-lg-3 col-md-4"><label class="col-form-label" for="name">Nom et Prénom</label></div>
+                                        <div class="col-lg-7 col-md-8"><input type="text" class="form-control s_website_form_input" name="name" required=""/></div>
+                                    </div>
+                                    <div class="form-group row form-field s_website_form_custom s_website_form_required_custom" >
+                                        <div class="col-lg-3 col-md-4"><label class="col-form-label" for="email">Email</label></div>
+                                        <div class="col-lg-7 col-md-8"><input type="text" class="form-control s_website_form_input" name="email" required=""/></div>
+                                    </div>
+                                    <div class="form-group row form-field s_website_form_custom" >
+                                        <div class="col-lg-3 col-md-4"><label class="col-form-label" for="tel">Téléphone</label></div>
+                                        <div class="col-lg-7 col-md-8"><input type="text" class="form-control s_website_form_input" name="tel"/></div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="offset-lg-3 offset-md-4 col-md-8 col-lg-7">
+                                            <button role="button" href="#" class="btn btn-primary mb32 a-submit btn-sm" type="submit"><span>Créer un nouveau monteur </span><i class="fa fa-chevron-right"/></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
         </template>
 
     </data>

@@ -4,6 +4,7 @@ from odoo.exceptions import AccessError, MissingError, ValidationError
 from odoo.http import request
 from odoo.addons.portal.controllers import portal
 from odoo.addons.portal.controllers.portal import pager as portal_pager, get_records_pager
+from odoo.addons.http_routing.models.ir_http import slug, unslug
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -72,7 +73,6 @@ class CustomerPortal(portal.CustomerPortal):
     
     @http.route(['/my/prestation/<int:prestation_id>'], type='http', auth="public", website=True)
     def portal_prestation_page(self, prestation_id, report_type=None, access_token=None, message=False, download=False, **kw):
-        _logger.info("##################")
         try:
             prestation_sudo = self._document_check_access('prestation.prestation', prestation_id, access_token=access_token)
         except (AccessError, MissingError):
@@ -108,6 +108,7 @@ class CustomerPortal(portal.CustomerPortal):
             'bootstrap_formatting': True,
             'partner_id': prestation_sudo.partner_id.id,
             'report_type': 'html',
+            
         }
         if prestation_sudo.company_id:
             values['res_company'] = prestation_sudo.company_id
@@ -117,3 +118,65 @@ class CustomerPortal(portal.CustomerPortal):
         values.update(get_records_pager(history, prestation_sudo))
 
         return request.render('website_brconsult.prestation_portal_template', values)
+    
+    @http.route(['/update_mentor/<prestation_id>'], auth='user', website=True)
+    def update_mentor_form(self, prestation_id, **kw):
+        _, prestation_id = unslug(prestation_id)
+        
+        user = request.env.user
+        partner = request.env.user.partner_id
+        mentors = request.env['res.partner'].sudo().search([('is_mentor', '=', True)])
+        relaod_vals = {}
+        prestation_id = request.env['prestation.prestation'].sudo().browse(prestation_id)
+        if prestation_id.mentor_id:
+            relaod_vals.update({'mentor_id': prestation_id.mentor_id})
+        values = {'partner': partner,
+                  'mentors': mentors,
+                  'prestation': prestation_id,
+                 }
+        values['reload'] = relaod_vals
+        return request.render("website_brconsult.update_mentor_page", values)
+    
+    @http.route(['/update_mentor/confirm'], type='http', auth="user", website=True, methods=['POST'])
+    def portal_confirm_update_mentor(self, **post):
+        user = request.env.user
+        partner = request.env.user.partner_id
+        mentor_id = post.get('monteur')
+        prestation_id = post.get('prestation')
+        mentor_id = request.env['res.partner'].sudo().browse(int(mentor_id))
+        prestation_id = request.env['prestation.prestation'].sudo().browse(int(prestation_id))
+        prestation_id.update({'mentor_id': mentor_id.id})
+        return request.redirect(prestation_id.get_portal_url())
+    
+    @http.route(['/create_mentor/<prestation_id>'], auth='user', website=True)
+    def create_mentor_form(self, prestation_id, **kw):
+        _, prestation_id = unslug(prestation_id)
+        
+        user = request.env.user
+        partner = request.env.user.partner_id
+        mentors = request.env['res.partner'].sudo().search([('is_mentor', '=', True)])
+        prestation_id = request.env['prestation.prestation'].sudo().browse(prestation_id)
+        values = {'partner': partner,
+                  #'mentors': mentors,
+                  'prestation': prestation_id,
+                 }
+        return request.render("website_brconsult.create_mentor_page", values)
+    
+    @http.route(['/create_mentor/confirm'], type='http', auth="user", website=True, methods=['POST'])
+    def portal_confirm_create_mentor(self, **post):
+        user = request.env.user
+        partner = request.env.user.partner_id
+        name = post.get('name')
+        email = post.get('email')
+        mobile = post.get('tel')
+        prestation_id = post.get('prestation')
+        vals = {'name': name,
+                'email': email,
+                'mobile': mobile,
+                'is_mentor': True}
+        mentor_id = request.env['res.partner'].sudo().create(vals)
+        prestation_id = request.env['prestation.prestation'].sudo().browse(int(prestation_id))
+        prestation_id.update({'mentor_id': mentor_id.id})
+        return request.redirect(prestation_id.get_portal_url())
+            
+        

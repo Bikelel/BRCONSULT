@@ -490,6 +490,7 @@ class Prestation(models.Model):
         for rec in self:
             #company = rec.company_id
             duration = rec.chantier_duration
+            
             rec.end_date_chantier = rec.verification_date + relativedelta(months=duration)
     
     def button_phase2(self):
