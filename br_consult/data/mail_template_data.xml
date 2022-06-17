@@ -853,7 +853,7 @@ Nous avons le plaisir de vous confirmer que <strong> <t t-out="object.user_id.na
 															<table border="0" cellpadding="5" cellspacing="5" width="150" id="calendarContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;border: 5px solid #FFFFFF;">
 																<tr>
 																	<td align="center" bgcolor="#EFEFEF" valign="top" id="monthContainer" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EFEFEF;color: #303030;font-family: Helvetica;font-size: 14px;font-weight: bold;line-height: 150%;">
-																		<div><t t-out="object.verification_date.strftime('%d/%m/%Y')" /> à <t t-out="object.verification_date.strftime('%H:%M')"/></div>
+																		<div><t t-out="object.verification_date.strftime('%d/%m/%Y')" /> à <t t-out="format_time(time=object.verification_date, tz='Europe/Paris', time_format='short', lang_code=object.env.lang) or ''"/></div>
 																	</td>
 																</tr>
 																<tr>
