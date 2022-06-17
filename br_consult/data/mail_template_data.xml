@@ -130,7 +130,7 @@
                         <table>
                             <tr>
                                 <td valign="top">
-                                    <img t-att-src="'/logo.png?company=%s' % (object.company_id.id or 0)" style="padding: 0px; margin: 0px; width: 60px;" t-att-alt="'%s' % object.company_id.name" />
+                                    <img t-att-src="'/logo.png?company=%s' % (object.company_id.id or 0)" style="padding: 0px; margin: 0px; width: 45px;" t-att-alt="'%s' % object.company_id.name" />
                                 </td>
                                 <td style="font-size:12px">
                                     <strong>BR CONSULT</strong>
@@ -164,14 +164,14 @@
             <field name="model_id" ref="br_consult.model_prestation_prestation"/>
             <field name="email_from"></field>
             <field name="partner_to"></field>
-            <field name="subject"> {{object.site_address}} - Alerte fin chantier</field>
+            <field name="subject">Alerte fin de validité de votre rapport </field>
             <field name="body_html" type="html">
                 
                 <div style="margin: 0px; padding: 0px;">
                     <p style="margin: 0px; padding: 0px; font-size: 13px;">
                         Bonjour,
                         <br /><br />
-                        Votre installation est en place depuis bientôt <t t-out="object.chantier_duration" /> mois, pensez à programmer la vérification périodique en nous envoyant le bon de commande<br/>
+                        Votre installation est en place depuis bientôt 3/6 mois, pensez à programmer la vérification périodique en nous envoyant le bon de commande<br/>
                         
                         Bien cordialement.<br />
                        <br/><br/>
@@ -179,7 +179,7 @@
                         <table>
                             <tr>
                                 <td valign="top">
-                                    <img t-att-src="'/logo.png?company=%s' % (object.company_id.id or 0)" style="padding: 0px; margin: 0px; width: 60px;" t-att-alt="'%s' % object.company_id.name" />
+                                    <img t-att-src="'/logo.png?company=%s' % (object.company_id.id or 0)" style="padding: 0px; margin: 0px; width: 45px;" t-att-alt="'%s' % object.company_id.name" />
                                 </td>
                                 <td style="font-size:12px">
                                     <strong>BR CONSULT</strong>

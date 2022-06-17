@@ -84,6 +84,7 @@ class Prestation(models.Model):
     prestation_duration = fields.Float("Durée d'une prestation", store=True, related="company_id.prestation_duration")
     chantier_duration = fields.Integer("Durée du chantier (mois)")
     end_date_chantier = fields.Datetime("Date de fin du chantier", compute='_compute_end_date_chantier', store=True)
+    date_alert_end_chantier = fields.Datetime("Date d'alert fin du chantier", compute='_compute_end_date_chantier', store=True)
     sent_alert_end_chantier = fields.Boolean("Alerte de fin chantier est envoyée", copy=False)
     partner_contact = fields.Char("Représentée par")
     user_id = fields.Many2one('res.users', 'Inspecteur', default=default_user, tracking=True, required=True)
@@ -490,8 +491,19 @@ class Prestation(models.Model):
         for rec in self:
             #company = rec.company_id
             duration = rec.chantier_duration
-            
             rec.end_date_chantier = rec.verification_date + relativedelta(months=duration)
+            if rec.inspection_type == 'echafaudage':
+                if rec.chantier_duration >= 3:
+                    rec.date_alert_end_chantier = rec.verification_date + relativedelta(days=80)
+                else:
+                    rec.date_alert_end_chantier = None
+            else:
+                if rec.chantier_duration >= 6:
+                    rec.date_alert_end_chantier = rec.verification_date + relativedelta(days=170)
+                else:
+                    rec.date_alert_end_chantier = None
+                
+            
     
     def button_phase2(self):
         for prestation in self:
@@ -597,7 +609,7 @@ class Prestation(models.Model):
     
     def cron_send_alert_end_chantier(self):
         now = fields.Datetime.now()
-        prestations = self.search([('state', '=', 'phase4'), ('sent_alert_end_chantier', '=', False), ('end_date_chantier', '<', now)])
+        prestations = self.search([('state', '=', 'phase4'), ('sent_alert_end_chantier', '=', False), ('date_alert_end_chantier', '<', now)])
         _logger.info("############ %s", prestations)
         for prestation in prestations:
             prestation.sudo().button_send_alert_end_chantier()
