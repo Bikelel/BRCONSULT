@@ -53,7 +53,7 @@ class Prestation(models.Model):
     report_parameter_id = fields.Many2one('prestation.report.parameter',string="Parametre du rapport")
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
     partner_id = fields.Many2one('res.partner', string="Entreprise")
-    mentor_id = fields.Many2one('res.partner', string="Monteur")
+    mentor_id = fields.Many2one('res.partner', string="Monteur",  tracking=True,)
     inspection_type = fields.Selection([
         ('echafaudage', 'Echafaudage'),
         ('levage', 'Levage'),
@@ -765,5 +765,9 @@ class Prestation(models.Model):
         for rec in self:
             if rec.zip and len(rec.zip) != 5:
                 raise UserError(_('Le code postal doit contenir 5 caractères!'))
+    
+    def _get_report_base_filename(self):
+        self.ensure_one()
+        return 'Prestation-%s-%s-%s' % (self.name, self.site_address,self.partner_id.name)
                 
             

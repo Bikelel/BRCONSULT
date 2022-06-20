@@ -67,8 +67,15 @@
                         <div class="row no-gutters">
                             <div class="col-12">
                                 <h5 class="d-flex mb-1 mb-md-0 row">
-                                    <div class="col-7">
+                                    <div class="col-5">
                                         <span t-field="prestation.name" class="text-truncate"/>
+                                    </div>
+                                    
+                                    <div class="o_download_pdf btn-toolbar flex-sm-nowrap col2">
+                                        <div class="btn-group flex-grow-1 mr-1 mb-1">
+                                            <a class="btn btn-secondary btn-block o_download_btn" t-att-href="prestation.get_portal_url(report_type='pdf', download=True)" title="Download"><i class="fa fa-download"/> Télécharger</a>
+                                        </div>
+                                        
                                     </div>
                                     <div class="col-5 text-right">
                                         <small class="text-right">Avis:</small>
@@ -125,7 +132,8 @@
                                             <th>Précision</th>
                                             <th>Photo</th>
                                             <th>Statut </th>
-                                            <th>Date </th>
+                                            <th>Date</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -146,10 +154,18 @@
                                                     </ol>
                                                 </td>
                                                 <td><span t-field="constat.precision"/></td>
-                                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                                <td style="width: 100px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
                                                     </td>
                                                 <td><span t-field="constat.state"/></td>
                                                 <td><span t-field="constat.date"/></td>
+                                                <td>
+                                                    <a t-attf-href="/update_constat_line/#{slug(constat)}">
+                                                         <span class="badge badge-pill">
+                                                            <i class="fa fa-fw fa-edit" title="Modifier le ligne du constat" role="button" />
+<!--                                                              <span></span> -->
+                                                         </span>
+                                                     </a>
+                                                </td>
                                             </tr>
 
                                             <t t-set="num_verification_point" t-value="num_verification_point + 1"/>

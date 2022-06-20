@@ -5,6 +5,7 @@ from odoo.http import request
 from odoo.addons.portal.controllers import portal
 from odoo.addons.portal.controllers.portal import pager as portal_pager, get_records_pager
 from odoo.addons.http_routing.models.ir_http import slug, unslug
+from odoo.addons.portal.controllers.mail import _message_post_helper
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -178,5 +179,4 @@ class CustomerPortal(portal.CustomerPortal):
         prestation_id = request.env['prestation.prestation'].sudo().browse(int(prestation_id))
         prestation_id.update({'mentor_id': mentor_id.id})
         return request.redirect(prestation_id.get_portal_url())
-            
-        
+                  
