@@ -34,7 +34,7 @@
                             <th>N° Rapport #</th>
                             <th width="35%">Avis</th>
                             <th>Adresse de chantier</th>
-                            <th>Date de vérification </th>
+                            <th>Date</th>
                             <th>Type d'inspection</th>
                             <th>Type d'installation</th>
                             <th>Nom du monteur</th>
@@ -47,7 +47,7 @@
                                 <span t-if="prestation.opinion == 'favorable_opinion'" class="badge badge-pill badge-success"><i class="fa fa-fw fa-check"/> Avis favorable</span>
                                 <span t-if="prestation.opinion == 'opinion_with_observation'" class="badge badge-pill badge-warning"><i class="fa fa-fw fa-clock-o"/> Favorable avec observation(s)</span>
                                 <span t-if="prestation.opinion == 'defavorable_opinion'" class="badge badge-pill badge-danger"><i class="fa fa-fw fa-remove"/> Avis defavorable</span>
-                                <span t-if="prestation.opinion == 'defavorable_opinion'" class="badge badge-pill badge-danger"><i class="fa fa-fw fa-remove"/> Mixte</span>
+                                <span t-if="prestation.opinion == 'mixte'" class="badge badge-pill badge-danger"><i class="fa fa-fw fa-remove"/> Avis defavorable</span>
                             </td>
                             <td><span t-field="prestation.site_address"/></td>
                             <td><span t-field="prestation.verification_date" t-options='{"widget": "date"}'/></td>
@@ -82,7 +82,7 @@
                                         <span t-if="prestation.opinion == 'favorable_opinion'" class="badge badge-pill badge-success"><i class="fa fa-fw fa-check"/> Avis favorable</span>
                                 <span t-if="prestation.opinion == 'opinion_with_observation'" class="badge badge-pill badge-warning"><i class="fa fa-fw fa-clock-o"/> Favorable avec observation(s)</span>
                                 <span t-if="prestation.opinion == 'defavorable_opinion'" class="badge badge-pill badge-danger"><i class="fa fa-fw fa-remove"/> Avis defavorable</span>
-                                <span t-if="prestation.opinion == 'defavorable_opinion'" class="badge badge-pill badge-danger"><i class="fa fa-fw fa-remove"/> Mixte</span>
+                                <span t-if="prestation.opinion == 'mixte'" class="badge badge-pill badge-danger"><i class="fa fa-fw fa-remove"/> Avis defavorable</span>
                                         
                                     </div>
                                     
@@ -94,6 +94,10 @@
                         <t t-set="num_verification_point" t-value="0"/>
                         <div class="col-12 col-md-12 pb-2 row">
                             <div class="col-6 col-md-6 pb-2">
+                                <div>
+                                    <span><strong>Date de vérification:</strong></span>
+                                    <span t-field="prestation.verification_date"/>
+                                </div>
                                 <div>
                                     <span><strong>Type d'inspection:</strong></span>
                                     <span t-field="prestation.inspection_type"/>
@@ -122,18 +126,19 @@
                         </div>
                         <div>
                             <section style="page-break-inside: auto;" class="mt32" t-if="prestation.constat_adequacy_exam_ids">
-                                <h3>Constat - Examen d’adéquation</h3>
+                                <h5>Constat - Examen d’adéquation</h5>
                                 <table t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token" class="table table-sm">
                                     <thead class="bg-100">
                                         <tr>
-                                            <th/>
-                                            <th class="text-left">Point de vérification</th>
-                                            <th>Observations/réserves</th>
-                                            <th>Précision</th>
-                                            <th>Photo</th>
-                                            <th>Statut </th>
-                                            <th>Date</th>
-                                            <th></th>
+                                        <th/>
+                                            <th class="text-left" style="width:15%;">Point de vérification</th>
+                                            <th style="width:30%;">Observations/réserves</th>
+                                            <th style="width:28%;">Précision</th>
+                                            <th style="width:8%;" class="text-center">Photo</th>
+                                            <th style="width:8%;" class="text-center">Photo après</th>
+                                            <th style="width:5%;">Statut </th>
+                                            <th style="width:5%;">Date</th>
+                                            <th style="width:2%;"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -154,15 +159,19 @@
                                                     </ol>
                                                 </td>
                                                 <td><span t-field="constat.precision"/></td>
-                                                <td style="width: 100px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
-                                                    </td>
+                                                <td class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 60px;"/></td>
+                                                <td class="text-center">
+                                                    <img t-if="constat.photo_after_1" t-att-src="image_data_uri(constat.photo_after_1)" style="max-width: 60px;"/>
+                                                    <br/>
+                                                    <img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 60px;"/>
+                                                </td>
+                                                
                                                 <td><span t-field="constat.state"/></td>
                                                 <td><span t-field="constat.date"/></td>
                                                 <td>
                                                     <a t-attf-href="/update_constat_line/#{slug(constat)}">
                                                          <span class="badge badge-pill">
-                                                            <i class="fa fa-fw fa-edit" title="Modifier le ligne du constat" role="button" />
-<!--                                                              <span></span> -->
+                                                            <i class="fa fa-fw fa-edit" title="Modifier la ligne du constat" role="button" />
                                                          </span>
                                                      </a>
                                                 </td>
@@ -174,17 +183,19 @@
                                 </table>
                             </section>
                             <section style="page-break-inside: auto;" class="mt32" t-if="prestation.constat_assembly_exam_ids">
-                                <h3>Constat - Examen de montage et d'exploitation</h3>
+                                <h5>Constat - Examen de montage et d'exploitation</h5>
                                 <table t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token" class="table table-sm">
                                     <thead class="bg-100">
                                         <tr>
                                             <th/>
-                                            <th class="text-left">Point de vérification</th>
-                                            <th>Observations/réserves</th>
-                                            <th>Précision</th>
-                                            <th>Photo</th>
-                                            <th>Statut </th>
-                                            <th>Date </th>
+                                            <th class="text-left" style="width:15%;">Point de vérification</th>
+                                            <th style="width:30%;">Observations/réserves</th>
+                                            <th style="width:28%;">Précision</th>
+                                            <th style="width:8%;" class="text-center">Photo</th>
+                                            <th style="width:8%;" class="text-center">Photo après</th>
+                                            <th style="width:5%;">Statut </th>
+                                            <th style="width:5%;">Date</th>
+                                            <th style="width:2%;"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -205,10 +216,17 @@
                                                     </ol>
                                                 </td>
                                                 <td><span t-field="constat.precision"/></td>
-                                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                                <td class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 70px;"/>
                                                     </td>
                                                 <td><span t-field="constat.state"/></td>
                                                 <td><span t-field="constat.date"/></td>
+                                                <td>
+                                                    <a t-attf-href="/update_constat_line/#{slug(constat)}">
+                                                         <span class="badge badge-pill">
+                                                            <i class="fa fa-fw fa-edit" title="Modifier la ligne du constat" role="button" />
+                                                         </span>
+                                                     </a>
+                                                </td>
                                             </tr>
 
                                             <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
@@ -217,17 +235,19 @@
                                 </table>
                             </section>
                             <section style="page-break-inside: auto;" class="mt32" t-if="prestation.constat_conservation_state_exam_ids">
-                                <h3>Constat - Examen de l'etat de conservation</h3>
+                                <h5>Constat - Examen de l'etat de conservation</h5>
                                 <table t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token" class="table table-sm">
                                     <thead class="bg-100">
                                         <tr>
                                             <th/>
-                                            <th class="text-left">Point de vérification</th>
-                                            <th>Observations/réserves</th>
-                                            <th>Précision</th>
-                                            <th>Photo</th>
-                                            <th>Statut </th>
-                                            <th>Date </th>
+                                            <th class="text-left" style="width:15%;">Point de vérification</th>
+                                            <th style="width:30%;">Observations/réserves</th>
+                                            <th style="width:28%;">Précision</th>
+                                            <th style="width:8%;" class="text-center">Photo</th>
+                                            <th style="width:8%;" class="text-center">Photo après</th>
+                                            <th style="width:5%;">Statut </th>
+                                            <th style="width:5%;">Date</th>
+                                            <th style="width:2%;"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -248,10 +268,17 @@
                                                     </ol>
                                                 </td>
                                                 <td><span t-field="constat.precision"/></td>
-                                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                                <td class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 70px;"/>
                                                     </td>
                                                 <td><span t-field="constat.state"/></td>
                                                 <td><span t-field="constat.date"/></td>
+                                                <td>
+                                                    <a t-attf-href="/update_constat_line/#{slug(constat)}">
+                                                         <span class="badge badge-pill">
+                                                            <i class="fa fa-fw fa-edit" title="Modifier la ligne du constat" role="button" />
+                                                         </span>
+                                                     </a>
+                                                </td>
                                             </tr>
 
                                             <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
@@ -260,17 +287,19 @@
                                 </table>
                             </section>
                             <section style="page-break-inside: auto;" class="mt32" t-if="prestation.constat_good_functioning_exam_ids">
-                                <h3>Constat - Examen de bon fonctionnement </h3>
+                                <h5>Constat - Examen de bon fonctionnement </h5>
                                 <table t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token" class="table table-sm">
                                     <thead class="bg-100">
                                         <tr>
                                             <th/>
-                                            <th class="text-left">Point de vérification</th>
-                                            <th>Observations/réserves</th>
-                                            <th>Précision</th>
-                                            <th>Photo</th>
-                                            <th>Statut </th>
-                                            <th>Date </th>
+                                            <th class="text-left" style="width:15%;">Point de vérification</th>
+                                            <th style="width:30%;">Observations/réserves</th>
+                                            <th style="width:28%;">Précision</th>
+                                            <th style="width:8%;" class="text-center">Photo</th>
+                                            <th style="width:8%;" class="text-center">Photo après</th>
+                                            <th style="width:5%;">Statut </th>
+                                            <th style="width:5%;">Date</th>
+                                            <th style="width:2%;"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -291,10 +320,17 @@
                                                     </ol>
                                                 </td>
                                                 <td><span t-field="constat.precision"/></td>
-                                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                                <td  class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 70px;"/>
                                                     </td>
                                                 <td><span t-field="constat.state"/></td>
                                                 <td><span t-field="constat.date"/></td>
+                                                <td>
+                                                    <a t-attf-href="/update_constat_line/#{slug(constat)}">
+                                                         <span class="badge badge-pill">
+                                                            <i class="fa fa-fw fa-edit" title="Modifier la ligne du constat" role="button" />
+                                                         </span>
+                                                     </a>
+                                                </td>
                                             </tr>
 
                                             <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
@@ -303,17 +339,19 @@
                                 </table>
                             </section>
                             <section style="page-break-inside: auto;" class="mt32" t-if="prestation.constat_epreuve_statique_ids">
-                                <h3>Constat - Epreuves statiques</h3>
+                                <h5>Constat - Epreuves statiques</h5>
                                 <table t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token" class="table table-sm">
                                     <thead class="bg-100">
                                         <tr>
                                             <th/>
-                                            <th class="text-left">Point de vérification</th>
-                                            <th>Observations/réserves</th>
-                                            <th>Précision</th>
-                                            <th>Photo</th>
-                                            <th>Statut </th>
-                                            <th>Date </th>
+                                            <th class="text-left" style="width:15%;">Point de vérification</th>
+                                            <th style="width:30%;">Observations/réserves</th>
+                                            <th style="width:28%;">Précision</th>
+                                            <th style="width:8%;" class="text-center">Photo</th>
+                                            <th style="width:8%;" class="text-center">Photo après</th>
+                                            <th style="width:5%;">Statut </th>
+                                            <th style="width:5%;">Date</th>
+                                            <th style="width:2%;"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -334,10 +372,17 @@
                                                     </ol>
                                                 </td>
                                                 <td><span t-field="constat.precision"/></td>
-                                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                                <td class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 70px;"/>
                                                     </td>
                                                 <td><span t-field="constat.state"/></td>
                                                 <td><span t-field="constat.date"/></td>
+                                                <td>
+                                                    <a t-attf-href="/update_constat_line/#{slug(constat)}">
+                                                         <span class="badge badge-pill">
+                                                            <i class="fa fa-fw fa-edit" title="Modifier la ligne du constat" role="button" />
+                                                         </span>
+                                                     </a>
+                                                </td>
                                             </tr>
 
                                             <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
@@ -346,17 +391,19 @@
                                 </table>
                             </section>
                             <section style="page-break-inside: auto;" class="mt32" t-if="prestation.constat_epreuve_dynamique_ids">
-                                <h3>Constat - Epreuves dynamiques</h3>
+                                <h5>Constat - Epreuves dynamiques</h5>
                                 <table t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token" class="table table-sm">
                                     <thead class="bg-100">
                                         <tr>
                                             <th/>
-                                            <th class="text-left">Point de vérification</th>
-                                            <th>Observations/réserves</th>
-                                            <th>Précision</th>
-                                            <th>Photo</th>
-                                            <th>Statut </th>
-                                            <th>Date </th>
+                                            <th class="text-left" style="width:15%;">Point de vérification</th>
+                                            <th style="width:30%;">Observations/réserves</th>
+                                            <th style="width:28%;">Précision</th>
+                                            <th style="width:8%;" class="text-center">Photo</th>
+                                            <th style="width:8%;" class="text-center">Photo après</th>
+                                            <th style="width:5%;">Statut </th>
+                                            <th style="width:5%;">Date</th>
+                                            <th style="width:2%;"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -377,10 +424,17 @@
                                                     </ol>
                                                 </td>
                                                 <td><span t-field="constat.precision"/></td>
-                                                <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/>
+                                                <td class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 70px;"/>
                                                     </td>
                                                 <td><span t-field="constat.state"/></td>
                                                 <td><span t-field="constat.date"/></td>
+                                                <td>
+                                                    <a t-attf-href="/update_constat_line/#{slug(constat)}">
+                                                         <span class="badge badge-pill">
+                                                            <i class="fa fa-fw fa-edit" title="Modifier la ligne du constat" role="button" />
+                                                         </span>
+                                                     </a>
+                                                </td>
                                             </tr>
 
                                             <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
@@ -388,6 +442,11 @@
                                     </tbody>
                                 </table>
                             </section>
+                        </div>
+                        <div class="col-sm-auto mt8">
+                            <a role="button" data-toggle="modal" data-target="#modalaccept" href="#" class="btn btn-primary">
+                                <i class="fa fa-check"/> <t>Valider &amp; Signer</t>
+                            </a>
                         </div>
                     </t>
                 </t>
@@ -399,6 +458,31 @@
                       <t t-set="object" t-value="prestation"/>
                   </t>
               </div>
+                <div role="dialog" class="modal fade" id="modalaccept">
+                    <div class="modal-dialog">
+                        <form id="accept" method="POST" t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token" class="js_accept_json modal-content js_website_submit_form">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <header class="modal-header">
+                                <h4 class="modal-title">Valider</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                            </header>
+                            <main class="modal-body" id="sign-dialog">
+                                <p>
+                                    <span>En signant le repport, je confirme le remplissage de tout les Observation(s)/Reserves:</span>
+                                    <ul>
+                                        <li><span>Ref:</span> <b data-id="total_amount" t-field="prestation.name"/></li>
+                                        
+                                    </ul>
+                                </p>
+                                <t t-call="portal.signature_form">
+                                    <t t-set="call_url" t-value="prestation.get_portal_url(suffix='/accept')"/>
+                                    <t t-set="default_name" t-value="prestation.partner_id.name"/>
+                                </t>
+                            </main>
+                        </form>
+                    </div>
+                </div>
+
             </t>
         </template>
         
@@ -503,6 +587,95 @@
                                             <button role="button" href="#" class="btn btn-primary mb32 a-submit btn-sm" type="submit"><span>Créer un nouveau monteur </span><i class="fa fa-chevron-right"/></button>
                                         </div>
                                     </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </template>
+        
+        <template id="update_constat_line_page">
+            <div id="wrap">
+                <t t-call="portal.portal_layout">
+                    <div class="oe_structure">
+                        <section class="pt8 pb8">
+                            <div class="container">
+                                <div class="row s_nb_column_fixed">
+                                    <div class="col-lg-12 s_title pt16 pb16"><h2>Levée de reserve(s)/observation(s)</h2></div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="container mt-2">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <form id="update_constat_line_form" action="/update_constat_line/confirm" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="constat" t-att-value="constat.id"/>
+                                    <div class="form-group row form-field" >
+                                        <div class="col-lg-3 col-md-4"><label class="col-form-label" for="verification_point">Point de vérication: </label></div>
+                                        <div class="col-lg-7 col-md-8">
+                                            <span t-field="constat.verification_point_id.name"/>
+                                        </div>
+                                        <div class="col-lg-3 col-md-4"><label class="col-form-label" for="precision">Précision: </label></div>
+                                        <div class="col-lg-7 col-md-8">
+                                            <span t-field="constat.precision"/>
+                                        </div>
+                                         <div class="col-lg-3 col-md-4"><label class="col-form-label" for="photo">Photo: </label></div>
+                                        <div class="col-lg-7 col-md-8">
+                                            <img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 70px;"/>
+                                        </div>
+                                        <div class="col-lg-3 col-md-4">
+                                            <label class="col-form-label" for="state">
+                                                <span>Statut</span>
+                                            </label>
+                                        </div>
+                                        <div class="col-lg-7 col-md-8">
+                                            <select class="form-control" name="state" id="state" style="">
+                                                <option value="to_lift">A lever</option>
+                                                <option value="lifted">Levée</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="form-group col-12" data-type="binary" data-name="Field">
+                                            <div class="col-lg-3 col-md-4">
+                                                <label class="col-form-label" for="photo1">
+                                                    <span>Upload Photo 1</span>
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="col-lg-7 col-md-8">
+                                                <input type="file" class="form-control-file" name="photo1" id="photo1"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12" data-type="binary" data-name="Field">
+                                            <div class="col-lg-3 col-md-4">
+                                                <label class="col-form-label" for="photo2">
+                                                    <span>Upload Photo 2</span>
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="col-lg-7 col-md-8">
+                                                <input type="file" class="form-control-file" name="photo2" id="photo2"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-4">
+                                            <label class="col-form-label" for="date">Date</label>
+                                        </div>
+                                        <div class="col-lg-7 col-md-8 input-group">
+                                            <input type="text" required="1" name="date_constat"/>
+                                            <div class="input-group-append">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="offset-lg-3 offset-md-4 col-md-8 col-lg-7">
+                                            <button role="button" href="#" class="btn btn-primary mb32 a-submit btn-sm" type="submit"><span>Enregistrer </span><i class="fa fa-chevron-right"/></button>
+                                        </div>
+                                    </div>
+
                                 </form>
                             </div>
                         </div>

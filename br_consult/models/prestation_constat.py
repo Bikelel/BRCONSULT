@@ -19,6 +19,8 @@ class PrestationConstat(models.Model):
     reserve = fields.Text("Observations/réserves reserve")
     precision = fields.Text("Précisions")
     photo = fields.Image("Photo", max_width=512, max_height=512)
+    photo_after_1 = fields.Image("Photo d'après 1", max_width=512, max_height=512)
+    photo_after_2 = fields.Image("Photo d'après 2", max_width=512, max_height=512)
     state = fields.Selection([
         ('to_lift', "A lever"),
         ('lifted', "Levée")], string="Statut")

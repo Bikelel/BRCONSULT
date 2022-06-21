@@ -6,6 +6,9 @@ from odoo.addons.portal.controllers import portal
 from odoo.addons.portal.controllers.portal import pager as portal_pager, get_records_pager
 from odoo.addons.http_routing.models.ir_http import slug, unslug
 from odoo.addons.portal.controllers.mail import _message_post_helper
+import datetime
+import base64
+from base64 import encode
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -81,10 +84,6 @@ class CustomerPortal(portal.CustomerPortal):
 
         if report_type in ('html', 'pdf', 'text'):
             return self._show_report(model=prestation_sudo, report_type=report_type, report_ref='br_consult.action_report_prestation', download=download)
-
-        # use sudo to allow accessing/viewing orders for public user
-        # only if he knows the private token
-        # Log only once a day
         if prestation_sudo:
             # store the date as a string in the session to allow serialization
             now = fields.Date.today().isoformat()
@@ -158,7 +157,6 @@ class CustomerPortal(portal.CustomerPortal):
         mentors = request.env['res.partner'].sudo().search([('is_mentor', '=', True)])
         prestation_id = request.env['prestation.prestation'].sudo().browse(prestation_id)
         values = {'partner': partner,
-                  #'mentors': mentors,
                   'prestation': prestation_id,
                  }
         return request.render("website_brconsult.create_mentor_page", values)
@@ -179,4 +177,75 @@ class CustomerPortal(portal.CustomerPortal):
         prestation_id = request.env['prestation.prestation'].sudo().browse(int(prestation_id))
         prestation_id.update({'mentor_id': mentor_id.id})
         return request.redirect(prestation_id.get_portal_url())
+    
+    @http.route(['/update_constat_line/<constat_id>'], auth='user', website=True)
+    def update_constat_line_form(self, constat_id, **kw):
+        _, constat_id = unslug(constat_id)
+        user = request.env.user
+        partner = request.env.user.partner_id
+        relaod_vals = {}
+        constat_id = request.env['prestation.constat'].sudo().browse(constat_id)
+        values = {'constat': constat_id}
+        return request.render("website_brconsult.update_constat_line_page", values)
+    
+    @http.route(['/update_constat_line/confirm'], type='http', auth="user", website=True, methods=['POST'])
+    def portal_confirm_update_constat_line(self, **post):
+        user = request.env.user
+        partner = request.env.user.partner_id
+        constat_id = post.get('constat')
+        state = post.get('state')
+        date_constat = post.get('date_constat')
+        constat_id = request.env['prestation.constat'].sudo().browse(int(constat_id))
+        constat_id.update({'state': state,
+                           'date': datetime.datetime.strptime(date_constat, '%d/%m/%Y')})
+        
+        if post.get('photo1'):
+            name = post.get('photo1').filename
+            photo1_file = post.get('photo1')
+            photo1_attachment = photo1_file.read()
+            constat_id.update({'photo_after_1': base64.b64encode(photo1_attachment)})
+        
+        if post.get('photo2'):
+            name = post.get('photo2').filename
+            photo2_file = post.get('photo2')
+            photo2_attachment = photo2_file.read()
+            constat_id.update({'photo_after_2': base64.b64encode(photo2_attachment)})
+            
+        return request.redirect(constat_id.prestation_id.get_portal_url())
+    
+    @http.route(['/my/prestation/<int:prestation_id>/accept'], type='json', auth="user", website=True)
+    def portal_report_accept(self, prestation_id, access_token=None, name=None, signature=None):
+        # get from query string if not on json param
+        access_token = access_token or request.httprequest.args.get('access_token')
+        try:
+            prestation_sudo = self._document_check_access('prestation.prestation', prestation_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return {'error': _('Invalide prestation.')}
+
+        if not signature:
+            return {'error': _('Signature is missing.')}
+
+#         try:
+#             prestation_sudo.write({
+#                 'signed_by': name,
+#                 'signed_on': fields.Datetime.now(),
+#                 'signature': signature,
+#             })
+#             request.env.cr.commit()
+#         except (TypeError, binascii.Error) as e:
+#             return {'error': _('Invalid signature data.')}
+
+        pdf = request.env.ref('br_consult.action_report_prestation').with_user(SUPERUSER_ID)._render_qweb_pdf([prestation_sudo.id])[0]
+
+        _message_post_helper(
+            'prestation.prestation', prestation_sudo.id, _('Prestation signé par %s') % (name,),
+            attachments=[('%s.pdf' % prestation_sudo.name, pdf)],
+            **({'token': access_token} if access_token else {}))
+
+        query_string = '&message=sign_ok'
+        
+        return {
+            'force_refresh': True,
+            'redirect_url': prestation_sudo.get_portal_url(query_string=query_string),
+        }
                   

@@ -27,5 +27,11 @@
         'security/ir.model.access.csv',
         'views/prestation_templates.xml',
     ],
+    
+    'assets': {
+        'web.assets_frontend': [
+            'website_brconsult/static/src/js/date_portal.js',
+        ],
+    }
 
 }
