@@ -37,7 +37,8 @@
                             <th>Date</th>
                             <th>Type d'inspection</th>
                             <th>Type d'installation</th>
-                            <th>Nom du monteur</th>
+                            <th t-if='not user_id.partner_id.is_mentor'>Nom du monteur</th>
+                            <th t-if='user_id.partner_id.is_mentor'>Entreprise</th>
                         </tr>
                     </thead>
                     <t t-foreach="prestations" t-as="prestation">
@@ -53,7 +54,8 @@
                             <td><span t-field="prestation.verification_date" t-options='{"widget": "date"}'/></td>
                             <td><span t-field="prestation.inspection_type"/></td>
                             <td><span t-field="prestation.installation_type"/></td>
-                            <td><span t-field="prestation.mentor_id"/></td>
+                            <td t-if='not user_id.partner_id.is_mentor'><span t-field="prestation.mentor_id"/></td>
+                            <td t-if='user_id.partner_id.is_mentor'><span t-field="prestation.partner_id"/></td>
 
                         </tr>
                     </t>
@@ -114,7 +116,7 @@
                             <div class="col-6 col-md-6 pb-2">
                                 <span><strong>Monteur:</strong></span>
                                 <span t-field="prestation.mentor_id"/>
-                                <div>
+                                <div t-if='not user_id.partner_id.is_mentor'>
                                     <a t-attf-href="/update_mentor/#{slug(prestation)}">
                                          <span class="badge badge-pill">
                                             <i class="fa fa-fw fa-edit" title="Modifier le monteur" role="button" />

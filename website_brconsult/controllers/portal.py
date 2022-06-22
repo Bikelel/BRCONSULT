@@ -44,6 +44,7 @@ class CustomerPortal(portal.CustomerPortal):
     def portal_my_prestations(self, page=1, sortby=None, **kw):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
+        user = request.env.user
         Prestation = request.env['prestation.prestation']
 
         domain = self._prepare_prestations_domain(partner)
@@ -76,11 +77,13 @@ class CustomerPortal(portal.CustomerPortal):
             'default_url': '/my/prestations',
             'searchbar_sortings': searchbar_sortings,
             'sortby': sortby,
+            'user_id': user,
         })
         return request.render("website_brconsult.portal_my_prestations", values)
     
     @http.route(['/my/prestation/<int:prestation_id>'], type='http', auth="public", website=True)
     def portal_prestation_page(self, prestation_id, report_type=None, access_token=None, message=False, download=False, **kw):
+        user = request.env.user
         try:
             prestation_sudo = self._document_check_access('prestation.prestation', prestation_id, access_token=access_token)
         except (AccessError, MissingError):
@@ -112,6 +115,7 @@ class CustomerPortal(portal.CustomerPortal):
             'bootstrap_formatting': True,
             'partner_id': prestation_sudo.partner_id.id,
             'report_type': 'html',
+            'user_id': user,
             
         }
         if prestation_sudo.company_id:
