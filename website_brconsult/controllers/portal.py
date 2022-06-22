@@ -27,7 +27,11 @@ class CustomerPortal(portal.CustomerPortal):
     def _prepare_prestations_domain(self, partner):
         domain = [('is_report_sent', '=', True)]
         if request.env.user.has_group('base.group_portal'):
-            domain += [('partner_id', 'child_of', [partner.commercial_partner_id.id])]
+            if not partner.is_mentor:
+                domain += [('partner_id', 'child_of', [partner.commercial_partner_id.id])]
+            else:
+                domain += [('mentor_id', 'child_of', [partner.commercial_partner_id.id])]
+                
         return domain
     
     def _get_sale_searchbar_sortings(self):
@@ -95,7 +99,7 @@ class CustomerPortal(portal.CustomerPortal):
                     "prestation.prestation",
                     prestation_sudo.id,
                     body,
-                    token=order_sudo.access_token,
+                    token=prestation_sudo.access_token,
                     message_type="notification",
                     subtype_xmlid="mail.mt_note",
                     partner_ids=prestation_sudo.user_id.sudo().partner_id.ids,
@@ -168,12 +172,19 @@ class CustomerPortal(portal.CustomerPortal):
         name = post.get('name')
         email = post.get('email')
         mobile = post.get('tel')
+        siret = post.get('siret')
         prestation_id = post.get('prestation')
         vals = {'name': name,
                 'email': email,
                 'mobile': mobile,
-                'is_mentor': True}
+                'is_mentor': True,
+                'company_type': 'company'}
         mentor_id = request.env['res.partner'].sudo().create(vals)
+        portal_wizard = request.env['portal.wizard'].sudo().with_context({
+            'active_id': mentor_id.id,
+            'active_ids': [mentor_id.id],
+                         }).create({})
+        portal_wizard.user_ids[0].action_grant_access()
         prestation_id = request.env['prestation.prestation'].sudo().browse(int(prestation_id))
         prestation_id.update({'mentor_id': mentor_id.id})
         return request.redirect(prestation_id.get_portal_url())
@@ -225,17 +236,17 @@ class CustomerPortal(portal.CustomerPortal):
         if not signature:
             return {'error': _('Signature is missing.')}
 
-#         try:
-#             prestation_sudo.write({
-#                 'signed_by': name,
-#                 'signed_on': fields.Datetime.now(),
-#                 'signature': signature,
-#             })
-#             request.env.cr.commit()
-#         except (TypeError, binascii.Error) as e:
-#             return {'error': _('Invalid signature data.')}
+        try:
+            prestation_sudo.write({
+                'signed_by': name,
+                'signed_on': fields.Datetime.now(),
+                'signature': signature,
+            })
+            request.env.cr.commit()
+        except (TypeError, binascii.Error) as e:
+            return {'error': _('Invalid signature data.')}
 
-        pdf = request.env.ref('br_consult.action_report_prestation').with_user(SUPERUSER_ID)._render_qweb_pdf([prestation_sudo.id])[0]
+        pdf = request.env.ref('br_consult.action_report_reserve').with_user(SUPERUSER_ID)._render_qweb_pdf([prestation_sudo.id])[0]
 
         _message_post_helper(
             'prestation.prestation', prestation_sudo.id, _('Prestation signé par %s') % (name,),

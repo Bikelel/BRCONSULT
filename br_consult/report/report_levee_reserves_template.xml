@@ -381,6 +381,13 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="row">
+                        <div class="col-6">Fait le : <span t-field="doc.signed_on"/></div>
+                        <div class="col-6 text-center">
+                            <div>Signé par <span t-field="doc.signed_by"/></div>
+                            <div><img t-att-src="image_data_uri(doc.signature)" style="max-width: 240px;"/></div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -403,7 +410,6 @@
         <field name="print_report_name">'Rapport - %s - %s - %s' % (object.name, object.site_address, object.partner_id.name)</field>
         <field name="binding_model_id" ref="model_prestation_prestation"/>
         <field name="binding_type">report</field>
-        <field name="menu">False</field>
     </record>
 
 </odoo>

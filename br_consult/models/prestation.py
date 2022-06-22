@@ -220,6 +220,9 @@ class Prestation(models.Model):
         ('sent', 'Confirmation envoyée au client'),
     ], string="Confirmation envoyée ?", default='draft', copy=False)
     email_partner_ids = fields.Many2many('res.partner', string="Emails")
+    signed_by = fields.Char("Signé par", copy=False)
+    signed_on = fields.Datetime("Signé à", copy=False)
+    signature = fields.Image('Signature', help='Signature received through the portal.', copy=False, max_width=1024, max_height=1024)
 
     @api.onchange('prestation_id')
     def onchange_prestation(self):
