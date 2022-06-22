@@ -136,8 +136,8 @@
                                             <th class="text-left" style="width:15%;">Point de vérification</th>
                                             <th style="width:30%;">Observations/réserves</th>
                                             <th style="width:28%;">Précision</th>
-                                            <th style="width:8%;" class="text-center">Photo</th>
-                                            <th style="width:8%;" class="text-center">Photo après</th>
+                                            <th style="width:8%;" class="text-center">Photo BRCONSULT</th>
+                                            <th style="width:8%;" class="text-center">Photo(s) monteur</th>
                                             <th style="width:5%;">Statut </th>
                                             <th style="width:5%;">Date</th>
                                             <th style="width:2%;"></th>
@@ -193,8 +193,8 @@
                                             <th class="text-left" style="width:15%;">Point de vérification</th>
                                             <th style="width:30%;">Observations/réserves</th>
                                             <th style="width:28%;">Précision</th>
-                                            <th style="width:8%;" class="text-center">Photo</th>
-                                            <th style="width:8%;" class="text-center">Photo après</th>
+                                            <th style="width:8%;" class="text-center">Photo BRCONSULT</th>
+                                            <th style="width:8%;" class="text-center">Photo(s) monteur</th>
                                             <th style="width:5%;">Statut </th>
                                             <th style="width:5%;">Date</th>
                                             <th style="width:2%;"></th>
@@ -245,8 +245,8 @@
                                             <th class="text-left" style="width:15%;">Point de vérification</th>
                                             <th style="width:30%;">Observations/réserves</th>
                                             <th style="width:28%;">Précision</th>
-                                            <th style="width:8%;" class="text-center">Photo</th>
-                                            <th style="width:8%;" class="text-center">Photo après</th>
+                                            <th style="width:8%;" class="text-center">Photo BRCONSULT</th>
+                                            <th style="width:8%;" class="text-center">Photo(s) monteur</th>
                                             <th style="width:5%;">Statut </th>
                                             <th style="width:5%;">Date</th>
                                             <th style="width:2%;"></th>
@@ -297,8 +297,8 @@
                                             <th class="text-left" style="width:15%;">Point de vérification</th>
                                             <th style="width:30%;">Observations/réserves</th>
                                             <th style="width:28%;">Précision</th>
-                                            <th style="width:8%;" class="text-center">Photo</th>
-                                            <th style="width:8%;" class="text-center">Photo après</th>
+                                            <th style="width:8%;" class="text-center">Photo BRCONSULT</th>
+                                            <th style="width:8%;" class="text-center">Photo(s) monteur</th>
                                             <th style="width:5%;">Statut </th>
                                             <th style="width:5%;">Date</th>
                                             <th style="width:2%;"></th>
@@ -349,8 +349,8 @@
                                             <th class="text-left" style="width:15%;">Point de vérification</th>
                                             <th style="width:30%;">Observations/réserves</th>
                                             <th style="width:28%;">Précision</th>
-                                            <th style="width:8%;" class="text-center">Photo</th>
-                                            <th style="width:8%;" class="text-center">Photo après</th>
+                                            <th style="width:8%;" class="text-center">Photo BRCONSULT</th>
+                                            <th style="width:8%;" class="text-center">Photo(s) monteur</th>
                                             <th style="width:5%;">Statut </th>
                                             <th style="width:5%;">Date</th>
                                             <th style="width:2%;"></th>
@@ -401,8 +401,8 @@
                                             <th class="text-left" style="width:15%;">Point de vérification</th>
                                             <th style="width:30%;">Observations/réserves</th>
                                             <th style="width:28%;">Précision</th>
-                                            <th style="width:8%;" class="text-center">Photo</th>
-                                            <th style="width:8%;" class="text-center">Photo après</th>
+                                            <th style="width:8%;" class="text-center">Photo BRCONSULT</th>
+                                            <th style="width:8%;" class="text-center">Photo(s) monteur</th>
                                             <th style="width:5%;">Statut </th>
                                             <th style="width:5%;">Date</th>
                                             <th style="width:2%;"></th>
@@ -465,7 +465,7 @@
                         <form id="accept" method="POST" t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token" class="js_accept_json modal-content js_website_submit_form">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                             <header class="modal-header">
-                                <h4 class="modal-title">Valider</h4>
+                                <h4 class="modal-title">Valider et signer</h4>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
                             </header>
                             <main class="modal-body" id="sign-dialog">
@@ -478,7 +478,7 @@
                                 </p>
                                 <t t-call="portal.signature_form">
                                     <t t-set="call_url" t-value="prestation.get_portal_url(suffix='/accept')"/>
-                                    <t t-set="default_name" t-value="prestation.mentor_id.name"/>
+                                    <t t-set="default_name" t-value="user_id.partner_id.name"/>
                                 </t>
                             </main>
                         </form>
