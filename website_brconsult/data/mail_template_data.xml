@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="email_notification_assign_mentor" model="mail.template">
+            <field name="name">Mail de notification: Assigner un monteur</field>
+            <field name="model_id" ref="br_consult.model_prestation_prestation"/>
+            <field name="email_from"></field>
+            <field name="partner_to"></field>
+            <field name="subject">Vous avez été assigné à {{object.name}} </field>
+            <field name="body_html" type="html">
+                
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Bonjour,
+                        <br/><br/>
+                        Vous avez été assigné à la prestation d’inspection du chantier cité en objet. <br/>
+                        Vous pouvez accéder en cliquant directement sur <a t-att-href="'%s' % (object.get_portal_url())"><t t-out='object.name' /></a>
+                        Nous vous souhaitons une bonne réception,
+                        <br/>
+                        Bien cordialement.
+                        <br/><br/>
+                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 5px 0px 4px 0px;"/>
+                        <table>
+                            <tr>
+                                <td valign="top">
+                                    <img t-att-src="'/logo.png?company=%s' % (object.company_id.id or 0)" style="padding: 0px; margin: 0px; width: 60px;" t-att-alt="'%s' % object.company_id.name" />
+                                </td>
+                                <td style="font-size:12px">
+                                    <strong>BR CONSULT</strong>
+                                    <br/>
+                                    <strong>Département Inspection Technique</strong>
+                                    <br/>
+                                    Tél: 01 45 11 71 50
+                                    <br/>
+                                    E-mail : ControleBR@brconsult.fr 
+                                    <br/><br/>
+                                    16-18 Boulevard de Créteil
+                                    <br/>
+                                    94100 Saint-Maur-des-Fossés
+                                    <br/>
+                                    www.brconsult.com
+                                
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        
+                    </p>
+                </div>
+            </field>
+
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+        
+        <record id="email_notification_validation_mentor" model="mail.template">
+            <field name="name">Mail de notification: Validation de levée de réserve</field>
+            <field name="model_id" ref="br_consult.model_prestation_prestation"/>
+            <field name="email_from"></field>
+            <field name="partner_to"></field>
+            <field name="subject">{{object.name}}: Validation de levée de réserve(s)</field>
+            <field name="body_html" type="html">
+                
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Bonjour,
+                        <br/><br/>
+                        Le monteur vient de valider les observation(s)/réserve(s) de la prestation d’inspection du chantier cité en objet. <br/>
+                        Vous pouvez accéder en cliquant directement sur <a t-att-href="'%s' % (object.get_portal_url())"><t t-out='object.name' /></a>
+                        Nous vous souhaitons une bonne réception,
+                        <br/>
+                        Bien cordialement.
+                        <br/><br/>
+                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 5px 0px 4px 0px;"/>
+                        <table>
+                            <tr>
+                                <td valign="top">
+                                    <img t-att-src="'/logo.png?company=%s' % (object.company_id.id or 0)" style="padding: 0px; margin: 0px; width: 60px;" t-att-alt="'%s' % object.company_id.name" />
+                                </td>
+                                <td style="font-size:12px">
+                                    <strong>BR CONSULT</strong>
+                                    <br/>
+                                    <strong>Département Inspection Technique</strong>
+                                    <br/>
+                                    Tél: 01 45 11 71 50
+                                    <br/>
+                                    E-mail : ControleBR@brconsult.fr 
+                                    <br/><br/>
+                                    16-18 Boulevard de Créteil
+                                    <br/>
+                                    94100 Saint-Maur-des-Fossés
+                                    <br/>
+                                    www.brconsult.com
+                                
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        
+                    </p>
+                </div>
+            </field>
+
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+        
+        
+    </data>
+</odoo>

@@ -26,6 +26,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/prestation_templates.xml',
+        'data/mail_template_data.xml',
     ],
     
     'assets': {

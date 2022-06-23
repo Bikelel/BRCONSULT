@@ -30,7 +30,7 @@ class CustomerPortal(portal.CustomerPortal):
             if not partner.is_mentor:
                 domain += [('partner_id', 'child_of', [partner.commercial_partner_id.id])]
             else:
-                domain += [('mentor_id', 'child_of', [partner.commercial_partner_id.id])]
+                domain += [('mentor_id', 'child_of', [partner.commercial_partner_id.id]), ('mentor_archive', '=', False)]
                 
         return domain
     
@@ -81,7 +81,7 @@ class CustomerPortal(portal.CustomerPortal):
         })
         return request.render("website_brconsult.portal_my_prestations", values)
     
-    @http.route(['/my/prestation/<int:prestation_id>'], type='http', auth="public", website=True)
+    @http.route(['/my/prestation/<int:prestation_id>'], type='http', auth="user", website=True)
     def portal_prestation_page(self, prestation_id, report_type=None, access_token=None, message=False, download=False, **kw):
         user = request.env.user
         try:
@@ -91,22 +91,22 @@ class CustomerPortal(portal.CustomerPortal):
 
         if report_type in ('html', 'pdf', 'text'):
             return self._show_report(model=prestation_sudo, report_type=report_type, report_ref='br_consult.action_report_prestation', download=download)
-        if prestation_sudo:
-            # store the date as a string in the session to allow serialization
-            now = fields.Date.today().isoformat()
-            session_obj_date = request.session.get('view_quote_%s' % prestation_sudo.id)
-            if session_obj_date != now and request.env.user.share and access_token:
-                request.session['view_quote_%s' % prestation_sudo.id] = now
-                body = _('Report viewed by customer %s', prestation_sudo.partner_id.name)
-                _message_post_helper(
-                    "prestation.prestation",
-                    prestation_sudo.id,
-                    body,
-                    token=prestation_sudo.access_token,
-                    message_type="notification",
-                    subtype_xmlid="mail.mt_note",
-                    partner_ids=prestation_sudo.user_id.sudo().partner_id.ids,
-                )
+#         if prestation_sudo:
+#             # store the date as a string in the session to allow serialization
+#             now = fields.Date.today().isoformat()
+#             session_obj_date = request.session.get('view_quote_%s' % prestation_sudo.id)
+#             if session_obj_date != now and request.env.user.share and access_token:
+#                 request.session['view_quote_%s' % prestation_sudo.id] = now
+#                 body = _('Report viewed by customer %s', prestation_sudo.partner_id.name)
+#                 _message_post_helper(
+#                     "prestation.prestation",
+#                     prestation_sudo.id,
+#                     body,
+#                     token=prestation_sudo.access_token,
+#                     message_type="notification",
+#                     subtype_xmlid="mail.mt_note",
+#                     partner_ids=prestation_sudo.user_id.sudo().partner_id.ids,
+#                 )
 
         values = {
             'prestation': prestation_sudo,
@@ -154,6 +154,17 @@ class CustomerPortal(portal.CustomerPortal):
         mentor_id = request.env['res.partner'].sudo().browse(int(mentor_id))
         prestation_id = request.env['prestation.prestation'].sudo().browse(int(prestation_id))
         prestation_id.update({'mentor_id': mentor_id.id})
+        template = request.env.ref('website_brconsult.email_notification_assign_mentor')
+        if partner.email and mentor_id.email:
+            email_values = {
+                'email_from': partner.email,
+                'email_to': mentor_id.email,
+                #'email_cc': 'controlebr@brconsult.fr',
+                'auto_delete': True,
+                'recipient_ids': [],
+                'partner_ids': [],
+                'scheduled_date': False,}
+            template.sudo().send_mail(prestation_id.id, force_send=True, email_values=email_values)
         return request.redirect(prestation_id.get_portal_url())
     
     @http.route(['/create_mentor/<prestation_id>'], auth='user', website=True)
@@ -191,6 +202,17 @@ class CustomerPortal(portal.CustomerPortal):
         portal_wizard.user_ids[0].action_grant_access()
         prestation_id = request.env['prestation.prestation'].sudo().browse(int(prestation_id))
         prestation_id.update({'mentor_id': mentor_id.id})
+        template = request.env.ref('website_brconsult.email_notification_assign_mentor')
+        if partner.email and mentor_id.email:
+            email_values = {
+                'email_from': partner.email,
+                'email_to': mentor_id.email,
+                #'email_cc': 'controlebr@brconsult.fr',
+                'auto_delete': True,
+                'recipient_ids': [],
+                'partner_ids': [],
+                'scheduled_date': False,}
+            template.sudo().send_mail(prestation_id.id, force_send=True, email_values=email_values)
         return request.redirect(prestation_id.get_portal_url())
     
     @http.route(['/update_constat_line/<constat_id>'], auth='user', website=True)
@@ -230,6 +252,8 @@ class CustomerPortal(portal.CustomerPortal):
     
     @http.route(['/my/prestation/<int:prestation_id>/accept'], type='json', auth="user", website=True)
     def portal_report_accept(self, prestation_id, access_token=None, name=None, signature=None):
+        user = request.env.user
+        partner = request.env.user.partner_id
         # get from query string if not on json param
         access_token = access_token or request.httprequest.args.get('access_token')
         try:
@@ -259,8 +283,41 @@ class CustomerPortal(portal.CustomerPortal):
 
         query_string = '&message=sign_ok'
         
+        template = request.env.ref('website_brconsult.email_notification_validation_mentor')
+        if partner.email and prestation_sudo.mentor_id and prestation_sudo.mentor_id.email and partner.is_mentor:
+            email_values = {
+                'email_from': prestation_sudo.mentor_id.email,
+                'email_to': prestation_sudo.partner_id.email,
+                #'email_cc': 'controlebr@brconsult.fr',
+                'auto_delete': True,
+                'recipient_ids': [],
+                'partner_ids': [],
+                'scheduled_date': False,}
+            template.sudo().send_mail(prestation_sudo.id, force_send=True, email_values=email_values)
+        
         return {
             'force_refresh': True,
             'redirect_url': prestation_sudo.get_portal_url(query_string=query_string),
         }
-                  
+    
+    @http.route(['/prestation/<int:prestation_id>/get_report_monteur'], type='http', auth='user', methods=['GET'], website=True)
+    def get_report_monteur(self, prestation_id, **kw):
+       
+        user = request.env.user
+        prestation = request.env['prestation.prestation'].sudo().browse(prestation_id)
+        if prestation:
+            report_sudo = request.env.ref('br_consult.action_report_reserve').sudo()
+            
+            report = report_sudo._render_qweb_pdf([prestation.id])[0]
+            #report = report_sudo.render_qweb_pdf([prestation.id])[0]
+            pdfhttpheaders = [('Content-Type', 'application/pdf'), ('Content-Length', u'%s' % len(report))]
+            return request.make_response(report, headers=pdfhttpheaders)
+    
+    @http.route(['/prestation/<int:prestation_id>/archive_report_monteur'], type='http', auth='user', methods=['GET'], website=True)
+    def archive_report_monteur(self, prestation_id, **kw):
+       
+        user = request.env.user
+        prestation = request.env['prestation.prestation'].sudo().browse(prestation_id)
+        prestation.update({'mentor_archive': True})
+            
+        return request.redirect("/my/prestations")

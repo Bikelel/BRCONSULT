@@ -54,6 +54,7 @@ class Prestation(models.Model):
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
     partner_id = fields.Many2one('res.partner', string="Entreprise")
     mentor_id = fields.Many2one('res.partner', string="Monteur",  tracking=True,)
+    mentor_archive = fields.Boolean("Est archivée par le monteur", copy=False, store=True)
     inspection_type = fields.Selection([
         ('echafaudage', 'Echafaudage'),
         ('levage', 'Levage'),

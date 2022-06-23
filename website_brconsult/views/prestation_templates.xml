@@ -65,33 +65,30 @@
         <template id="prestation_portal_template" name="Ma prestation">
             <t t-call="portal.portal_layout">
                 <t t-call="portal.portal_record_layout">
+                    
                     <t t-set="card_header">
                         <div class="row no-gutters">
                             <div class="col-12">
                                 <h5 class="d-flex mb-1 mb-md-0 row">
-                                    <div class="col-5">
+                                    <div class="col-7 col-md-7">
                                         <span t-field="prestation.name" class="text-truncate"/>
                                     </div>
                                     
-                                    <div class="o_download_pdf btn-toolbar flex-sm-nowrap col2">
-                                        <div class="btn-group flex-grow-1 mr-1 mb-1">
-                                            <a class="btn btn-secondary btn-block o_download_btn" t-att-href="prestation.get_portal_url(report_type='pdf', download=True)" title="Download"><i class="fa fa-download"/> Télécharger</a>
-                                        </div>
-                                        
-                                    </div>
-                                    <div class="col-5 text-right">
+                                    
+                                    <div class="col-5 col-md-7 text-right">
                                         <small class="text-right">Avis:</small>
                                         <span t-if="prestation.opinion == 'favorable_opinion'" class="badge badge-pill badge-success"><i class="fa fa-fw fa-check"/> Avis favorable</span>
-                                <span t-if="prestation.opinion == 'opinion_with_observation'" class="badge badge-pill badge-warning"><i class="fa fa-fw fa-clock-o"/> Favorable avec observation(s)</span>
-                                <span t-if="prestation.opinion == 'defavorable_opinion'" class="badge badge-pill badge-danger"><i class="fa fa-fw fa-remove"/> Avis defavorable</span>
-                                <span t-if="prestation.opinion == 'mixte'" class="badge badge-pill badge-danger"><i class="fa fa-fw fa-remove"/> Avis defavorable</span>
-                                        
+                                        <span t-if="prestation.opinion == 'opinion_with_observation'" class="badge badge-pill badge-warning"><i class="fa fa-fw fa-clock-o"/> Favorable avec observation(s)</span>
+                                        <span t-if="prestation.opinion == 'defavorable_opinion'" class="badge badge-pill badge-danger"><i class="fa fa-fw fa-remove"/> Avis defavorable</span>
+                                        <span t-if="prestation.opinion == 'mixte'" class="badge badge-pill badge-danger"><i class="fa fa-fw fa-remove"/> Avis defavorable</span>
+
                                     </div>
                                     
                                 </h5>
                             </div>
                         </div>
                     </t>
+                    
                     <t t-set="card_body">
                         <t t-set="num_verification_point" t-value="0"/>
                         <div class="col-12 col-md-12 pb-2 row">
@@ -112,17 +109,41 @@
                                     <span><strong>Adresse de chantier:</strong></span>
                                     <span t-field="prestation.site_address"/>
                                 </div>
-                            </div>
-                            <div class="col-6 col-md-6 pb-2">
-                                <span><strong>Monteur:</strong></span>
-                                <span t-field="prestation.mentor_id"/>
                                 <div t-if='not user_id.partner_id.is_mentor'>
-                                    <a t-attf-href="/update_mentor/#{slug(prestation)}">
-                                         <span class="badge badge-pill">
-                                            <i class="fa fa-fw fa-edit" title="Modifier le monteur" role="button" />
-                                             <span>Cliquez ici pour modifier ou créer un monteur</span>
-                                         </span>
-                                     </a>
+                                    <span><strong>Monteur:</strong></span>
+                                    <span t-field="prestation.mentor_id"/>
+                                    <div t-if="not prestation.signature">
+                                        <a t-attf-href="/update_mentor/#{slug(prestation)}">
+                                             <span class="badge badge-pill">
+                                                <i class="fa fa-fw fa-edit" title="Modifier le monteur" role="button" />
+                                                 <span>Cliquez ici pour modifier ou créer un monteur</span>
+                                             </span>
+                                         </a>
+                                    </div>
+                                </div>
+                                <div t-if='user_id.partner_id.is_mentor'>
+                                    <span><strong>Enreprise:</strong></span>
+                                    <span t-field="prestation.partner_id"/>
+                                </div>
+                            </div>
+                            
+                            <div class="col-6 col-md-6 pb-2">
+                                <div class="o_download_pdf btn-toolbar flex-sm-nowrap">
+                                    <div class="btn-group flex-grow-1 mr-1 mb-1">
+                                        <a class="btn btn-secondary btn-block o_download_btn" t-att-href="prestation.get_portal_url(report_type='pdf', download=True)" title="Download"><i class="fa fa-download"/>Télécharger</a>
+                                    </div>
+                                </div>
+                                <div class="btn-toolbar flex-sm-nowrap">
+                                    <div class="btn-group flex-grow-1 mr-1 mb-1">
+                                       <a class="btn btn-secondary btn-block" t-attf-href="/prestation/{{prestation.id}}/get_report_monteur" target="_blank">
+                                           <i class="fa fa-download"/>Télécharger rapport monteur</a>
+                                    </div>
+                                </div>
+                                <div class="btn-toolbar flex-sm-nowrap" t-if='user_id.partner_id.is_mentor and not prestation.mentor_archive'>
+                                    <div class="btn-group flex-grow-1 mr-1 mb-1">
+                                       <a class="btn btn-secondary btn-block" t-attf-href="/prestation/{{prestation.id}}/archive_report_monteur">
+                                           <i class="fa fa-archive"/>Archiver rapport</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -171,7 +192,7 @@
                                                 <td><span t-field="constat.state"/></td>
                                                 <td><span t-field="constat.date"/></td>
                                                 <td>
-                                                    <a t-attf-href="/update_constat_line/#{slug(constat)}">
+                                                    <a t-attf-href="/update_constat_line/#{slug(constat)}" t-if="not prestation.signature">
                                                          <span class="badge badge-pill">
                                                             <i class="fa fa-fw fa-edit" title="Modifier la ligne du constat" role="button" />
                                                          </span>
@@ -223,7 +244,7 @@
                                                 <td><span t-field="constat.state"/></td>
                                                 <td><span t-field="constat.date"/></td>
                                                 <td>
-                                                    <a t-attf-href="/update_constat_line/#{slug(constat)}">
+                                                    <a t-attf-href="/update_constat_line/#{slug(constat)}" t-if="not prestation.signature">
                                                          <span class="badge badge-pill">
                                                             <i class="fa fa-fw fa-edit" title="Modifier la ligne du constat" role="button" />
                                                          </span>
@@ -275,7 +296,7 @@
                                                 <td><span t-field="constat.state"/></td>
                                                 <td><span t-field="constat.date"/></td>
                                                 <td>
-                                                    <a t-attf-href="/update_constat_line/#{slug(constat)}">
+                                                    <a t-attf-href="/update_constat_line/#{slug(constat)}" t-if="not prestation.signature">
                                                          <span class="badge badge-pill">
                                                             <i class="fa fa-fw fa-edit" title="Modifier la ligne du constat" role="button" />
                                                          </span>
@@ -327,7 +348,7 @@
                                                 <td><span t-field="constat.state"/></td>
                                                 <td><span t-field="constat.date"/></td>
                                                 <td>
-                                                    <a t-attf-href="/update_constat_line/#{slug(constat)}">
+                                                    <a t-attf-href="/update_constat_line/#{slug(constat)}" t-if="not prestation.signature">
                                                          <span class="badge badge-pill">
                                                             <i class="fa fa-fw fa-edit" title="Modifier la ligne du constat" role="button" />
                                                          </span>
@@ -379,7 +400,7 @@
                                                 <td><span t-field="constat.state"/></td>
                                                 <td><span t-field="constat.date"/></td>
                                                 <td>
-                                                    <a t-attf-href="/update_constat_line/#{slug(constat)}">
+                                                    <a t-attf-href="/update_constat_line/#{slug(constat)}" t-if="not prestation.signature">
                                                          <span class="badge badge-pill">
                                                             <i class="fa fa-fw fa-edit" title="Modifier la ligne du constat" role="button" />
                                                          </span>
@@ -431,7 +452,7 @@
                                                 <td><span t-field="constat.state"/></td>
                                                 <td><span t-field="constat.date"/></td>
                                                 <td>
-                                                    <a t-attf-href="/update_constat_line/#{slug(constat)}">
+                                                    <a t-attf-href="/update_constat_line/#{slug(constat)}" t-if="not prestation.signature">
                                                          <span class="badge badge-pill">
                                                             <i class="fa fa-fw fa-edit" title="Modifier la ligne du constat" role="button" />
                                                          </span>
@@ -445,15 +466,16 @@
                                 </table>
                             </section>
                         </div>
-                        <div class="col-sm-auto mt8">
-                            <a role="button" data-toggle="modal" data-target="#modalaccept" href="#" class="btn btn-primary">
-                                <i class="fa fa-check"/> <t>Valider &amp; Signer</t>
-                            </a>
-                        </div>
+                        
                     </t>
                 </t>
 
                 <!-- chatter -->
+                <div class="col-sm-auto mt8 text-center" t-if="not prestation.signature">
+                    <a role="button" data-toggle="modal" data-target="#modalaccept" href="#" class="btn btn-primary">
+                        <i class="fa fa-check"/> <t>Valider &amp; Signer</t>
+                    </a>
+                </div>
                <div id="prestation_communication" class="mt-4">
                   <h2>Communication</h2>
                   <t t-call="portal.message_thread">
