@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from collections import OrderedDict
+from odoo.osv.expression import OR, AND
 from odoo import fields, http, SUPERUSER_ID, _
 from odoo.exceptions import AccessError, MissingError, ValidationError
 from odoo.http import request
@@ -9,6 +11,7 @@ from odoo.addons.portal.controllers.mail import _message_post_helper
 import datetime
 import base64
 from base64 import encode
+from markupsafe import Markup
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -34,27 +37,57 @@ class CustomerPortal(portal.CustomerPortal):
                 
         return domain
     
-    def _get_sale_searchbar_sortings(self):
+    def _get_prestation_searchbar_sortings(self):
         return {
             'verification_date': {'label': _('Date de vérification'), 'order': 'verification_date desc'},
             'name': {'label': _('N° Rapport'), 'order': 'name'},
         }
     
+    def _get_prestation_searchbar_inputs(self):
+        values = {
+            'content': {'input': 'content', 'label': Markup(_('Search <span class="nolabel"> (in Content)</span>')), 'order': 1},
+        }
+        return dict(sorted(values.items(), key=lambda item: item[1]["order"]))
+    
+    def _get_prestation_search_domain(self, search_in, search):
+        search_domain = []
+        if search_in in ('content'):
+            search_domain.append([('name', 'ilike', search)])
+        return OR(search_domain)
+
+    
     @http.route(['/my/prestations', '/my/prestations/page/<int:page>'], type='http', auth="user", website=True)
-    def portal_my_prestations(self, page=1, sortby=None, **kw):
+    def portal_my_prestations(self, page=1, sortby=None, filterby=None, search=None, search_in='content', groupby=None, **kw):
         values = self._prepare_portal_layout_values()
+        searchbar_sortings = self._get_prestation_searchbar_sortings()
+        searchbar_inputs = self._get_prestation_searchbar_inputs()
+        #searchbar_groupby = self._task_get_searchbar_groupby()
+        searchbar_filters = {
+            'all': {'label': _('Tous'), 'domain': []},
+            'favorable_opinion': {'label': _('Avis favorable'), 'domain': [('opinion', '=', 'favorable_opinion')]},
+            'opinion_with_observation': {'label': _('Avis favorable avec observation(s)'), 'domain': [('opinion', '=', 'opinion_with_observation')]},
+            'defavorable_opinion': {'label': _('Avis defavorable'), 'domain': [('opinion', 'in', ('mixte', 'defavorable_opinion') )]},
+        }
         partner = request.env.user.partner_id
         user = request.env.user
         Prestation = request.env['prestation.prestation']
 
         domain = self._prepare_prestations_domain(partner)
 
-        searchbar_sortings = self._get_sale_searchbar_sortings()
 
         # default sortby order
         if not sortby:
             sortby = 'verification_date'
         sort_order = searchbar_sortings[sortby]['order']
+        
+        # default filter by value
+        if not filterby:
+            filterby = 'all'
+        domain = searchbar_filters.get(filterby, searchbar_filters.get('all'))['domain']
+        
+        # search
+        if search and search_in:
+            domain += self._get_prestation_search_domain(search_in, search)
 
         # count for pager
         prestation_count = Prestation.search_count(domain)
@@ -77,6 +110,13 @@ class CustomerPortal(portal.CustomerPortal):
             'default_url': '/my/prestations',
             'searchbar_sortings': searchbar_sortings,
             'sortby': sortby,
+            #'searchbar_groupby' : searchbar_groupby,
+            'searchbar_inputs' : searchbar_inputs,
+            'search_in' :search_in,
+            'search' : search,
+            'searchbar_filters': OrderedDict(sorted(searchbar_filters.items())),
+            'filterby': filterby,
+            #'groupby': groupby,
             'user_id': user,
         })
         return request.render("website_brconsult.portal_my_prestations", values)
