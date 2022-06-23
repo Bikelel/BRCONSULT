@@ -6,6 +6,9 @@
                     <a t-if="prestation" t-attf-href="/my/prestations?{{ keep_query() }}">Prestations</a>
                     <t t-else="">Prestations</t>
                 </li>
+                <li t-if="prestation" class="breadcrumb-item active">
+                    <span t-field="prestation.name"/>
+                </li>
             </xpath>
         </template>
 
@@ -15,6 +18,15 @@
                     <t t-set="title">Prestations</t>
                     <t t-set="url" t-value="'/my/prestations'"/>
                     <t t-set="placeholder_count" t-value="'prestation_count'"/>
+                </t>
+            </xpath>
+        </template>
+        <template id="portal_my_home_prestation_historique" name="Afficher Prestations" customize_show="True" inherit_id="portal.portal_my_home" priority="25">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Historique prestations</t>
+                    <t t-set="url" t-value="'/my/prestations/historique'"/>
+                    <t t-set="placeholder_count" t-value="'prestation_count_history'"/>
                 </t>
             </xpath>
         </template>

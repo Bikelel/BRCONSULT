@@ -25,6 +25,11 @@ class CustomerPortal(portal.CustomerPortal):
         if 'prestation_count' in counters:
             values['prestation_count'] = Prestation.search_count(self._prepare_prestations_domain(partner)) \
                 if Prestation.check_access_rights('read', raise_exception=False) else 0
+        if 'prestation_count_history' in counters:
+            values['prestation_count_history'] = Prestation.search_count(self._prepare_prestations_domain_history(partner)) \
+                if Prestation.check_access_rights('read', raise_exception=False) else 0
+            
+            
         return values
     
     def _prepare_prestations_domain(self, partner):
@@ -34,7 +39,12 @@ class CustomerPortal(portal.CustomerPortal):
                 domain += [('partner_id', 'child_of', [partner.commercial_partner_id.id])]
             else:
                 domain += [('mentor_id', 'child_of', [partner.commercial_partner_id.id]), ('mentor_archive', '=', False)]
-                
+        return domain
+    
+    def _prepare_prestations_domain_history(self, partner):
+        domain = []
+        #if request.env.user.has_group('base.group_portal') and request.env.user.partner_id.is_mentor:
+        domain += [('mentor_id', 'child_of', [partner.commercial_partner_id.id]), ('mentor_archive', '=', False), ('is_report_sent', '=', True)]
         return domain
     
     def _get_prestation_searchbar_sortings(self):
@@ -83,7 +93,7 @@ class CustomerPortal(portal.CustomerPortal):
         # default filter by value
         if not filterby:
             filterby = 'all'
-        domain = searchbar_filters.get(filterby, searchbar_filters.get('all'))['domain']
+        domain += searchbar_filters.get(filterby, searchbar_filters.get('all'))['domain']
         
         # search
         if search and search_in:
@@ -361,3 +371,65 @@ class CustomerPortal(portal.CustomerPortal):
         prestation.update({'mentor_archive': True})
             
         return request.redirect("/my/prestations")
+
+    @http.route(['/my/prestations/historique', '/my/prestations/historique/page/<int:page>'], type='http', auth="user", website=True)
+    def portal_my_prestations_historique(self, page=1, sortby=None, filterby=None, search=None, search_in='content', groupby=None, **kw):
+        values = self._prepare_portal_layout_values()
+        searchbar_sortings = self._get_prestation_searchbar_sortings()
+        searchbar_inputs = self._get_prestation_searchbar_inputs()
+        searchbar_filters = {
+            'all': {'label': _('Tous'), 'domain': []},
+            'favorable_opinion': {'label': _('Avis favorable'), 'domain': [('opinion', '=', 'favorable_opinion')]},
+            'opinion_with_observation': {'label': _('Avis favorable avec observation(s)'), 'domain': [('opinion', '=', 'opinion_with_observation')]},
+            'defavorable_opinion': {'label': _('Avis defavorable'), 'domain': [('opinion', 'in', ('mixte', 'defavorable_opinion') )]},
+        }
+        partner = request.env.user.partner_id
+        user = request.env.user
+        Prestation = request.env['prestation.prestation']
+        domain = self._prepare_prestations_domain_history(partner)
+
+        # default sortby order
+        if not sortby:
+            sortby = 'verification_date'
+        sort_order = searchbar_sortings[sortby]['order']
+        
+        # default filter by value
+        if not filterby:
+            filterby = 'all'
+        domain += searchbar_filters.get(filterby, searchbar_filters.get('all'))['domain']
+        
+        # search
+        if search and search_in:
+            domain += self._get_prestation_search_domain(search_in, search)
+
+        # count for pager
+        prestation_count = Prestation.search_count(domain)
+        # make pager
+        pager = portal_pager(
+            url="/my/prestations/historique",
+            url_args={'sortby': sortby},
+            total=prestation_count,
+            page=page,
+            step=self._items_per_page
+        )
+        # search the count to display, according to the pager data
+        prestations = Prestation.search(domain, order=sort_order, limit=self._items_per_page, offset=pager['offset'])
+        request.session['my_prestations_history'] = prestations.ids[:100]
+
+        values.update({
+            'prestations': prestations.sudo(),
+            'page_name': 'prestation',
+            'pager': pager,
+            'default_url': '/my/prestations/historique',
+            'searchbar_sortings': searchbar_sortings,
+            'sortby': sortby,
+            #'searchbar_groupby' : searchbar_groupby,
+            'searchbar_inputs' : searchbar_inputs,
+            'search_in' :search_in,
+            'search' : search,
+            'searchbar_filters': OrderedDict(sorted(searchbar_filters.items())),
+            'filterby': filterby,
+            #'groupby': groupby,
+            'user_id': user,
+        })
+        return request.render("website_brconsult.portal_my_prestations", values)
