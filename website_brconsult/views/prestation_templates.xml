@@ -1,5 +1,13 @@
 <odoo>
     <data>
+        <template id="hide_portal_my_home_project" inherit_id="project.portal_my_home">
+            <xpath expr="//t[@t-call='portal.portal_docs_entry'][1]" position="attributes">
+                <attribute name="groups">base.group_user</attribute>
+            </xpath>
+            <xpath expr="//t[@t-call='portal.portal_docs_entry'][2]" position="attributes">
+                <attribute name="groups">base.group_user</attribute>
+            </xpath>
+        </template>
         <template id="portal_my_home_menu_prestation" name="Portal layout : prestations" inherit_id="portal.portal_breadcrumbs" priority="20">
             <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
                 <li t-if="page_name == 'prestation'" t-attf-class="breadcrumb-item #{'active ' if not prestation else ''}">
@@ -43,8 +51,9 @@
                 <t t-if="prestations" t-call="portal.portal_table">
                     <thead>
                         <tr class="active">
-                            <th>N° Rapport #</th>
-                            <th width="35%">Avis</th>
+                            <th/>
+                            <th style="width:25%;">N° Rapport #</th>
+                            <th style="width:20%;">Avis</th>
                             <th>Adresse de chantier</th>
                             <th>Date</th>
                             <th>Type d'inspection</th>
@@ -55,6 +64,7 @@
                     </thead>
                     <t t-foreach="prestations" t-as="prestation">
                         <tr>
+                            <td><span t-attf-class="o_status rounded-circle bg-success" t-if="prestation.signature"/></td>
                             <td><a t-att-href="prestation.get_portal_url()"><t t-esc="prestation.name"/></a></td>
                             <td>
                                 <span t-if="prestation.opinion == 'favorable_opinion'" class="badge badge-pill badge-success"><i class="fa fa-fw fa-check"/> Avis favorable</span>
