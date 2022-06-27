@@ -189,7 +189,6 @@
                                     <tbody>
                                         <t t-foreach="prestation.constat_adequacy_exam_ids" t-as="constat">
                                             <tr>
-
                                                 <td><span t-esc="num_verification_point + 1"/></td>
                                                 <td ><span t-field="constat.verification_point_id"/></td>
                                                 <td>
@@ -246,7 +245,6 @@
                                     <tbody>
                                         <t t-foreach="prestation.constat_assembly_exam_ids" t-as="constat">
                                             <tr>
-
                                                 <td><span t-esc="num_verification_point + 1"/></td>
                                                 <td ><span t-field="constat.verification_point_id"/></td>
                                                 <td>
@@ -261,8 +259,13 @@
                                                     </ol>
                                                 </td>
                                                 <td><span t-field="constat.precision"/></td>
-                                                <td class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 70px;"/>
-                                                    </td>
+                                                <td class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 60px;"/></td>
+                                                <td class="text-center">
+                                                    <img t-if="constat.photo_after_1" t-att-src="image_data_uri(constat.photo_after_1)" style="max-width: 60px;"/>
+                                                    <br/>
+                                                    <img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 60px;"/>
+                                                </td>
+                                                
                                                 <td><span t-field="constat.state"/></td>
                                                 <td><span t-field="constat.date"/></td>
                                                 <td>
@@ -298,7 +301,6 @@
                                     <tbody>
                                         <t t-foreach="prestation.constat_conservation_state_exam_ids" t-as="constat">
                                             <tr>
-
                                                 <td><span t-esc="num_verification_point + 1"/></td>
                                                 <td ><span t-field="constat.verification_point_id"/></td>
                                                 <td>
@@ -313,8 +315,13 @@
                                                     </ol>
                                                 </td>
                                                 <td><span t-field="constat.precision"/></td>
-                                                <td class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 70px;"/>
-                                                    </td>
+                                                <td class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 60px;"/></td>
+                                                <td class="text-center">
+                                                    <img t-if="constat.photo_after_1" t-att-src="image_data_uri(constat.photo_after_1)" style="max-width: 60px;"/>
+                                                    <br/>
+                                                    <img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 60px;"/>
+                                                </td>
+                                                
                                                 <td><span t-field="constat.state"/></td>
                                                 <td><span t-field="constat.date"/></td>
                                                 <td>
@@ -325,7 +332,6 @@
                                                      </a>
                                                 </td>
                                             </tr>
-
                                             <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
                                         </t>
                                     </tbody>
@@ -350,7 +356,6 @@
                                     <tbody>
                                         <t t-foreach="prestation.constat_good_functioning_exam_ids" t-as="constat">
                                             <tr>
-
                                                 <td><span t-esc="num_verification_point + 1"/></td>
                                                 <td ><span t-field="constat.verification_point_id"/></td>
                                                 <td>
@@ -365,8 +370,13 @@
                                                     </ol>
                                                 </td>
                                                 <td><span t-field="constat.precision"/></td>
-                                                <td  class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 70px;"/>
-                                                    </td>
+                                                <td class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 60px;"/></td>
+                                                <td class="text-center">
+                                                    <img t-if="constat.photo_after_1" t-att-src="image_data_uri(constat.photo_after_1)" style="max-width: 60px;"/>
+                                                    <br/>
+                                                    <img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 60px;"/>
+                                                </td>
+                                                
                                                 <td><span t-field="constat.state"/></td>
                                                 <td><span t-field="constat.date"/></td>
                                                 <td>
@@ -377,7 +387,6 @@
                                                      </a>
                                                 </td>
                                             </tr>
-
                                             <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
                                         </t>
                                     </tbody>
@@ -402,7 +411,6 @@
                                     <tbody>
                                         <t t-foreach="prestation.constat_epreuve_statique_ids" t-as="constat">
                                             <tr>
-
                                                 <td><span t-esc="num_verification_point + 1"/></td>
                                                 <td ><span t-field="constat.verification_point_id"/></td>
                                                 <td>
@@ -417,8 +425,13 @@
                                                     </ol>
                                                 </td>
                                                 <td><span t-field="constat.precision"/></td>
-                                                <td class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 70px;"/>
-                                                    </td>
+                                                <td class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 60px;"/></td>
+                                                <td class="text-center">
+                                                    <img t-if="constat.photo_after_1" t-att-src="image_data_uri(constat.photo_after_1)" style="max-width: 60px;"/>
+                                                    <br/>
+                                                    <img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 60px;"/>
+                                                </td>
+                                                
                                                 <td><span t-field="constat.state"/></td>
                                                 <td><span t-field="constat.date"/></td>
                                                 <td>
@@ -429,7 +442,6 @@
                                                      </a>
                                                 </td>
                                             </tr>
-
                                             <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
                                         </t>
                                     </tbody>
@@ -454,7 +466,6 @@
                                     <tbody>
                                         <t t-foreach="prestation.constat_epreuve_dynamique_ids" t-as="constat">
                                             <tr>
-
                                                 <td><span t-esc="num_verification_point + 1"/></td>
                                                 <td ><span t-field="constat.verification_point_id"/></td>
                                                 <td>
@@ -469,8 +480,13 @@
                                                     </ol>
                                                 </td>
                                                 <td><span t-field="constat.precision"/></td>
-                                                <td class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 70px;"/>
-                                                    </td>
+                                                <td class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 60px;"/></td>
+                                                <td class="text-center">
+                                                    <img t-if="constat.photo_after_1" t-att-src="image_data_uri(constat.photo_after_1)" style="max-width: 60px;"/>
+                                                    <br/>
+                                                    <img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 60px;"/>
+                                                </td>
+                                                
                                                 <td><span t-field="constat.state"/></td>
                                                 <td><span t-field="constat.date"/></td>
                                                 <td>
@@ -481,7 +497,6 @@
                                                      </a>
                                                 </td>
                                             </tr>
-
                                             <t t-set="num_verification_point" t-value="num_verification_point + 1"/>
                                         </t>
                                     </tbody>
@@ -645,14 +660,18 @@
             </div>
         </template>
         
+        
+        
         <template id="update_constat_line_page">
             <div id="wrap">
                 <t t-call="portal.portal_layout">
+                    <t t-set="no_breadcrumbs" t-value="1"/>
                     <div class="oe_structure">
                         <section class="pt8 pb8">
                             <div class="container">
                                 <div class="row s_nb_column_fixed">
                                     <div class="col-lg-12 s_title pt16 pb16"><h2>Levée de reserve(s)/observation(s)</h2></div>
+                                    
                                 </div>
                             </div>
                         </section>
@@ -663,19 +682,25 @@
                                 <form id="update_constat_line_form" action="/update_constat_line/confirm" method="post" enctype="multipart/form-data">
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                     <input type="hidden" name="constat" t-att-value="constat.id"/>
-                                    <div class="form-group row form-field" >
+                                    <div class="form-group row form-field">
                                         <div class="col-lg-3 col-md-4"><label class="col-form-label" for="verification_point">Point de vérication: </label></div>
                                         <div class="col-lg-7 col-md-8">
                                             <span t-field="constat.verification_point_id.name"/>
                                         </div>
+                                    </div>
+                                    <div class="form-group row form-field">
                                         <div class="col-lg-3 col-md-4"><label class="col-form-label" for="precision">Précision: </label></div>
                                         <div class="col-lg-7 col-md-8">
                                             <span t-field="constat.precision"/>
                                         </div>
+                                    </div>
+                                    <div class="form-group row form-field">
                                          <div class="col-lg-3 col-md-4"><label class="col-form-label" for="photo">Photo: </label></div>
                                         <div class="col-lg-7 col-md-8">
                                             <img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 70px;"/>
                                         </div>
+                                    </div>
+                                    <div class="form-group row form-field">
                                         <div class="col-lg-3 col-md-4">
                                             <label class="col-form-label" for="state">
                                                 <span>Statut</span>
@@ -687,39 +712,43 @@
                                                 <option value="lifted">Levée</option>
                                             </select>
                                         </div>
-                                        
-                                        <div class="form-group col-12" data-type="binary" data-name="Field">
-                                            <div class="col-lg-3 col-md-4">
-                                                <label class="col-form-label" for="photo1">
-                                                    <span>Upload Photo 1</span>
-                                                </label>
-                                            </div>
-                                            
-                                            <div class="col-lg-7 col-md-8">
-                                                <input type="file" class="form-control-file" name="photo1" id="photo1"/>
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-12" data-type="binary" data-name="Field">
-                                            <div class="col-lg-3 col-md-4">
-                                                <label class="col-form-label" for="photo2">
-                                                    <span>Upload Photo 2</span>
-                                                </label>
-                                            </div>
-                                            
-                                            <div class="col-lg-7 col-md-8">
-                                                <input type="file" class="form-control-file" name="photo2" id="photo2"/>
-                                            </div>
-                                        </div>
+                                    </div>
+                                    <div class="form-group row form-field">
                                         <div class="col-lg-3 col-md-4">
-                                            <label class="col-form-label" for="date">Date</label>
+                                            <label class="col-form-label" for="photo1">
+                                                <span>Upload Photo 1</span>
+                                            </label>
                                         </div>
-                                        <div class="col-lg-7 col-md-8 input-group">
-                                            <input type="text" required="1" name="date_constat"/>
-                                            <div class="input-group-append">
+                                        <div class="col-lg-7 col-md-8">
+                                            <input type="file" class="form-control-file" name="photo1" id="photo1"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row form-field">
+                                        
+                                        <div class="col-lg-3 col-md-4">
+                                            <label class="col-form-label" for="photo2">
+                                                <span>Upload Photo 2</span>
+                                            </label>
+                                        </div>
+
+                                        <div class="col-lg-7 col-md-8">
+                                            <input type="file" class="form-control-file" name="photo2" id="photo2"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row form-field">
+                                        
+                                        <div class="col-lg-3 col-md-4">
+                                            <label class="col-form-label" for="date_constat">Date</label>
+                                        </div>
+                                         <div class="col-lg-7 col-md-8 input-group s_website_form_date" data-target-input="nearest" id="datetimepicker_date_constat">
+                                            <input type="text" class="form-control datetimepicker-input" data-toggle="datetimepicker"  required="1" t-attf-data-target="#datetimepicker_date_constat" name="date_constat"/>
+                                            <div class="input-group-append" data-target="#datetimepicker_date_constat" data-toggle="datetimepicker">
                                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                             </div>
                                         </div>
                                     </div>
+                                        
+                                   
                                     <div class="form-group row">
                                         <div class="offset-lg-3 offset-md-4 col-md-8 col-lg-7">
                                             <button role="button" href="#" class="btn btn-primary mb32 a-submit btn-sm" type="submit"><span>Enregistrer </span><i class="fa fa-chevron-right"/></button>

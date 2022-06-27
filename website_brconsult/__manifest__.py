@@ -30,9 +30,18 @@
     ],
     
     'assets': {
-        'web.assets_frontend': [
+        'web.assets_backend': [
+            
             'website_brconsult/static/src/js/date_portal.js',
         ],
-    }
+        'web.assets_frontend': [
+            
+            'website_brconsult/static/src/js/date_portal.js',
+        ],
+        'web._assets_common_scripts': [
+            'web/static/lib/moment/locale/fr.js',
+            'website_brconsult/static/src/js/date_portal.js',
+        ],
+    },
 
 }
