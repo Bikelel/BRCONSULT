@@ -17,15 +17,20 @@ class Prestation(models.Model):
 
     def create_prestation_calendar(self):
         description = ""
-        if self.inspection_type:
-            description += "inspection_type : " + self.inspection_type + "\n"
-        if self.installation_type:
-            description += "installation_type : " + self.installation_type + "\n"
-        if self.verification_type:
-            description += "verification_type : " + self.verification_type + "\n"
+#         if self.inspection_type:
+#             description += "inspection_type : " + self.inspection_type + "\n"
+#         if self.installation_type:
+#             description += "installation_type : " + self.installation_type + "\n"
+#         if self.verification_type:
+#             description += "verification_type : " + self.verification_type + "\n"
 
         if self.partner_id:
-            description += "Entreprise : " + self.partner_id.name + "\n"
+            description += "Entreprise : " + self.partner_id.name + '<br/>'
+        if self.site_address:
+            description += "Adresse de chantier : " + self.site_address + '<br/>'
+        if self.prensent_contact:
+            description += "Nom de la personne présente : " + self.prensent_contact + "<br/>"
+        
             
         vals = {'name': self.name,
                 'start': self.verification_date,
@@ -35,6 +40,7 @@ class Prestation(models.Model):
                 'user_id': self.user_id.id,
                 'description': description,
                 'prestation_id' : self.id,
+                'partner_ids': [(4, self.user_id.partner_id.id)],
                 
                }
         event_id = self.env['calendar.event'].sudo().create(vals)
