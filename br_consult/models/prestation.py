@@ -113,6 +113,7 @@ class Prestation(models.Model):
         ('defavorable_opinion', 'Avis defavorable'),
         ('mixte', 'Mixte'),
     ], string="Avis")
+    comment_mentor = fields.Html("Commentaires Monteur")
     comment_observation_fiche = fields.Html("Commentaires Observation")
     visa_user = fields.Binary('Visa inspecteur', related='user_id.visa_user')
     contrat_ref = fields.Char('Contrat réf')

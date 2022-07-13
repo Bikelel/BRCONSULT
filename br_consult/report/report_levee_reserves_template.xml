@@ -1,8 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
+    <template id="template_leve_report_layout">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+
+        <t t-if="not company">
+            <!-- Multicompany -->
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+         
+        <div class="footer">
+            <div class="col-12">
+                <div style="border-bottom: 1px solid black;"/>
+            </div>
+            <div t-if="report_type == 'pdf'" class="text-muted text-center" style="font-size:11px;">
+                Page: <span class="page"/> / <span class="topage"/>
+            </div>
+        </div>
+        <div class="article" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+          <t t-out="0"/>
+        </div>
+    </template>
+    
     <template id="report_reserve_document">
-        <t t-call="web.basic_layout">
+        <t t-call="br_consult.template_leve_report_layout">
             <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)" />
             <div style="margin-top: 20px; font-size:15px;" class="page">
                 <div class="oe_structure"/>
@@ -44,7 +73,7 @@
                         </strong>
                     </div>
                     <div class='col-12 text-center'>
-                        <t t-if="doc.opinion == 'opinion_with_observation'"><span>Avis favorable avec observation</span></t>
+                        <t t-if="doc.opinion == 'opinion_with_observation'"><span>Avis favorable avec observation(s)</span></t>
                         <t t-if="doc.opinion in ['defavorable_opinion', 'mixte']"><span>Avis defavorable</span></t>
                     </div>
                     <div class='col-12 text-center' style="font-size:11px; margin-top:20px;">
@@ -59,7 +88,7 @@
                         <div><span> La société du monteur : </span><span t-field="doc.mentor_id.name"/></div>
                     </div>
                 </div>
-                <div style="page-break-after: always;"/>
+                
                 <div style="page-break-inside: avoid;">
                     <div style="color: #318CE7;">
                         4.1) Examen d’adéquation
@@ -101,7 +130,7 @@
                                         <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/></td>
                                         <td style="width: 310px;" class="text-center">
                                             <div><img t-if="constat.photo_after_1" t-att-src="image_data_uri(constat.photo_after_1)" style="max-width: 300px;"/></div>
-                                            <div><img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 300px;"/></div>
+                                            <div><img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 300px; margin-top:10px;"/></div>
                                         </td>
                                         <td><span t-field="constat.state"/></td>
                                         <td><span t-field="constat.date"/></td>
@@ -155,7 +184,7 @@
                                         <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/></td>
                                         <td style="width: 310px;" class="text-center">
                                             <div><img t-if="constat.photo_after_1" t-att-src="image_data_uri(constat.photo_after_1)" style="max-width: 300px;"/></div>
-                                            <div><img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 300px;"/></div>
+                                            <div><img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 300px; margin-top:10px;"/></div>
                                         </td>
                                         <td><span t-field="constat.state"/></td>
                                         <td><span t-field="constat.date"/></td>
@@ -209,7 +238,7 @@
                                         <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/></td>
                                         <td style="width: 310px;" class="text-center">
                                             <div><img t-if="constat.photo_after_1" t-att-src="image_data_uri(constat.photo_after_1)" style="max-width: 300px;"/></div>
-                                            <div><img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 300px;"/></div>
+                                            <div><img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 300px; margin-top:10px;"/></div>
                                         </td>
                                         <td><span t-field="constat.state"/></td>
                                         <td><span t-field="constat.date"/></td>
@@ -222,7 +251,7 @@
                     </div>
                 </div>
                 
-                <div style="page-break-inside: avoid;">
+                <div style="page-break-inside: avoid;" t-if="doc.inspection_type == 'levage'">
                     <div style="color: #318CE7;">
                         4.4) Examen du bon fonctionnement
                     </div>
@@ -263,7 +292,7 @@
                                         <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/></td>
                                         <td style="width: 310px;" class="text-center">
                                             <div><img t-if="constat.photo_after_1" t-att-src="image_data_uri(constat.photo_after_1)" style="max-width: 300px;"/></div>
-                                            <div><img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 300px;"/></div>
+                                            <div><img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 300px; margin-top:10px;"/></div>
                                         </td>
                                         <td><span t-field="constat.state"/></td>
                                         <td><span t-field="constat.date"/></td>
@@ -276,7 +305,7 @@
                     </div>
                 </div>
                 
-                <div style="page-break-inside: avoid;">
+                <div style="page-break-inside: avoid;" t-if="doc.inspection_type == 'levage'">
                     <div style="color: #318CE7;" class="bloc_sub_title">
                         5.1) Epreuve statique
                     </div>
@@ -317,7 +346,7 @@
                                         <td style="width: 310px;" class="text-center"><img t-if="constat.photo" t-att-src="image_data_uri(constat.photo)" style="max-width: 300px;"/></td>
                                         <td style="width: 310px;" class="text-center">
                                             <div><img t-if="constat.photo_after_1" t-att-src="image_data_uri(constat.photo_after_1)" style="max-width: 300px;"/></div>
-                                            <div><img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 300px;"/></div>
+                                            <div><img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 300px; margin-top:10px;"/></div>
                                         </td>
                                         <td><span t-field="constat.state"/></td>
                                         <td><span t-field="constat.date"/></td>
@@ -329,7 +358,7 @@
                         </table>
                     </div>
                 </div>
-                <div style="page-break-inside: avoid;">
+                <div style="page-break-inside: avoid;" t-if="doc.inspection_type == 'levage'">
                     <div style="color: #318CE7;" class="bloc_sub_title">
                         5.2) Epreuve dynamique
                     </div>
@@ -381,7 +410,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="row">
+                    <div class="row" t-if="doc.signature">
                         <div class="col-6">Fait le : <span t-field="doc.signed_on"/></div>
                         <div class="col-6 text-center">
                             <div>Signé par <span t-field="doc.signed_by"/></div>

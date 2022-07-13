@@ -62,7 +62,7 @@ class CustomerPortal(portal.CustomerPortal):
     def _get_prestation_search_domain(self, search_in, search):
         search_domain = []
         if search_in in ('content'):
-            search_domain.append([('name', 'ilike', search)])
+            search_domain.append(['|',('name', 'ilike', search), ('site_address', 'ilike', search)])
         return OR(search_domain)
 
     
@@ -301,11 +301,14 @@ class CustomerPortal(portal.CustomerPortal):
         return request.redirect(constat_id.prestation_id.get_portal_url())
     
     @http.route(['/my/prestation/<int:prestation_id>/accept'], type='json', auth="user", website=True)
-    def portal_report_accept(self, prestation_id, access_token=None, name=None, signature=None):
+    def portal_report_accept(self, prestation_id, access_token=None, name=None, signature=None, **kw):
         user = request.env.user
         partner = request.env.user.partner_id
         # get from query string if not on json param
         access_token = access_token or request.httprequest.args.get('access_token')
+        comment_mentor = kw.get('comment_mentor')
+        
+        _logger.info("################ comment_mentor %s", comment_mentor)
         try:
             prestation_sudo = self._document_check_access('prestation.prestation', prestation_id, access_token=access_token)
         except (AccessError, MissingError):
@@ -319,6 +322,7 @@ class CustomerPortal(portal.CustomerPortal):
                 'signed_by': name,
                 'signed_on': fields.Datetime.now(),
                 'signature': signature,
+                'comment_mentor': comment_mentor,
             })
             request.env.cr.commit()
         except (TypeError, binascii.Error) as e:

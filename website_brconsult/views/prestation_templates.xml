@@ -8,15 +8,42 @@
                 <attribute name="groups">base.group_user</attribute>
             </xpath>
         </template>
+        
         <template id="portal_my_home_menu_prestation" name="Portal layout : prestations" inherit_id="portal.portal_breadcrumbs" priority="20">
             <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
-                <li t-if="page_name == 'prestation'" t-attf-class="breadcrumb-item #{'active ' if not prestation else ''}">
+                <li t-if="page_name == 'prestation' or prestation" t-attf-class="breadcrumb-item #{'active ' if not prestation else ''}">
                     <a t-if="prestation" t-attf-href="/my/prestations?{{ keep_query() }}">Prestations</a>
                     <t t-else="">Prestations</t>
                 </li>
                 <li t-if="prestation" class="breadcrumb-item active">
                     <span t-field="prestation.name"/>
                 </li>
+            </xpath>
+        </template>
+        <template id="portal_portal_searchbar_prestation" inherit_id="portal.portal_searchbar">
+            <xpath expr="//div[@id='o_portal_navbar_content']/div/div" position="after">
+                <t t-if="quotations">
+                    <div class="form-inline" id="graph_options" style="float:right;">
+                        <button class="btn btn-primary graph_button bar_graph">
+                            <i class="fa fa-bar-chart" aria-hidden="false" />
+                        </button>
+                        <button class="btn btn-primary graph_button line_graph">
+                            <i class="fa fa-line-chart" aria-hidden="false" />
+                        </button>
+                        <button class="btn btn-primary graph_button pie_graph">
+                            <i class="fa fa-pie-chart" aria-hidden="false" />
+                        </button>
+                        <button class="btn btn-primary graph_button doughnut_graph">
+                            <img src="/website_brconsult/static/image/doughnut.png" style="height:20px;" />
+                        </button>
+                        <button class="btn btn-primary graph_button polar_graph">
+                            <img src="/website_brconsult/static/image/polar.png" style="height:20px;" />
+                        </button>
+                    </div>
+                </t>
+            </xpath>
+            <xpath expr="//div[@id='o_portal_navbar_content']/div/div" position="attributes">
+                <attribute name="id">list_sort_by</attribute>
             </xpath>
         </template>
 
@@ -41,10 +68,55 @@
         <template id="portal_my_prestations" name="Mes prestations">
             <t t-call="portal.portal_layout">
                 <t t-set="breadcrumbs_searchbar" t-value="True"/>
-
+                <div  class="view_buttons" style="padding:25px;">
+                    <button class="btn btn-primary graph_prestation" style="float:right;margin-left:15px;">
+                        <i class="fa fa-bar-chart" aria-hidden="false" />
+                    </button>
+                    <button class="btn btn-primary list_prestation" style="float:right;">
+                        <i class="fa fa-list" aria-hidden="false" />
+                    </button>
+                </div>
                 <t t-call="portal.portal_searchbar">
                     <t t-set="title">Prestations</t>
                 </t>
+                <div class="graph_view">
+                    <div class="form-inline">
+                        <div class="form-group group_by_prestation col-md-2 col-sm-12">
+                            <label for="group_by_prestation">Group By:</label>
+                            <select class="form-control col-sm-12" id="group_by_prestation" style="margin-right:3%;">
+                                <option value="" />
+                                <option value="customer">Customer</option>
+                                <option value="month">Month/Year</option>
+                            </select>
+                            <div class="no_group_quote" style="display: inline-table;" />
+                        </div>
+                        <div class="form-group start_date quate_start_date d-none col-md-2 col-sm-12">
+                            <label for="start_date">Start Date:</label>
+                            <input class="form-control quate_start col-sm-12" type="date" id="start_date" name="start_date" />
+                        </div>
+                        <div class="form-group end_date quate_end_date d-none col-md-2 col-sm-12">
+                            <label for="end_date ">End Date:</label>
+                            <input class="form-control quate_end col-sm-12" type="date" id="end_date" name="end_date" />
+                        </div>
+                        <div class="form-group end_date quate_date d-none col-md-2 col-sm-12">
+                            <a href="#" class="month_seperator">Month</a>
+                            <span>|</span>
+                            <a href="#" class="year_seperator">Year</a>
+                        </div>
+                        <div class="form-group fliter_by_prestation col-md-2 col-sm-12">
+                            <label class="fliter_by_prestation" for="fliter_by_prestation">Filter By:</label>
+                            <br />
+                            <select class="form-control col-sm-12" id="filter_by_prestation" style="margin-right:3%;cursor: pointer;">
+                                <option value="default" />
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="form-group reset_button_quote d-none col-md-2">
+                            <button class="btn btn-primary" id="reset_button_quote">Reset</button>
+                        </div>
+                    </div>
+                    <canvas class="bar-chart-front" id="bar-chart-front" width="300" height="150" style="display:block !important;width:100%;" />
+                </div>
                 <t t-if="not prestations">
                     <p>There are currently no prestations for your account.</p>
                 </t>
@@ -207,7 +279,7 @@
                                                 <td class="text-center">
                                                     <img t-if="constat.photo_after_1" t-att-src="image_data_uri(constat.photo_after_1)" style="max-width: 60px;"/>
                                                     <br/>
-                                                    <img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 60px;"/>
+                                                    <img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 60px; margin-top:10px;"/>
                                                 </td>
                                                 
                                                 <td><span t-field="constat.state"/></td>
@@ -263,7 +335,7 @@
                                                 <td class="text-center">
                                                     <img t-if="constat.photo_after_1" t-att-src="image_data_uri(constat.photo_after_1)" style="max-width: 60px;"/>
                                                     <br/>
-                                                    <img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 60px;"/>
+                                                    <img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 60px; margin-top:10px;"/>
                                                 </td>
                                                 
                                                 <td><span t-field="constat.state"/></td>
@@ -319,7 +391,7 @@
                                                 <td class="text-center">
                                                     <img t-if="constat.photo_after_1" t-att-src="image_data_uri(constat.photo_after_1)" style="max-width: 60px;"/>
                                                     <br/>
-                                                    <img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 60px;"/>
+                                                    <img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 60px; margin-top:10px;"/>
                                                 </td>
                                                 
                                                 <td><span t-field="constat.state"/></td>
@@ -374,7 +446,7 @@
                                                 <td class="text-center">
                                                     <img t-if="constat.photo_after_1" t-att-src="image_data_uri(constat.photo_after_1)" style="max-width: 60px;"/>
                                                     <br/>
-                                                    <img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 60px;"/>
+                                                    <img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 60px; margin-top:10px;"/>
                                                 </td>
                                                 
                                                 <td><span t-field="constat.state"/></td>
@@ -429,7 +501,7 @@
                                                 <td class="text-center">
                                                     <img t-if="constat.photo_after_1" t-att-src="image_data_uri(constat.photo_after_1)" style="max-width: 60px;"/>
                                                     <br/>
-                                                    <img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 60px;"/>
+                                                    <img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 60px; margin-top:10px;"/>
                                                 </td>
                                                 
                                                 <td><span t-field="constat.state"/></td>
@@ -484,7 +556,7 @@
                                                 <td class="text-center">
                                                     <img t-if="constat.photo_after_1" t-att-src="image_data_uri(constat.photo_after_1)" style="max-width: 60px;"/>
                                                     <br/>
-                                                    <img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 60px;"/>
+                                                    <img t-if="constat.photo_after_2" t-att-src="image_data_uri(constat.photo_after_2)" style="max-width: 60px; margin-top:10px;"/>
                                                 </td>
                                                 
                                                 <td><span t-field="constat.state"/></td>
@@ -501,6 +573,11 @@
                                         </t>
                                     </tbody>
                                 </table>
+                            </section>
+                            <section style="page-break-inside: auto;" class="mt32" t-if="prestation.comment_mentor">
+                                <div>
+                                    <span t-field="prestation.comment_mentor" />
+                                </div>
                             </section>
                         </div>
                         
@@ -521,7 +598,7 @@
               </div>
                 <div role="dialog" class="modal fade" id="modalaccept">
                     <div class="modal-dialog">
-                        <form id="accept" method="POST" t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token" class="js_accept_json modal-content js_website_submit_form">
+                        <form id="accept" method="POST" t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token" class="modal-content">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                             <header class="modal-header">
                                 <h4 class="modal-title">Valider et signer</h4>
@@ -535,6 +612,12 @@
                                         
                                     </ul>
                                 </p>
+                                <div class="form-group row form-field s_website_form_custom s_website_form_required_custom" >
+                                    <div class="col-lg-3 col-md-4"><label class="col-form-label" for="comment_mentor">Commentaire</label></div>
+                                    <div class="col-lg-7 col-md-8"><textarea id="comment_mentor" class="form-control o_website_form_input" name="comment_mentor" required=""></textarea></div>
+
+                                </div>
+                                
                                 <t t-call="portal.signature_form">
                                     <t t-set="call_url" t-value="prestation.get_portal_url(suffix='/accept')"/>
                                     <t t-set="default_name" t-value="user_id.partner_id.name"/>
@@ -632,7 +715,7 @@
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                     <input type="hidden" name="prestation" t-att-value="prestation.id"/>
                                     <div class="form-group row form-field s_website_form_custom s_website_form_required_custom" >
-                                        <div class="col-lg-3 col-md-4"><label class="col-form-label" for="name">Nom et l'entreprise</label></div>
+                                        <div class="col-lg-3 col-md-4"><label class="col-form-label" for="name">Nom de l'entreprise</label></div>
                                         <div class="col-lg-7 col-md-8"><input type="text" class="form-control s_website_form_input" name="name" required=""/></div>
                                     </div>
                                     <div class="form-group row form-field s_website_form_custom s_website_form_required_custom" >
