@@ -1,13 +1,13 @@
 <odoo>
     <data>
-        <template id="hide_portal_my_home_project" inherit_id="project.portal_my_home">
+<!--         <template id="hide_portal_my_home_project" inherit_id="project.portal_my_home">
             <xpath expr="//t[@t-call='portal.portal_docs_entry'][1]" position="attributes">
                 <attribute name="groups">base.group_user</attribute>
             </xpath>
             <xpath expr="//t[@t-call='portal.portal_docs_entry'][2]" position="attributes">
                 <attribute name="groups">base.group_user</attribute>
             </xpath>
-        </template>
+        </template> -->
         
         <template id="portal_my_home_menu_prestation" name="Portal layout : prestations" inherit_id="portal.portal_breadcrumbs" priority="20">
             <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
@@ -20,7 +20,7 @@
                 </li>
             </xpath>
         </template>
-        <template id="portal_portal_searchbar_prestation" inherit_id="portal.portal_searchbar">
+<!--         <template id="portal_portal_searchbar_prestation" inherit_id="portal.portal_searchbar">
             <xpath expr="//div[@id='o_portal_navbar_content']/div/div" position="after">
                 <t t-if="quotations">
                     <div class="form-inline" id="graph_options" style="float:right;">
@@ -45,7 +45,7 @@
             <xpath expr="//div[@id='o_portal_navbar_content']/div/div" position="attributes">
                 <attribute name="id">list_sort_by</attribute>
             </xpath>
-        </template>
+        </template> -->
 
         <template id="portal_my_home_prestation" name="Afficher Prestations" customize_show="True" inherit_id="portal.portal_my_home" priority="20">
             <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
@@ -79,7 +79,7 @@
                 <t t-call="portal.portal_searchbar">
                     <t t-set="title">Prestations</t>
                 </t>
-                <div class="graph_view">
+<!--                 <div class="graph_view">
                     <div class="form-inline">
                         <div class="form-group group_by_prestation col-md-2 col-sm-12">
                             <label for="group_by_prestation">Group By:</label>
@@ -116,9 +116,16 @@
                         </div>
                     </div>
                     <canvas class="bar-chart-front" id="bar-chart-front" width="300" height="150" style="display:block !important;width:100%;" />
-                </div>
+                </div> -->
                 <t t-if="not prestations">
                     <p>There are currently no prestations for your account.</p>
+                </t>
+                <t t-if="prestations">
+                    <div>
+                        <div>Avis favorable : <span t-esc="count_favorable_opinion" /> / <span t-esc="prestation_count" /></div>
+                        <div>Avis favorable avec observation(s) : <span t-esc="count_opinion_with_observation" /> / <span t-esc="prestation_count" /></div>
+                        <div>Avis defavorable : <span t-esc="count_defavorable_opinion" /> / <span t-esc="prestation_count" /></div>
+                    </div>
                 </t>
                 <t t-if="prestations" t-call="portal.portal_table">
                     <thead>
@@ -233,10 +240,24 @@
                                            <i class="fa fa-download"/>Télécharger rapport monteur</a>
                                     </div>
                                 </div>
-                                <div class="btn-toolbar flex-sm-nowrap" t-if='user_id.partner_id.is_mentor and not prestation.mentor_archive'>
-                                    <div class="btn-group flex-grow-1 mr-1 mb-1">
-                                       <a class="btn btn-secondary btn-block" t-attf-href="/prestation/{{prestation.id}}/archive_report_monteur">
-                                           <i class="fa fa-archive"/>Archiver rapport</a>
+                                <div class="btn-toolbar flex-sm-nowrap">
+                                    <div class="btn-group flex-grow-1 mr-1 mb-1" t-if='user_id.partner_id.is_mentor and not prestation.mentor_archive'>
+                                       <a class="btn btn-secondary btn-block" t-attf-href="/prestation/{{prestation.id}}/archive_report">
+                                           <i class="fa fa-archive"/> Archiver rapport</a>
+                                    </div>
+                                    <div class="btn-group flex-grow-1 mr-1 mb-1" t-if='not user_id.partner_id.is_mentor and not prestation.partner_archive'>
+                                       <a class="btn btn-secondary btn-block" t-attf-href="/prestation/{{prestation.id}}/archive_report">
+                                           <i class="fa fa-archive"/> Archiver rapport</a>
+                                    </div>
+                                </div>
+                                <div class="btn-toolbar flex-sm-nowrap">
+                                    <div class="btn-group flex-grow-1 mr-1 mb-1" t-if='user_id.partner_id.is_mentor and prestation.mentor_archive'>
+                                       <a class="btn btn-secondary btn-block" t-attf-href="/prestation/{{prestation.id}}/unarchive_report">
+                                           <i class="fa fa-folder-open"/> Désarchiver rapport</a>
+                                    </div>
+                                    <div class="btn-group flex-grow-1 mr-1 mb-1" t-if='not user_id.partner_id.is_mentor and prestation.partner_archive'>
+                                       <a class="btn btn-secondary btn-block" t-attf-href="/prestation/{{prestation.id}}/unarchive_report">
+                                           <i class="fa fa-folder-open"/> Désarchiver rapport</a>
                                     </div>
                                 </div>
                             </div>
@@ -614,7 +635,7 @@
                                 </p>
                                 <div class="form-group row form-field s_website_form_custom s_website_form_required_custom" >
                                     <div class="col-lg-3 col-md-4"><label class="col-form-label" for="comment_mentor">Commentaire</label></div>
-                                    <div class="col-lg-7 col-md-8"><textarea id="comment_mentor" class="form-control o_website_form_input" name="comment_mentor" required=""></textarea></div>
+                                    <div class="col-lg-7 col-md-8"><input type="text" id="comment_mentor" class="form-control o_website_form_input" name="comment_mentor" required=""></input></div>
 
                                 </div>
                                 

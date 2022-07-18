@@ -573,11 +573,19 @@ La présente mission est réalisée conformément au contrat référencé
                             <td>Numéro(s) de fabrication</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.num_fabrication"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['ASC', 'MMA', 'PTR', 'PWM']">
+                        <tr t-if="doc.installation_type in ['ASC', 'MMA', 'PTR']">
                             <td>Année de fabrication</td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.fabrication_year"/></td>
                         </tr>
-                        <tr t-if="doc.installation_type in ['ASC', 'MMA', 'PTR', 'PWM']">
+                        <tr t-if="doc.installation_type in ['ASC', 'MMA', 'PTR']">
+                            <td>Année de mise en circulation </td>
+                            <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.circulation_year"/></td>
+                        </tr>
+                        <tr t-if="doc.installation_type in ['PWM'] and doc.date > datetime.date(2022,6,9)">
+                            <td>Année de fabrication</td>
+                            <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.fabrication_year"/></td>
+                        </tr>
+                        <tr t-if="doc.installation_type in ['PWM'] and doc.date > datetime.date(2022,6,9)">
                             <td>Année de mise en circulation </td>
                             <td t-foreach="doc.characteristic_platform_ids" t-as="charac"><span t-field="charac.circulation_year"/></td>
                         </tr>
@@ -858,7 +866,7 @@ La présente mission est réalisée conformément au contrat référencé
                     </div>
                     <table class='table' style="margin-top:20px;" t-if="doc.constat_adequacy_exam_ids">
                         <tr>
-                            <td></td>
+                            <td t-if="doc.date > datetime.date(2022,6,9)"></td>
                             <td>Points de vérification</td>
                             <td>Observations/Réserves </td>
                             <td>Précisions </td>
@@ -870,7 +878,7 @@ La présente mission est réalisée conformément au contrat référencé
                             <t t-foreach="doc.constat_adequacy_exam_ids" t-as="constat">
                                 <tr>
                                     
-                                    <td><span t-esc="num_verification_point + 1"/></td>
+                                    <td t-if="doc.date > datetime.date(2022,6,9)"><span t-esc="num_verification_point + 1"/></td>
                                     <td ><span t-field="constat.verification_point_id"/></td>
                                     <td>
                                         <ol>
@@ -1040,7 +1048,7 @@ La présente mission est réalisée conformément au contrat référencé
 
                     <table class='table' style="margin-top:20px;" t-if="doc.constat_assembly_exam_ids">
                         <tr>
-                            <td></td>
+                            <td t-if="doc.date > datetime.date(2022,6,9)"></td>
                             <td>Points de vérification</td>
                             <td>Observations/Réserves </td>
                             <td>Précisions </td>
@@ -1051,7 +1059,7 @@ La présente mission est réalisée conformément au contrat référencé
                         <tbody>
                             <t t-foreach="doc.constat_assembly_exam_ids" t-as="constat">
                                 <tr>
-                                    <td><span t-esc="num_verification_point+1"/></td>
+                                    <td t-if="doc.date > datetime.date(2022,6,9)"><span t-esc="num_verification_point+1"/></td>
                                     <td ><span t-field="constat.verification_point_id"/></td>
                                     <td>
                                         <ol>
@@ -1102,7 +1110,7 @@ La présente mission est réalisée conformément au contrat référencé
                 </div>
                 <table class='table' style="margin-top:20px;" t-if="doc.constat_conservation_state_exam_ids">
                     <tr>
-                        <td></td>
+                        <td t-if="doc.date > datetime.date(2022,6,9)"></td>
                         <td>Points de vérification</td>
                         <td>Observations/Réserves </td>
                         <td>Précisions </td>
@@ -1113,7 +1121,7 @@ La présente mission est réalisée conformément au contrat référencé
                     <tbody>
                         <t t-foreach="doc.constat_conservation_state_exam_ids" t-as="constat">
                             <tr>
-                                <td><span t-esc="num_verification_point+1"/></td>
+                                <td t-if="doc.date > datetime.date(2022,6,9)"><span t-esc="num_verification_point+1"/></td>
                                 <td ><span t-field="constat.verification_point_id"/></td>
                                 <td>
                                     <ol>
@@ -1163,7 +1171,7 @@ La présente mission est réalisée conformément au contrat référencé
                     </div>
                     <table class='table' style="margin-top:20px;" t-if="doc.inspection_type == 'levage' and doc.constat_good_functioning_exam_ids">
                         <tr>
-                            <td></td>
+                            <td t-if="doc.date > datetime.date(2022,6,9)"></td>
                             <td>Points de vérification</td>
                             <td>Observations/Réserves </td>
                             <td>Précisions </td>

@@ -164,15 +164,15 @@
             <field name="model_id" ref="br_consult.model_prestation_prestation"/>
             <field name="email_from"></field>
             <field name="partner_to"></field>
-            <field name="subject">Alerte fin de validité de votre rapport </field>
+            <field name="subject">{{object.site_address}} - Alerte fin chantier-Vérification périodique à prévoir</field>
             <field name="body_html" type="html">
                 
                 <div style="margin: 0px; padding: 0px;">
                     <p style="margin: 0px; padding: 0px; font-size: 13px;">
                         Bonjour,
                         <br /><br />
-                        Votre installation est en place depuis bientôt <t t-if="object.inspection_type=='echafaudage'">3</t><t t-if="object.inspection_type=='levage'">6</t> mois, pensez à programmer la vérification périodique en nous envoyant le bon de commande<br/>
-                        <br/>
+                        Votre installation est en place depuis bientôt <t t-if="object.inspection_type=='echafaudage'">3</t><t t-if="object.inspection_type=='levage'">6</t> mois, confirmez nous votre demande d'intervention par retour de ce mail.<br/><br/>
+                        
                         Pour toute nouvelle demande, veuillez cliquer sur le lien 
                         <t t-if="object.inspection_type=='echafaudage'">
                             <a href="https://brconsult.typeform.com/to/E0W5pc">ici</a>
@@ -180,7 +180,9 @@
                         <t t-if="object.inspection_type=='levage'">
                             <a href="https://brconsult.typeform.com/to/WryD7g">ici</a>
                         </t>
-                        Bien cordialement.<br />
+                        <br/>
+                        <br/>
+                        A bientôt.<br />
                        <br/><br/>
                         <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 5px 0px 4px 0px;"/>
                         <table>

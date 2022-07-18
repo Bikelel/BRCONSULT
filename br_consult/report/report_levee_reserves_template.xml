@@ -68,7 +68,7 @@
                     </div>
                     <div class='col-12 text-center'>
                         <strong> 
-                            <span> Type d’installations </span>
+                            <span> Type d’installation </span>
                             <span t-field="doc.installation_type"/>
                         </strong>
                     </div>
@@ -77,12 +77,13 @@
                         <t t-if="doc.opinion in ['defavorable_opinion', 'mixte']"><span>Avis defavorable</span></t>
                     </div>
                     <div class='col-12 text-center' style="font-size:11px; margin-top:20px;">
-                        En cas d’avis favorable avec observation(s), il est recommandé au chef d’entreprise de veiller à la levée des observations. Cette levée pourra être communiquée par courriel à l’adresse suivante controlebr@brconsult.fr et sera annexée au dossier.<br/>
- En cas d’avis défavorable, et si vous souhaitez faire constater les levées des réserves, merci de nous adresser un nouveau bon commande.
+                        Réaliser vous-même, la levée des observations et/ou des réserves de votre rapport de vérification initial (référencé infra), à l’aide de ce document établi et fourni par BR CONSULT. Vous ou votre sous-traitant monteur, pouvez désormais alimenter cet extrait de votre rapport de vérification. Ce document peut tel quel être présenté à l’ensemble des parties prenantes de votre chantier en complément du rapport initial.<br/>
+En cas d’avis défavorable, nous vous recommandons fortement de faire constater la levée des réserves par BR CONSULT. Seule une nouvelle demande d’intervention sur chantier, permet de transformer l’avis défavorable de votre rapport de vérification initial en avis favorable avec observations.
+
                     </div>
                     
                     <div class="col-12" style="margin-top:50px; font-size:14px;">
-                        <div><span> Numéros du rapport MS/RS : </span><span t-field="doc.name"/></div>
+                        <div><span> Numéro du rapport MS/RS : </span><span t-field="doc.name"/></div>
                         <div><span> Date de la vérification : </span><span t-field="doc.verification_date"/></div>
                         <div><span> Adresse du chantier : </span><span t-field="doc.site_address"/></div>
                         <div><span> La société du monteur : </span><span t-field="doc.mentor_id.name"/></div>
@@ -100,7 +101,7 @@
                         </div>
                         <table class='table' style="margin-top:20px;" >
                             <tr>
-                                <td></td>
+                                <td>N°</td>
                                 <td>Points de vérification</td>
                                 <td>Observations/Réserves </td>
                                 <td>Précisions </td>

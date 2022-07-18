@@ -1,4 +1,4 @@
-odoo.define('website_brconsult.signature_form_brconsult', function (require) {
+odoo.define('website_brconsult.signature_form', function (require) {
 'use strict';
 
 var core = require('web.core');
@@ -7,13 +7,7 @@ var NameAndSignature = require('web.name_and_signature').NameAndSignature;
 var qweb = core.qweb;
 
 var _t = core._t;
-
-/**
- * This widget is a signature request form. It uses
- * @see NameAndSignature for the input fields, adds a submit
- * button, and handles the RPC to save the result.
- */
-var SignatureForm = publicWidget.Widget.extend({
+    var SignatureForm = publicWidget.Widget.extend({
     template: 'portal.portal_signature',
     xmlDependencies: ['/portal/static/src/xml/portal_signature.xml'],
     events: {
@@ -110,7 +104,7 @@ var SignatureForm = publicWidget.Widget.extend({
 
         var name = this.nameAndSignature.getName();
         var signature = this.nameAndSignature.getSignatureImage()[1];
-
+        var comment_mentor = this.nameAndSignature.getCommentMentor();
         return this._rpc({
             route: this.callUrl,
             params: _.extend(this.rpcParams, {
@@ -148,51 +142,5 @@ var SignatureForm = publicWidget.Widget.extend({
     },
 });
 
-publicWidget.registry.SignatureForm = publicWidget.Widget.extend({
-    selector: '.o_portal_signature_form',
 
-    /**
-     * @private
-     */
-    start: function () {
-        var hasBeenReset = false;
-
-        var callUrl = this.$el.data('call-url');
-        var nameAndSignatureOptions = {
-            defaultName: this.$el.data('default-name'),
-            mode: this.$el.data('mode'),
-            displaySignatureRatio: this.$el.data('signature-ratio'),
-            signatureType: this.$el.data('signature-type'),
-            fontColor: this.$el.data('font-color')  || 'black',
-        };
-        var sendLabel = this.$el.data('send-label');
-
-        var form = new SignatureForm(this, {
-            callUrl: callUrl,
-            nameAndSignatureOptions: nameAndSignatureOptions,
-            sendLabel: sendLabel,
-        });
-
-        // Correctly set up the signature area if it is inside a modal
-        this.$el.closest('.modal').on('shown.bs.modal', function (ev) {
-            if (!hasBeenReset) {
-                // Reset it only the first time it is open to get correct
-                // size. After we want to keep its content on reopen.
-                hasBeenReset = true;
-                form.resetSignature();
-            } else {
-                form.focusName();
-            }
-        });
-
-        return Promise.all([
-            this._super.apply(this, arguments),
-            form.appendTo(this.$el)
-        ]);
-    },
-});
-
-return {
-    SignatureForm: SignatureForm,
-};
 });

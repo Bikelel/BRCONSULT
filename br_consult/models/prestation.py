@@ -55,6 +55,7 @@ class Prestation(models.Model):
     partner_id = fields.Many2one('res.partner', string="Entreprise")
     mentor_id = fields.Many2one('res.partner', string="Monteur",  tracking=True,)
     mentor_archive = fields.Boolean("Est archivée par le monteur", copy=False, store=True)
+    partner_archive = fields.Boolean("Est archivée par le client", copy=False, store=True)
     inspection_type = fields.Selection([
         ('echafaudage', 'Echafaudage'),
         ('levage', 'Levage'),

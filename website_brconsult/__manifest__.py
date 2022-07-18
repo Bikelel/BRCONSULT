@@ -42,12 +42,13 @@
             'website_brconsult/static/css/jquery-confirm.min.css',
             'website_brconsult/static/css/style.css',
             'website_brconsult/static/js/portal_graph.js',
-            #'website_brconsult/static/js/portal_signature_brconsult.js',
+            'website_brconsult/static/js/portal_signature_brconsult.js',
         ],
         'web._assets_common_scripts': [
             'web/static/lib/moment/locale/fr.js',
             'website_brconsult/static/src/js/date_portal.js',
         ],
+
     },
 
 }
