@@ -16,6 +16,14 @@
                 <t t-set="company" t-value="res_company"/>
             </t>
         </t>
+        <div class="header">
+            <div t-if='report_name_brconsult' class="text-center text-muted" style="font-size:11px;">
+                <span t-esc='report_name_brconsult' />
+            </div>
+            <div class="col-12">
+                <div style="border-bottom: 1px solid black;"/>
+            </div>
+        </div>
          
         <div class="footer">
             <div class="col-12">
@@ -33,6 +41,7 @@
     <template id="report_reserve_document">
         <t t-call="br_consult.template_leve_report_layout">
             <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)" />
+            <t t-set="report_name_brconsult" t-value='doc.name'/>
             <div style="margin-top: 20px; font-size:15px;" class="page">
                 <div class="oe_structure"/>
                 <style>
@@ -155,7 +164,7 @@ En cas d’avis défavorable, nous vous recommandons fortement de faire constate
                         </div>
                         <table class='table' style="margin-top:20px;" >
                             <tr>
-                                <td></td>
+                                <td>N°</td>
                                 <td>Points de vérification</td>
                                 <td>Observations/Réserves </td>
                                 <td>Précisions </td>
@@ -209,7 +218,7 @@ En cas d’avis défavorable, nous vous recommandons fortement de faire constate
                         </div>
                         <table class='table' style="margin-top:20px;" >
                             <tr>
-                                <td></td>
+                                <td>N°</td>
                                 <td>Points de vérification</td>
                                 <td>Observations/Réserves </td>
                                 <td>Précisions </td>
@@ -263,7 +272,7 @@ En cas d’avis défavorable, nous vous recommandons fortement de faire constate
                         </div>
                         <table class='table' style="margin-top:20px;">
                             <tr>
-                                <td></td>
+                                <td>N°</td>
                                 <td>Points de vérification</td>
                                 <td>Observations/Réserves </td>
                                 <td>Précisions </td>
@@ -317,7 +326,7 @@ En cas d’avis défavorable, nous vous recommandons fortement de faire constate
                         </div>
                         <table class='table' style="margin-top:20px;">
                             <tr>
-                                <td></td>
+                                <td>N°</td>
                                 <td>Points de vérification</td>
                                 <td>Observations/Réserves </td>
                                 <td>Précisions </td>
@@ -370,7 +379,7 @@ En cas d’avis défavorable, nous vous recommandons fortement de faire constate
                         </div>
                         <table class='table' style="margin-top:20px;">
                             <tr>
-                                <td></td>
+                                <td>N°</td>
                                 <td>Points de vérification</td>
                                 <td>Observations/Réserves </td>
                                 <td>Précisions </td>

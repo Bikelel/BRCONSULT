@@ -607,6 +607,9 @@
 
                 <!-- chatter -->
                 <div class="col-sm-auto mt8 text-center" t-if="not prestation.signature">
+                    <a role="button" data-toggle="modal" data-target="#modalcomment" href="#" class="btn btn-primary">
+                        <i class="fa fa-comment"/> <t>Ajouter un commentaire</t>
+                    </a>
                     <a role="button" data-toggle="modal" data-target="#modalaccept" href="#" class="btn btn-primary">
                         <i class="fa fa-check"/> <t>Valider &amp; Signer</t>
                     </a>
@@ -616,7 +619,7 @@
                   <t t-call="portal.message_thread">
                       <t t-set="object" t-value="prestation"/>
                   </t>
-              </div>
+                </div>
                 <div role="dialog" class="modal fade" id="modalaccept">
                     <div class="modal-dialog">
                         <form id="accept" method="POST" t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token" class="modal-content">
@@ -633,17 +636,40 @@
                                         
                                     </ul>
                                 </p>
-                                <div class="form-group row form-field s_website_form_custom s_website_form_required_custom" >
-                                    <div class="col-lg-3 col-md-4"><label class="col-form-label" for="comment_mentor">Commentaire</label></div>
-                                    <div class="col-lg-7 col-md-8"><input type="text" id="comment_mentor" class="form-control o_website_form_input" name="comment_mentor" required=""></input></div>
-
-                                </div>
                                 
                                 <t t-call="portal.signature_form">
                                     <t t-set="call_url" t-value="prestation.get_portal_url(suffix='/accept')"/>
                                     <t t-set="default_name" t-value="user_id.partner_id.name"/>
                                 </t>
                             </main>
+                        </form>
+                    </div>
+                </div>
+                <div role="dialog" class="modal" id="modalcomment">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <form id="comment" method="POST" t-att-data-order-id="prestation.id" t-att-data-token="prestation.access_token" t-attf-action="/my/prestation/#{prestation.id}/comment">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <div class="modal-header">
+                                <h4 class="modal-title">Ajouter un commentaire</h4>
+<!--                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button> -->
+                            </div>
+                            <div class="modal-body">
+
+                                <div class="form-group row form-field" >
+                                    <div class="col-lg-3 col-md-4"><label class="col-form-label" for="comment_mentor">Commentaire</label></div>
+                                    <div class="col-lg-7 col-md-8"><input type="text" id="comment_mentor" class="form-control o_website_form_input" name="comment_mentor" required=""></input></div>
+
+                                </div>
+                                
+                            </div>
+                            <div class="modal-footer">
+                                <div class="display_flex flex_justify_flexend width_30 height_100">
+                                    <a class="width_90 height_101 decoration_ante" data-dismiss="modal" href="#">Annuler</a>
+                                </div>
+                                <div>
+                                    <button type="submit" id="modalcomment" class="width_90 height_101 decoration_action" data-toggle="modal" data-target="#comments">Enregistrer le commentaire</button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>

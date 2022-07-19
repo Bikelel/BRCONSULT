@@ -302,6 +302,30 @@ class CustomerPortal(portal.CustomerPortal):
             
         return request.redirect(constat_id.prestation_id.get_portal_url())
     
+    @http.route(['/my/prestation/<int:prestation_id>/comment'], type='http', auth="user", website=True)
+    def portal_report_comment(self, prestation_id, access_token=None, **kw):
+        user = request.env.user
+        partner = request.env.user.partner_id
+        comment_mentor = kw.get('comment_mentor')
+        _logger.info("####### comment_mentor %s", comment_mentor)
+        try:
+            prestation_sudo = self._document_check_access('prestation.prestation', prestation_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return {'error': _('Invalide prestation.')}
+        
+        try:
+            prestation_sudo.write({
+                'comment_mentor': comment_mentor,
+            })
+        except (TypeError, binascii.Error) as e:
+            return {'error': _('Invalid signature data.')}
+            
+        return {
+            'force_refresh': True,
+            'redirect_url': prestation_sudo.get_portal_url(query_string=query_string),
+        }
+        
+    
     @http.route(['/my/prestation/<int:prestation_id>/accept'], type='json', auth="user", website=True)
     def portal_report_accept(self, prestation_id, access_token=None, name=None, signature=None, comment_mentor=None, **kw):
         user = request.env.user
@@ -310,7 +334,7 @@ class CustomerPortal(portal.CustomerPortal):
         access_token = access_token or request.httprequest.args.get('access_token')
         #comment_mentor = kw.get('comment_mentor')
         data_request = request.httprequest.args
-        data = json.loads(request.httprequest.data)
+        
                 
         try:
             prestation_sudo = self._document_check_access('prestation.prestation', prestation_id, access_token=access_token)
@@ -325,7 +349,6 @@ class CustomerPortal(portal.CustomerPortal):
                 'signed_by': name,
                 'signed_on': fields.Datetime.now(),
                 'signature': signature,
-                'comment_mentor': comment_mentor,
             })
             request.env.cr.commit()
         except (TypeError, binascii.Error) as e:

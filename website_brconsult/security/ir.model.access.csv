@@ -2,3 +2,4 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_prestation_portal_user,prestation.prestation,br_consult.model_prestation_prestation,base.group_portal,1,1,0,0
 access_prestation_constat_portal_user,prestation.constat,br_consult.model_prestation_constat,base.group_portal,1,1,0,0
 access_prestation_verification_point_portal_user,prestation.verification.point,br_consult.model_prestation_verification_point,base.group_portal,1,0,0,0
+access_prestation_constat_observation_portal_user,prestation.constat.observation,br_consult.model_prestation_constat_observation,base.group_portal,1,0,0,0
