@@ -17,7 +17,7 @@
     <!-- actions opening views on models -->
 
     <record model="ir.actions.act_window" id="coordination.action_window">
-      <field name="name">coordination window</field>
+      <field name="name">coordination</field>
       <field name="res_model">coordination.coordination</field>
       <field name="view_mode">tree,form</field>
     </record>
@@ -47,7 +47,7 @@
 
     <!-- menu categories -->
 
-    <menuitem name="Menu 1" id="coordination.menu_1" parent="coordination.menu_root"/>
+    <menuitem name="Prestation coordination" id="coordination.menu_1" parent="coordination.menu_root"/>
 
     <!-- actions -->
 
