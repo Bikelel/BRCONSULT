@@ -181,6 +181,107 @@ class CustomerPortal(portal.CustomerPortal):
         values.update(get_records_pager(history, prestation_sudo))
         return request.render('website_brconsult.prestation_portal_template', values)
     
+    @http.route(['/my/prestation/<int:prestation_id>/edit'], auth='user', website=True)
+    def edit_prestation_form(self, prestation_id, access_token=None, **kw):
+        user = request.env.user
+        try:
+            prestation_sudo = self._document_check_access('prestation.prestation', prestation_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+
+        values = {
+            'prestation': prestation_sudo,
+            'token': access_token,
+            'bootstrap_formatting': True,
+            'partner_id': prestation_sudo.partner_id.id,
+            'user_id': user
+        }
+        if prestation_sudo.company_id:
+            values['res_company'] = prestation_sudo.company_id
+        history = request.session.get('my_prestations_history', [])
+        values.update(get_records_pager(history, prestation_sudo))
+        return request.render("website_brconsult.edit_prestation_page", values)
+    
+    def update_constat_line(self, constat, photo1, photo2, state, date):
+
+        if date:
+            constat.update({'date': datetime.datetime.strptime(date, '%d/%m/%Y')})
+        if photo1:
+            name = photo1.filename
+            photo1_file = photo1
+            photo1_attachment = photo1_file.read()
+            constat.update({'photo_after_1': base64.b64encode(photo1_attachment)})
+            
+            
+        if photo2:
+            name = photo2.filename
+            photo2_file = photo2
+            photo2_attachment = photo2_file.read()
+            constat.update({'photo_after_2': base64.b64encode(photo2_attachment)})
+        if state:
+            constat.update({'state': state})
+        
+    @http.route(['/my/prestation/confirm_edit'], type='http', auth="user", website=True, methods=['POST'])
+    def portal_prestation_confirm_edit(self, **post):
+        user = request.env.user
+        partner = request.env.user.partner_id
+        prestation_id = post.get('prestation_id')
+        comment_mentor = post.get('comment_mentor')
+        prestation_id = request.env['prestation.prestation'].sudo().browse(int(prestation_id))
+        prestation_id.update({'comment_mentor': comment_mentor})
+        #Examen d’adéquation
+        for constat in prestation_id.constat_adequacy_exam_ids:
+            photo1 = post.get('photo1_adequacy_exam_' + str(constat.id))
+            photo2 = post.get('photo2_adequacy_exam_' + str(constat.id))
+            state = post.get('state_adequacy_exam_' + str(constat.id))
+            date = post.get('date_adequacy_exam_' + str(constat.id))
+            self.update_constat_line(constat, photo1, photo2, state, date)
+        
+        # Examen de montage et d'exploitation
+        for constat in prestation_id.constat_assembly_exam_ids:
+            photo1 = post.get('photo1_assembly_exam_' + str(constat.id))
+            photo2 = post.get('photo2_assembly_exam_' + str(constat.id))
+            state = post.get('state_assembly_exam_' + str(constat.id))
+            date = post.get('date_assembly_exam_' + str(constat.id))
+            self.update_constat_line(constat, photo1, photo2, state, date)
+        
+        # Examen de l'etat de conservation
+        for constat in prestation_id.constat_conservation_state_exam_ids:
+            photo1 = post.get('photo1_conservation_state_exam_' + str(constat.id))
+            photo2 = post.get('photo2_conservation_state_exam_' + str(constat.id))
+            state = post.get('state_conservation_state_exam_' + str(constat.id))
+            date = post.get('date_conservation_state_exam_' + str(constat.id))
+            self.update_constat_line(constat, photo1, photo2, state, date)
+        
+        # Examen de bon fonctionnement
+        for constat in prestation_id.constat_good_functioning_exam_ids:
+            photo1 = post.get('photo1_good_functioning_exam_' + str(constat.id))
+            photo2 = post.get('photo2_good_functioning_exam_' + str(constat.id))
+            state = post.get('state_good_functioning_exam_' + str(constat.id))
+            date = post.get('date_good_functioning_exam_' + str(constat.id))
+            self.update_constat_line(constat, photo1, photo2, state, date)
+        
+        # Epreuves statiques
+        for constat in prestation_id.constat_epreuve_statique_ids:
+            photo1 = post.get('photo1_epreuve_statique_' + str(constat.id))
+            photo2 = post.get('photo2_epreuve_statique_' + str(constat.id))
+            state = post.get('state_epreuve_statique_' + str(constat.id))
+            date = post.get('date_epreuve_statique_' + str(constat.id))
+            self.update_constat_line(constat, photo1, photo2, state, date)
+            
+         # Epreuves dynamiques
+        for constat in prestation_id.constat_epreuve_dynamique_ids:
+            photo1 = post.get('photo1_epreuve_dynamique_' + str(constat.id))
+            photo2 = post.get('photo2_epreuve_dynamique_' + str(constat.id))
+            state = post.get('state_epreuve_dynamique_' + str(constat.id))
+            date = post.get('date_epreuve_dynamique_' + str(constat.id))
+            self.update_constat_line(constat, photo1, photo2, state, date)
+            
+            
+            
+       
+        return request.redirect(prestation_id.get_portal_url())
+    
     @http.route(['/update_mentor/<prestation_id>'], auth='user', website=True)
     def update_mentor_form(self, prestation_id, **kw):
         _, prestation_id = unslug(prestation_id)

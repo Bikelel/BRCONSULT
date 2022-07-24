@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, _
-
+import datetime
 
 class PrestationConstat(models.Model):
     _name = "prestation.constat"
@@ -58,6 +58,13 @@ class PrestationConstat(models.Model):
                 nom += line.verification_point_id.name + " "
             
             line.update({'name': nom})
+    
+    def get_date_str_format(self):
+        if self.date:
+            date = datetime.datetime.strftime(self.date, '%d/%m/%Y')
+            return date
+        else:
+            return ''
             
         
     
