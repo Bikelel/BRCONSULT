@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from collections import OrderedDict
 from odoo.osv.expression import OR, AND
+from operator import itemgetter
 from odoo import fields, http, SUPERUSER_ID, _
 from odoo.exceptions import AccessError, MissingError, ValidationError
 from odoo.http import request
@@ -15,6 +16,7 @@ from base64 import encode
 from markupsafe import Markup
 from odoo.tools import date_utils
 from dateutil.relativedelta import relativedelta
+from odoo.tools import groupby as groupbyelem
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -572,3 +574,77 @@ class CustomerPortal(portal.CustomerPortal):
             'user_id': user,
         })
         return request.render("website_brconsult.portal_my_prestations", values)
+    
+    
+    @http.route(['/my/prestations/statistique'], type='http', auth="user", website=True)
+    def portal_my_prestations_statistique(self, page=1,**kw):
+        values = self._prepare_portal_layout_values()
+        
+        partner = request.env.user.partner_id
+        user = request.env.user
+        Prestation = request.env['prestation.prestation']
+        domain = self._prepare_prestations_domain(partner)
+
+        # count for pager
+        prestations = Prestation.search(domain)
+        
+        prestation_count = prestations.search_count(domain)
+        count_favorable_opinion = prestations.search_count(domain + [('opinion', '=', 'favorable_opinion')])
+        count_opinion_with_observation = prestations.search_count(domain+[('opinion', '=', 'opinion_with_observation')])
+        count_defavorable_opinion = prestations.search_count(domain+[('opinion', 'in', ('mixte', 'defavorable_opinion'))])
+        mentors = prestations.mapped('mentor_id')
+
+        vals_mentor_avis = []
+        for mentor in mentors:
+            vals_mentor_avis.append({'mentor': mentor,
+                                     'count_favorable_opinion': prestations.search_count(domain+[('opinion', '=', 'favorable_opinion'), ('mentor_id', '=', mentor.id)]),
+                                     'count_opinion_with_observation': prestations.search_count(domain+[('opinion', '=', 'opinion_with_observation'), ('mentor_id', '=', mentor.id)]),
+                                     'count_defavorable_opinion': prestations.search_count(domain+[('opinion', 'in', ('mixte', 'defavorable_opinion')), ('mentor_id', '=', mentor.id)]),
+                                     
+                                    })
+        prestation_without_mentor = prestations.search(domain+[('mentor_id', '=', False)])
+        vals_prestation_without_mentor = {}
+        if prestation_without_mentor:
+            vals_prestation_without_mentor = {'mentor': 'no',
+                                             'count_favorable_opinion': prestation_without_mentor.search_count(domain+[('mentor_id', '=', False),('opinion', '=', 'favorable_opinion')]),
+                                             'count_opinion_with_observation': prestation_without_mentor.search_count(domain+[('mentor_id', '=', False),('opinion', '=', 'opinion_with_observation')]),
+                                             'count_defavorable_opinion': prestation_without_mentor.search_count(domain+[('mentor_id', '=', False),('opinion', 'in', ('mixte', 'defavorable_opinion'))]),
+                                    }
+        # Catégorie point de vérification
+        constats = request.env['prestation.constat'].search([('prestation_id', 'in', prestations.ids)])
+        verifications_point = request.env['prestation.constat'].search([('prestation_id', 'in', prestations.ids)]).mapped('verification_point_id')
+        
+        vals_verifications_point = []
+        for verification_point in verifications_point:
+            vals_verifications_point.append({'verification_point': verification_point,
+                                             'count_verification_point': constats.search_count([('verification_point_id', '=', verification_point.id)])})
+            
+        inspected_scaffolding_surface = sum(prestations.search(domain+[('inspection_type', '=', 'echafaudage')]).mapped('inspected_scaffolding_surface'))
+        
+        inspected_installation_number = sum(prestations.search(domain+[('inspection_type', '=', 'levage')]).mapped('inspected_installation_number'))
+        
+        grouped_report_by_date = [prestations.concat(*g) for k, g in groupbyelem(prestations, itemgetter('partner_id'))]
+        _logger.info("############## grouped_report_by_date %s", grouped_report_by_date)
+        # search the count to display, according to the pager data
+        
+
+        values.update({
+            'prestations': prestations.sudo(),
+            'page_name': 'prestation_statistique',
+            'default_url': '/my/prestations/statistique',
+            'user_id': user,
+            'prestation_count': prestation_count,
+            'count_favorable_opinion': count_favorable_opinion,
+            'count_opinion_with_observation': count_opinion_with_observation,
+            'count_defavorable_opinion': count_defavorable_opinion,
+            'vals_mentor_avis': vals_mentor_avis,
+            'mentors': mentors,
+            'vals_prestation_without_mentor':vals_prestation_without_mentor,
+            'constats': constats,
+            'verifications_point': verifications_point,
+            'vals_verifications_point': vals_verifications_point,
+            'inspected_scaffolding_surface': inspected_scaffolding_surface,
+            'inspected_installation_number': inspected_installation_number,
+            
+        })
+        return request.render("website_brconsult.portal_my_prestations_statistique", values)

@@ -65,13 +65,21 @@
                 </t>
             </xpath>
         </template>
+        <template id="portal_my_home_prestation_statistique" name="Afficher Prestations" customize_show="True" inherit_id="portal.portal_my_home" priority="40">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Statistiques</t>
+                    <t t-set="url" t-value="'/my/prestations/statistique'"/>
+                </t>
+            </xpath>
+        </template>
         <template id="portal_my_prestations" name="Mes prestations">
             <t t-call="portal.portal_layout">
                 <t t-set="breadcrumbs_searchbar" t-value="True"/>
                 <div  class="view_buttons" style="padding:25px;">
-                    <button class="btn btn-primary graph_prestation" style="float:right;margin-left:15px;">
+<!--                     <button class="btn btn-primary graph_prestation" style="float:right;margin-left:15px;">
                         <i class="fa fa-bar-chart" aria-hidden="false" />
-                    </button>
+                    </button> -->
                     <button class="btn btn-primary list_prestation" style="float:right;">
                         <i class="fa fa-list" aria-hidden="false" />
                     </button>
@@ -1349,6 +1357,109 @@
                     </div>
                 </t>
             </div>
+        </template>
+        
+        <template id="portal_my_prestations_statistique" name="Mes prestations">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <a role="button" href="/my" class="btn btn-primary">
+                    <i class="fa fa-arrow-left"/> <t>Retour</t>
+                </a>
+                <t t-if="not prestations">
+                    <p>There are currently no prestations for your account.</p>
+                </t>
+                <t t-if="prestations">
+                    <br/><br/>
+                    <h5>Chiffres clés</h5>
+                    <div>
+                        <table class="table table-striped table-sm bg-white">
+                            
+                            <tr>
+                                <td style="width:25%;">Avis favorable</td>
+                                <td><span t-esc="count_favorable_opinion"/> / <span t-esc="prestation_count"/></td>
+                            </tr>
+                            <tr>
+                                <td>Avis favorable avec observation(s)</td>
+                                <td><span t-esc="count_opinion_with_observation"/> / <span t-esc="prestation_count"/></td>
+                            </tr>
+                            <tr>
+                                <td>Avis defavorable</td>
+                                <td><span t-esc="count_defavorable_opinion"/> / <span t-esc="prestation_count"/></td>
+                            </tr>
+                            <tr>
+                                <td>Total surface inspectée</td>
+                                <td><span t-esc="inspected_scaffolding_surface"/></td>
+                            </tr>
+                            <tr>
+                                <td>Nombre d'installation</td>
+                                <td><span t-esc="inspected_installation_number"/></td>
+                            </tr>
+                        </table>
+                        
+                    </div>
+                    <br/>
+                    <h5>Nombre des avis par monteur</h5>
+                    <div>
+                        <table class="table table-striped table-sm bg-white">
+                            <thead class="text-center">
+                                <th>Monteur</th>
+                                <th class="text-center">Avis favorable</th>
+                                <th class="text-center">Avis favorable avec observation(s)</th>
+                                <th class="text-center">Avis defavorable</th>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="mentors" t-as="mentor">
+                                    <tr class="text-center">
+                                        <td><span t-esc="mentor.name"/></td>
+                                        <t t-foreach="vals_mentor_avis" t-as="line">
+                                            <t t-if="int(line['mentor']) == int(mentor.id)">
+                                                <td class="text-center"><span t-esc="line['count_favorable_opinion']"/></td>
+                                                <td class="text-center"><span t-esc="line['count_opinion_with_observation']"/></td>
+                                                <td class="text-center"><span t-esc="line['count_defavorable_opinion']"/></td>
+                                            </t>
+                                        </t>
+                                    </tr>
+                                </t>
+                                <tr t-if="vals_prestation_without_mentor">
+                                    <td class="text-center">Pas de monteur définit</td>
+                                    <td class="text-center"><span t-esc="vals_prestation_without_mentor['count_favorable_opinion']"/></td>
+                                    <td class="text-center"><span t-esc="vals_prestation_without_mentor['count_opinion_with_observation']"/></td>
+                                    <td class="text-center"><span t-esc="vals_prestation_without_mentor['count_defavorable_opinion']"/></td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                    <h5>Nombre des points de vérification</h5>
+                    <div>
+                        <table class="table table-striped table-sm bg-white">
+                            <thead>
+                                <th>Nom</th>
+                                <th>Type d'inspection</th>
+                                <th>Type</th>
+                                <th class="text-center">Nombre</th>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="verifications_point" t-as="verification_point">
+                                    <tr>
+                                        <td><span t-field="verification_point.name"/></td>
+                                        <td><span t-field="verification_point.inspection_type"/></td>
+                                        <td><span t-field="verification_point.type"/></td>
+                                        <t t-foreach="vals_verifications_point" t-as="line">
+                                            <t t-if="int(line['verification_point']) == int(verification_point.id)">
+                                                <td class="text-center"><span t-esc="line['count_verification_point']"/></td>
+                                            </t>
+                                        </t>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                </t>
+
+            </t>
         </template>
 
     </data>
