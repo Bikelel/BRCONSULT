@@ -114,8 +114,8 @@ En cas d’avis défavorable, nous vous recommandons fortement de faire constate
                                 <td>Points de vérification</td>
                                 <td>Observations/Réserves </td>
                                 <td>Précisions </td>
-                                <td class="text-center">Photos </td>
-                                <td class="text-center">Photos d'après </td>
+                                <td class="text-center">Photo BRCONSULT</td>
+                                <td class="text-center">Photo(s) monteur</td>
                                 <td>Statut </td>
                                 <td>Date </td>
                             </tr>
@@ -168,8 +168,8 @@ En cas d’avis défavorable, nous vous recommandons fortement de faire constate
                                 <td>Points de vérification</td>
                                 <td>Observations/Réserves </td>
                                 <td>Précisions </td>
-                                <td class="text-center">Photos </td>
-                                <td class="text-center">Photos d'après </td>
+                                <td class="text-center">Photo BRCONSULT</td>
+                                <td class="text-center">Photo(s) monteur</td>
                                 <td>Statut </td>
                                 <td>Date </td>
                             </tr>
@@ -222,8 +222,8 @@ En cas d’avis défavorable, nous vous recommandons fortement de faire constate
                                 <td>Points de vérification</td>
                                 <td>Observations/Réserves </td>
                                 <td>Précisions </td>
-                                <td class="text-center">Photos </td>
-                                <td class="text-center">Photos d'après </td>
+                                <td class="text-center">Photo BRCONSULT</td>
+                                <td class="text-center">Photo(s) monteur</td>
                                 <td>Statut </td>
                                 <td>Date </td>
                             </tr>
@@ -276,8 +276,8 @@ En cas d’avis défavorable, nous vous recommandons fortement de faire constate
                                 <td>Points de vérification</td>
                                 <td>Observations/Réserves </td>
                                 <td>Précisions </td>
-                                <td class="text-center">Photos </td>
-                                <td class="text-center">Photos d'après </td>
+                                <td class="text-center">Photo BRCONSULT</td>
+                                <td class="text-center">Photo(s) monteur</td>
                                 <td>Statut </td>
                                 <td>Date </td>
                             </tr>
@@ -330,8 +330,8 @@ En cas d’avis défavorable, nous vous recommandons fortement de faire constate
                                 <td>Points de vérification</td>
                                 <td>Observations/Réserves </td>
                                 <td>Précisions </td>
-                                <td class="text-center">Photos </td>
-                                <td class="text-center">Photos d'après </td>
+                                <td class="text-center">Photo BRCONSULT</td>
+                                <td class="text-center">Photo(s) monteur</td>
                                 <td>Statut </td>
                                 <td>Date </td>
                             </tr>
@@ -383,8 +383,8 @@ En cas d’avis défavorable, nous vous recommandons fortement de faire constate
                                 <td>Points de vérification</td>
                                 <td>Observations/Réserves </td>
                                 <td>Précisions </td>
-                                <td class="text-center">Photos </td>
-                                <td class="text-center">Photos d'après </td>
+                                <td class="text-center">Photo BRCONSULT</td>
+                                <td class="text-center">Photo(s) monteur</td>
                                 <td>Statut </td>
                                 <td>Date </td>
                             </tr>
@@ -420,12 +420,19 @@ En cas d’avis défavorable, nous vous recommandons fortement de faire constate
                             </tbody>
                         </table>
                     </div>
-                    <div class="row" t-if="doc.signature">
-                        <div class="col-6">Fait le : <span t-field="doc.signed_on"/></div>
-                        <div class="col-6 text-center">
-                            <div>Signé par <span t-field="doc.signed_by"/></div>
-                            <div><img t-att-src="image_data_uri(doc.signature)" style="max-width: 240px;"/></div>
-                        </div>
+                    
+                </div>
+                <div t-if="doc.comment_mentor">
+                    <div>Commentaires :</div>
+                    <div>
+                        <span t-field="doc.comment_mentor"/>
+                    </div>
+                </div>
+                <div class="row" t-if="doc.signature">
+                    <div class="col-6">Fait le : <span t-field="doc.signed_on"/></div>
+                    <div class="col-6 text-center">
+                        <div>Signé par <span t-field="doc.signed_by"/></div>
+                        <div><img t-att-src="image_data_uri(doc.signature)" style="max-width: 240px;"/></div>
                     </div>
                 </div>
 
