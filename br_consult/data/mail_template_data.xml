@@ -130,7 +130,7 @@
                         <table>
                             <tr>
                                 <td valign="top">
-                                    <img t-att-src="'/logo.png?company=%s' % (object.company_id.id or 0)" style="padding: 0px; margin: 0px; width: 60px;" t-att-alt="'%s' % object.company_id.name" />
+                                    <img t-att-src="'/logo.png?company=%s' % (object.company_id.id or 0)" style="padding: 0px; margin: 0px; width: 45px;" t-att-alt="'%s' % object.company_id.name" />
                                 </td>
                                 <td style="font-size:12px">
                                     <strong>BR CONSULT</strong>
@@ -164,22 +164,31 @@
             <field name="model_id" ref="br_consult.model_prestation_prestation"/>
             <field name="email_from"></field>
             <field name="partner_to"></field>
-            <field name="subject"> {{object.site_address}} - Alerte fin chantier</field>
+            <field name="subject">{{object.site_address}} - Alerte fin chantier-Vérification périodique à prévoir</field>
             <field name="body_html" type="html">
                 
                 <div style="margin: 0px; padding: 0px;">
                     <p style="margin: 0px; padding: 0px; font-size: 13px;">
                         Bonjour,
                         <br /><br />
-                        Votre installation est en place depuis bientôt <t t-out="object.chantier_duration" /> mois, pensez à programmer la vérification périodique en nous envoyant le bon de commande<br/>
+                        Votre installation est en place depuis bientôt <t t-if="object.inspection_type=='echafaudage'">3</t><t t-if="object.inspection_type=='levage'">6</t> mois, confirmez nous votre demande d'intervention par retour de ce mail.<br/><br/>
                         
-                        Bien cordialement.<br />
+                        Pour toute nouvelle demande, veuillez cliquer sur le lien 
+                        <t t-if="object.inspection_type=='echafaudage'">
+                            <a href="https://brconsult.typeform.com/to/E0W5pc">ici</a>
+                        </t>
+                        <t t-if="object.inspection_type=='levage'">
+                            <a href="https://brconsult.typeform.com/to/WryD7g">ici</a>
+                        </t>
+                        <br/>
+                        <br/>
+                        A bientôt.<br />
                        <br/><br/>
                         <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 5px 0px 4px 0px;"/>
                         <table>
                             <tr>
                                 <td valign="top">
-                                    <img t-att-src="'/logo.png?company=%s' % (object.company_id.id or 0)" style="padding: 0px; margin: 0px; width: 60px;" t-att-alt="'%s' % object.company_id.name" />
+                                    <img t-att-src="'/logo.png?company=%s' % (object.company_id.id or 0)" style="padding: 0px; margin: 0px; width: 45px;" t-att-alt="'%s' % object.company_id.name" />
                                 </td>
                                 <td style="font-size:12px">
                                     <strong>BR CONSULT</strong>
@@ -853,7 +862,7 @@ Nous avons le plaisir de vous confirmer que <strong> <t t-out="object.user_id.na
 															<table border="0" cellpadding="5" cellspacing="5" width="150" id="calendarContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;border: 5px solid #FFFFFF;">
 																<tr>
 																	<td align="center" bgcolor="#EFEFEF" valign="top" id="monthContainer" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #EFEFEF;color: #303030;font-family: Helvetica;font-size: 14px;font-weight: bold;line-height: 150%;">
-																		<div><t t-out="object.verification_date.strftime('%d/%m/%Y')" /> à <t t-out="object.verification_date.strftime('%H:%M')"/></div>
+																		<div><t t-out="object.verification_date.strftime('%d/%m/%Y')" /> à <t t-out="format_time(time=object.verification_date, tz='Europe/Paris', time_format='short', lang_code=object.env.lang) or ''"/></div>
 																	</td>
 																</tr>
 																<tr>

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, _
-
+import datetime
 
 class PrestationConstat(models.Model):
     _name = "prestation.constat"
@@ -18,7 +18,9 @@ class PrestationConstat(models.Model):
     verification_type = fields.Selection(related="prestation_id.verification_type")
     reserve = fields.Text("Observations/réserves reserve")
     precision = fields.Text("Précisions")
-    photo = fields.Binary("Photo")
+    photo = fields.Image("Photo", max_width=512, max_height=512)
+    photo_after_1 = fields.Image("Photo d'après 1", max_width=512, max_height=512)
+    photo_after_2 = fields.Image("Photo d'après 2", max_width=512, max_height=512)
     state = fields.Selection([
         ('to_lift', "A lever"),
         ('lifted', "Levée")], string="Statut")
@@ -56,6 +58,13 @@ class PrestationConstat(models.Model):
                 nom += line.verification_point_id.name + " "
             
             line.update({'name': nom})
+    
+    def get_date_str_format(self):
+        if self.date:
+            date = datetime.datetime.strftime(self.date, '%d/%m/%Y')
+            return date
+        else:
+            return ''
             
         
     

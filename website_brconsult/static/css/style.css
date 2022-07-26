@@ -1,0 +1,151 @@
+[type="date"] {
+	background: #fff url(/website_brconsult/static/image/calendar.png) 97% 50% no-repeat;
+}
+
+[type="date"]::-webkit-inner-spin-button {
+	display: none;
+}
+
+[type="date"]::-webkit-calendar-picker-indicator {
+	opacity: 0;
+}
+
+button.active_graph {
+	background-color: black !important;
+}
+
+a.last_active {
+	color: black;
+}
+
+.graph_button {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	background: rgb(0, 160, 157);
+}
+
+.graph_button_invoice {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	background: rgb(0, 160, 157);
+}
+
+canvas {
+	cursor: pointer;
+}
+
+#group_by_quotation {
+	cursor: pointer;
+}
+ 
+.no_group_quote {
+	margin-top: 73px;
+	width: 535px;
+	margin-left: 106px;
+}
+
+.no_group_quote:before {
+	content: "";
+	display: inline-block;
+	position: absolute;
+	width: 70px;
+	height: 80px;
+	margin-left: -70px;
+	margin-top: -64px;
+	background: transparent url(/web/static/src/img/view_empty_arrow.png) no-repeat 0px 0px;
+}
+
+.no_group_quote:after {
+	content: "Select any group by to display a Graph view.";
+}
+
+.no_group_order {
+	margin-top: 73px;
+	width: 535px;
+	margin-left: 106px;
+}
+
+.no_group_order:before {
+	content: "";
+	display: inline-block;
+	position: absolute;
+	width: 70px;
+	height: 80px;
+	margin-left: -70px;
+	margin-top: -64px;
+	background: transparent url(/web/static/src/img/view_empty_arrow.png) no-repeat 0px 0px;
+}
+
+.no_group_order:after {
+	content: "Select any group by to display a Graph view.";
+}
+
+.no_group_invoice {
+	margin-top: 73px;
+	width: 535px;
+	margin-left: 106px;
+}
+
+.no_group_invoice:before {
+	content: "";
+	display: inline-block;
+	position: absolute;
+	width: 70px;
+	height: 80px;
+	margin-left: -70px;
+	margin-top: -64px;
+	background: transparent url(/web/static/src/img/view_empty_arrow.png) no-repeat 0px 0px;
+}
+
+.no_group_invoice:after {
+	content: "Select any group by to display a Graph view.";
+}
+
+.view_buttons {
+	margin-right: -25px;
+}
+ 
+.month_seperator{margin-left: 46px !important;	}
+
+/* Antash Code */
+@media (min-width:320px) and (max-width:359px){
+	.no_group_quote {width: 140px;}
+	.no_group_order {width: 140px;}
+	.no_group_invoice {width: 140px;}
+	.month_seperator{margin-left: 0px !important;	}
+}
+
+@media (min-width: 360px) and (max-width: 640px){
+	.no_group_quote {width: 200px;}
+	.no_group_order {width: 200px;}
+	.no_group_invoice {width: 200px;}
+	.month_seperator{margin-left: 0px !important;	}
+}
+@media (min-width: 768px){
+	.no_group_quote {margin-right: -250px;}
+	.no_group_order {margin-right: -300px;}
+	.no_group_invoice {margin-right: -300px;}
+}
+@media (min-width: 640px) and (max-width: 767px){
+	.fliter_by_quotation{margin-top: 10px;}
+	.quate_start_date{margin-top: 12px;}
+	.quate_end_date{margin-top: 12px;}
+	.quate_date{margin-top:12px;}
+	.reset_button_quote{margin-top: 12px;}
+	.order_start_date{margin-top: 12px;}
+	.order_end_date{margin-top: 12px;}
+	.order_date{margin-top: 12px;}
+	.filter_by_customer_invoice{margin-top: 12px;}
+	.invoice_start_date{margin-top: 12px;}
+	.invoice_end_date{margin-top: 12px;}
+	.invoice_date{margin-top: 12px;}
+	.filter_by_date_invoice{margin-top: 12px;}
+	.month_seperator{margin-left: 0px !important;	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px){
+	.month_seperator{margin-left: 0px !important;	}
+
+}

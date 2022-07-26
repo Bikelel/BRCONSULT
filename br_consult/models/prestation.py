@@ -17,6 +17,7 @@ class Prestation(models.Model):
     _order = 'id desc'
     _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin', 'format.address.mixin']
     
+    
     def default_stage(self):
         phase1 = self.env['prestation.stage'].search([('state', '=', 'phase1')], limit=1)
         return phase1.id
@@ -52,6 +53,9 @@ class Prestation(models.Model):
     report_parameter_id = fields.Many2one('prestation.report.parameter',string="Parametre du rapport")
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
     partner_id = fields.Many2one('res.partner', string="Entreprise")
+    mentor_id = fields.Many2one('res.partner', string="Monteur",  tracking=True,)
+    mentor_archive = fields.Boolean("Est archivée par le monteur", copy=False, store=True)
+    partner_archive = fields.Boolean("Est archivée par le client", copy=False, store=True)
     inspection_type = fields.Selection([
         ('echafaudage', 'Echafaudage'),
         ('levage', 'Levage'),
@@ -78,9 +82,11 @@ class Prestation(models.Model):
     verification_date = fields.Datetime('Date de vérification', default=fields.Datetime.now, tracking=True)
     end_date_verification = fields.Datetime("Fin de la date de vérification", store=True, compute='_compute_end_date')
     verification_date_tz = fields.Datetime('Date de vérification TZ', store=True)
+    verification_date_without_time = fields.Date('Date de vérification (sans heures)', store=True, compute="_compute_verification_date_without_time")
     prestation_duration = fields.Float("Durée d'une prestation", store=True, related="company_id.prestation_duration")
     chantier_duration = fields.Integer("Durée du chantier (mois)")
     end_date_chantier = fields.Datetime("Date de fin du chantier", compute='_compute_end_date_chantier', store=True)
+    date_alert_end_chantier = fields.Datetime("Date d'alert fin du chantier", compute='_compute_end_date_chantier', store=True)
     sent_alert_end_chantier = fields.Boolean("Alerte de fin chantier est envoyée", copy=False)
     partner_contact = fields.Char("Représentée par")
     user_id = fields.Many2one('res.users', 'Inspecteur', default=default_user, tracking=True, required=True)
@@ -91,7 +97,7 @@ class Prestation(models.Model):
     title_label = fields.Text("Titre de prestation", store = True)
     message_label = fields.Text("Code de l'article", store = True)
     site_address = fields.Char("Adresse de chantier")
-    zip = fields.Char(change_default=True, string='Code postal')
+    zip = fields.Char(change_default=True, string='Code postal', size=5)
     department_id = fields.Many2one("res.country.department", compute="_compute_department", string="Department", store=True)
     country_id = fields.Many2one('res.country', string='Pays', ondelete='restrict', default=75)
     country_code = fields.Char(related='country_id.code', string="Country Code")
@@ -104,10 +110,11 @@ class Prestation(models.Model):
     defavorable_opinion = fields.Boolean('Avis defavorable', tracking=True)
     opinion = fields.Selection([
         ('favorable_opinion', 'Avis favorable'),
-        ('opinion_with_observation', 'Avis favorable avec observation'),
+        ('opinion_with_observation', 'Avis favorable avec observation(s)'),
         ('defavorable_opinion', 'Avis defavorable'),
         ('mixte', 'Mixte'),
     ], string="Avis")
+    comment_mentor = fields.Text("Commentaires Monteur")
     comment_observation_fiche = fields.Html("Commentaires Observation")
     visa_user = fields.Binary('Visa inspecteur', related='user_id.visa_user')
     contrat_ref = fields.Char('Contrat réf')
@@ -157,14 +164,14 @@ class Prestation(models.Model):
     conservation_state_exam_ids = fields.One2many('prestation.conservation.state.exam', 'prestation_id', string="Examen d'état de conservation", copy=True)
     good_functioning_exam_ids = fields.One2many('prestation.good.functioning.exam', 'prestation_id', string="Examen du bon fonctionnement", copy=True)
     
-    location_diagram = fields.Binary("Schéma de l’emplacement")
+    location_diagram = fields.Image("Schéma de l’emplacement", max_width=1024, max_height=1024)
     image_ids = fields.One2many('prestation.image', 'prestation_id' ,"Photographies", copy=True)
-    image1 = fields.Binary("Image 1")
-    image2 = fields.Binary("Image 2")
-    image3 = fields.Binary("Image 3")
-    image4 = fields.Binary("Image 4")
-    image5 = fields.Binary("Image 5")
-    image6 = fields.Binary("Image 6")
+    image1 = fields.Image("Image 1", max_width=800, max_height=800)    
+    image2 = fields.Image("Image 2", max_width=800, max_height=800)
+    image3 = fields.Image("Image 3", max_width=800, max_height=800)
+    image4 = fields.Image("Image 4", max_width=800, max_height=800)
+    image5 = fields.Image("Image 5", max_width=800, max_height=800)
+    image6 = fields.Image("Image 6", max_width=800, max_height=800)
     comment_scaffolding_photographic_location = fields.Html("Commentaires localisation photographique de l'échafaudage")
     verification_point_ids = fields.Many2many('prestation.verification.point', string="Points de verification", store=True, compute="_compute_verification_point")
     constat_adequacy_exam_ids = fields.One2many('prestation.constat', 'prestation_id', "Constat Examen d'adéquation", domain=[('type', '=', 'adequacy_exam')], copy=True)
@@ -216,6 +223,9 @@ class Prestation(models.Model):
         ('sent', 'Confirmation envoyée au client'),
     ], string="Confirmation envoyée ?", default='draft', copy=False)
     email_partner_ids = fields.Many2many('res.partner', string="Emails")
+    signed_by = fields.Char("Signé par", copy=False)
+    signed_on = fields.Datetime("Signé à", copy=False)
+    signature = fields.Image('Signature', help='Signature received through the portal.', copy=False, max_width=1024, max_height=1024)
 
     @api.onchange('prestation_id')
     def onchange_prestation(self):
@@ -488,6 +498,18 @@ class Prestation(models.Model):
             #company = rec.company_id
             duration = rec.chantier_duration
             rec.end_date_chantier = rec.verification_date + relativedelta(months=duration)
+            if rec.inspection_type == 'echafaudage':
+                if rec.chantier_duration >= 3:
+                    rec.date_alert_end_chantier = rec.verification_date + relativedelta(days=80)
+                else:
+                    rec.date_alert_end_chantier = None
+            else:
+                if rec.chantier_duration >= 6:
+                    rec.date_alert_end_chantier = rec.verification_date + relativedelta(days=170)
+                else:
+                    rec.date_alert_end_chantier = None
+                
+            
     
     def button_phase2(self):
         for prestation in self:
@@ -593,7 +615,7 @@ class Prestation(models.Model):
     
     def cron_send_alert_end_chantier(self):
         now = fields.Datetime.now()
-        prestations = self.search([('state', '=', 'phase4'), ('sent_alert_end_chantier', '=', False), ('end_date_chantier', '<', now)])
+        prestations = self.search([('state', '=', 'phase4'), ('sent_alert_end_chantier', '=', False), ('date_alert_end_chantier', '<', now)])
         _logger.info("############ %s", prestations)
         for prestation in prestations:
             prestation.sudo().button_send_alert_end_chantier()
@@ -732,11 +754,26 @@ class Prestation(models.Model):
             if prestation.constat_epreuve_dynamique_ids:
                 verification_point_ids += prestation.constat_epreuve_dynamique_ids.mapped('verification_point_id')
             prestation.verification_point_ids = verification_point_ids
-            
-            
-            
-    
-    
 
-
+    @api.depends('verification_date')        
+    def _compute_verification_date_without_time(self):
+        for rec in self:
+            if rec.verification_date:
+                rec.update({'verification_date_without_time': rec.verification_date.date()})
+    
+    def _compute_access_url(self):
+        super(Prestation, self)._compute_access_url()
+        for order in self:
+            order.access_url = '/my/prestation/%s' % (order.id)
+    
+    @api.constrains('zip')
+    def _check_zip(self):
+        for rec in self:
+            if rec.zip and len(rec.zip) != 5:
+                raise UserError(_('Le code postal doit contenir 5 caractères!'))
+    
+    def _get_report_base_filename(self):
+        self.ensure_one()
+        return 'Prestation-%s-%s-%s' % (self.name, self.site_address,self.partner_id.name)
                 
+            

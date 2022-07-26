@@ -168,6 +168,7 @@
                                         <field name="name" readonly="1" force_save="1"/>
                                         <field name="company_id" invisible="1"/>
                                         <field name="requested_date" attrs="{'readonly': [('state', 'not in', ['phase1'])]}"/>
+                                        
                                         <field name="partner_id" required="1" domain="[('is_company', '=', True)]" options="{'no_create': True}" attrs="{'readonly': [('state', 'not in', ['phase1'])]}"/>
                                         <field name="partner_contact" attrs="{'readonly': [('state', 'not in', ['phase1'])]}"/>
                                         <field name="email_partner_ids" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2', 'phase3'])]}" widget="many2many_tags_email" domain="[('parent_id', '=', partner_id)]"/>
@@ -192,6 +193,7 @@
                                         <field name="sent_alert_end_chantier" invisible="1"/>
                                         
                                         <field name="user_id" domain="[('is_inspector', '=', True)]" attrs="{'readonly': [('state', 'not in', ['phase1'])]}"/>
+                                        <field name="mentor_id" domain="[('is_mentor', '=', True)]" context="{'default_is_mentor':True}"  attrs="{'readonly': [('state', 'in', ['phase4'])]}"/>
                                         <field name="prensent_contact" attrs="{'readonly': [('state', 'not in', ['phase3', 'phase2'])]}"/>
                                         <field name="scaffolding_surface" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')], 'readonly': [('state', 'not in', ['phase1'])]}"/>
                                         <field name="inspected_scaffolding_surface" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}" widget="integer"/>

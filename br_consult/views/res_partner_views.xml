@@ -12,7 +12,7 @@
                     <attribute name='invisible'>1</attribute>
                 </xpath>
                 <xpath expr="//field[@name='ref']" position="attributes">
-                    <attribute name='attrs'>{'required': [('company_type', '=', 'company')]}</attribute>
+                    <attribute name='attrs'>{'required': [('company_type', '=', 'company'), ('is_mentor', '=', False)]}</attribute>
                 </xpath>
                 <xpath expr="//field[@name='vat']" position="before">
                     <field name="siret"/>
@@ -20,7 +20,7 @@
                     <xpath expr="//field[@name='industry_id']" position="move"/>
                 </xpath>
                 <xpath expr="//page[@name='internal_notes']" position="before">
-                    <page name="legal_representative" string="Infos du représentant légal">
+                    <page name="legal_representative" string="Infos du représentant légal" attrs="{'invisible': [('is_mentor', '=', True)]}">
                         <group>
                             <group>
                                 <field name="lastname_legal_representative"/>
@@ -34,6 +34,9 @@
                         </group>
                         
                     </page>
+                </xpath>
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="is_mentor"/>
                 </xpath>
                 
                 

@@ -104,6 +104,7 @@
         'views/characteristic/prestation_platform_mark_palan_views.xml',
         'data/mail_template_data.xml',
         'data/ir_cron_data.xml',
+        'report/report_levee_reserves_template.xml',
         
     ],
     'installable': True,

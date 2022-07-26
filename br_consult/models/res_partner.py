@@ -12,3 +12,4 @@ class Partner(models.Model):
     phone_legal_representative = fields.Char("N° Téléphone (Fixe)")
     mobil_phone_legal_representative = fields.Char("N° Téléphone (Mobile)")
     siret = fields.Char('Numéro SIRET')
+    is_mentor = fields.Boolean('Est un monteur')
