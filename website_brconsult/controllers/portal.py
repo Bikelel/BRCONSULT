@@ -410,7 +410,6 @@ class CustomerPortal(portal.CustomerPortal):
         user = request.env.user
         partner = request.env.user.partner_id
         comment_mentor = kw.get('comment_mentor')
-        _logger.info("####### comment_mentor %s", comment_mentor)
         try:
             prestation_sudo = self._document_check_access('prestation.prestation', prestation_id, access_token=access_token)
         except (AccessError, MissingError):
@@ -623,10 +622,20 @@ class CustomerPortal(portal.CustomerPortal):
         
         inspected_installation_number = sum(prestations.search(domain+[('inspection_type', '=', 'levage')]).mapped('inspected_installation_number'))
         
-        grouped_report_by_date = [prestations.concat(*g) for k, g in groupbyelem(prestations, itemgetter('partner_id'))]
-        _logger.info("############## grouped_report_by_date %s", grouped_report_by_date)
-        # search the count to display, according to the pager data
-        
+        vals_report_by_year = []
+        years = prestations.mapped('year_prestation')
+        years = list(set(years))
+        _logger.info("########### years %s", years)
+        for year in years:
+            vals_report_by_year.append({'year': year,
+                                        'nb_report': prestations.search_count(domain+[('year_prestation', '=', year)]),
+                                        'inspected_scaffolding_surface': sum(prestations.search(domain+[('inspection_type', '=', 'echafaudage'), ('year_prestation', '=', year)]).mapped('inspected_scaffolding_surface')),
+                                        'inspected_installation_number': sum(prestations.search(domain+[('inspection_type', '=', 'levage'), ('year_prestation', '=', year)]).mapped('inspected_installation_number'))
+                                       
+                                       })
+            
+
+            
 
         values.update({
             'prestations': prestations.sudo(),
@@ -645,6 +654,7 @@ class CustomerPortal(portal.CustomerPortal):
             'vals_verifications_point': vals_verifications_point,
             'inspected_scaffolding_surface': inspected_scaffolding_surface,
             'inspected_installation_number': inspected_installation_number,
+            'vals_report_by_year': vals_report_by_year,
             
         })
         return request.render("website_brconsult.portal_my_prestations_statistique", values)

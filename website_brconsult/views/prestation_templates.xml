@@ -1,13 +1,6 @@
 <odoo>
     <data>
-<!--         <template id="hide_portal_my_home_project" inherit_id="project.portal_my_home">
-            <xpath expr="//t[@t-call='portal.portal_docs_entry'][1]" position="attributes">
-                <attribute name="groups">base.group_user</attribute>
-            </xpath>
-            <xpath expr="//t[@t-call='portal.portal_docs_entry'][2]" position="attributes">
-                <attribute name="groups">base.group_user</attribute>
-            </xpath>
-        </template> -->
+
         
         <template id="portal_my_home_menu_prestation" name="Portal layout : prestations" inherit_id="portal.portal_breadcrumbs" priority="20">
             <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
@@ -20,32 +13,6 @@
                 </li>
             </xpath>
         </template>
-<!--         <template id="portal_portal_searchbar_prestation" inherit_id="portal.portal_searchbar">
-            <xpath expr="//div[@id='o_portal_navbar_content']/div/div" position="after">
-                <t t-if="quotations">
-                    <div class="form-inline" id="graph_options" style="float:right;">
-                        <button class="btn btn-primary graph_button bar_graph">
-                            <i class="fa fa-bar-chart" aria-hidden="false" />
-                        </button>
-                        <button class="btn btn-primary graph_button line_graph">
-                            <i class="fa fa-line-chart" aria-hidden="false" />
-                        </button>
-                        <button class="btn btn-primary graph_button pie_graph">
-                            <i class="fa fa-pie-chart" aria-hidden="false" />
-                        </button>
-                        <button class="btn btn-primary graph_button doughnut_graph">
-                            <img src="/website_brconsult/static/image/doughnut.png" style="height:20px;" />
-                        </button>
-                        <button class="btn btn-primary graph_button polar_graph">
-                            <img src="/website_brconsult/static/image/polar.png" style="height:20px;" />
-                        </button>
-                    </div>
-                </t>
-            </xpath>
-            <xpath expr="//div[@id='o_portal_navbar_content']/div/div" position="attributes">
-                <attribute name="id">list_sort_by</attribute>
-            </xpath>
-        </template> -->
 
         <template id="portal_my_home_prestation" name="Afficher Prestations" customize_show="True" inherit_id="portal.portal_my_home" priority="20">
             <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
@@ -1398,6 +1365,28 @@
                         
                     </div>
                     <br/>
+                    <h5>Chiffre clés par année</h5>
+                    <table class="table table-striped table-sm bg-white">
+                        <thead>
+                            <th style="width:25%;">Année</th>
+                            <th class="text-center">Nombre de prestation</th>
+                            <th class="text-center">Total surface inspectée</th>
+                            <th class="text-center">Nombre d'installation</th>
+
+
+                        </thead>
+                        <tbody>
+                            <t t-foreach="vals_report_by_year" t-as="reports">
+                                <tr>
+                                    <td><span t-esc="reports['year']"/></td>
+                                    <td class="text-center"><span t-esc="reports['nb_report']"/></td>
+                                    <td class="text-center"><span t-esc="reports['inspected_scaffolding_surface']"/></td>
+                                    <td class="text-center"><span t-esc="reports['inspected_installation_number']"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    
                     <h5>Nombre des avis par monteur</h5>
                     <div>
                         <table class="table table-striped table-sm bg-white">

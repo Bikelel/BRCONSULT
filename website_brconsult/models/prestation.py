@@ -19,7 +19,7 @@
 #
 ###############################################################################
 
-from odoo import models, api
+from odoo import models, api, fields
 import datetime
 from datetime import timedelta, MAXYEAR
 from dateutil import rrule
@@ -30,6 +30,13 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMA
 class Prestation(models.Model):
     _inherit = 'prestation.prestation'
     
+    year_prestation = fields.Char("Année de saisie rapport", store=True, compute='_compute_year_prestation')
+    
+    @api.depends('date')
+    def _compute_year_prestation(self):
+        for line in self:
+            if line.date:
+                line.year_prestation = line.date.year
     
     # @api.multi
     def get_prestation_values(self,user_id):
