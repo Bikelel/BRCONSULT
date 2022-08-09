@@ -613,12 +613,13 @@ class Prestation(models.Model):
                 template.sudo().send_mail(self.id, force_send=True, email_values=email_values)
                 self.write({'sent_alert_end_chantier': True})
     
-    def cron_send_alert_end_chantier(self):
+    def cron_send_alert_end_chantier(self, limit=None):
         now = fields.Datetime.now()
-        prestations = self.search([('state', '=', 'phase4'), ('sent_alert_end_chantier', '=', False), ('date_alert_end_chantier', '<', now)])
+        prestations = self.search([('state', '=', 'phase4'), ('sent_alert_end_chantier', '=', False), ('date_alert_end_chantier', '<', now)], limit=limit)
         _logger.info("############ %s", prestations)
         for prestation in prestations:
             prestation.sudo().button_send_alert_end_chantier()
+            self.env.cr.commit()
     
     @api.onchange('partner_id')
     def onchange_partner_id(self):
