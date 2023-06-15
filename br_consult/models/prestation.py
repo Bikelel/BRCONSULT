@@ -73,8 +73,8 @@ class Prestation(models.Model):
         ('TUB', 'Echafaudage'),
     ], string="Type d'installation")
     verification_type = fields.Selection([
-        ('MS', 'Mise en service'),
-        ('RS', 'Remise en service'),
+        ('MS', "Vérification d'Avant Mise en Service"), 
+        ('RS', "Vérification d'Avant Remise en Service"),
         ('VP', 'Vérification périodique'),
     ], string="Type de vérification")
     date = fields.Date(string="Date de saisie du rapport", default=fields.Date.today())
