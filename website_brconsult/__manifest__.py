@@ -30,13 +30,7 @@
     ],
     
     'assets': {
-        'web.assets_backend': [
-            
-            'website_brconsult/static/src/js/date_portal.js',
-        ],
         'web.assets_frontend': [
-            
-            'website_brconsult/static/src/js/date_portal.js',
             'website_brconsult/static/js/Chart1.min.js',
             'website_brconsult/static/js/jquery-confirm.min.js',
             'website_brconsult/static/css/jquery-confirm.min.css',
@@ -44,10 +38,7 @@
             'website_brconsult/static/js/portal_graph.js',
             'website_brconsult/static/js/portal_signature_brconsult.js',
         ],
-        # 'web._assets_common_scripts': [
-        #     'web/static/lib/moment/locale/fr.js',
-        #     'website_brconsult/static/src/js/date_portal.js',
-        # ],
+
 
     },
 
