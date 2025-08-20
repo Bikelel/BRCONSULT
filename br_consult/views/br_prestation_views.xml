@@ -301,21 +301,21 @@
                             </page>
                             <page name="characteristic_suspended_platform" string="Caractéristiques de levage" invisible="verification_type not in ['MS', 'RS', 'VP'] or inspection_type != 'levage'">
                                 <group invisible="installation_type not in ['PSM', 'PSE']">
-                                    <field name="characteristic_suspended_platform_ids" nolabel="1" context="{'default_prestation_id':active_id}" readonly="state not in ['phase2', 'phase3']" force_save="1">
+                                    <field name="characteristic_suspended_platform_ids" nolabel="1" context="{'default_prestation_id':id}" readonly="state not in ['phase2', 'phase3']" force_save="1">
                                         <list>
                                             <field name="name"/>
                                         </list>
                                     </field>
                                 </group>
                                 <group invisible="installation_type not in ['PWM', 'ASC', 'PTR', 'MMA']">
-                                    <field name="characteristic_platform_ids" nolabel="1" context="{'default_prestation_id':active_id}" readonly="state not in ['phase2', 'phase3']" force_save="1">
+                                    <field name="characteristic_platform_ids" nolabel="1" context="{'default_prestation_id':id}" readonly="state not in ['phase2', 'phase3']" force_save="1">
                                         <list>
                                             <field name="name"/>
                                         </list>
                                     </field>
                                 </group>
                                 <group invisible="installation_type not in ['TRE', 'PAE', 'PAM']">
-                                    <field name="characteristic_palan_ids" nolabel="1" context="{'default_prestation_id':active_id}" readonly="state not in ['phase2', 'phase3']" force_save="1">
+                                    <field name="characteristic_palan_ids" nolabel="1" context="{'default_prestation_id':id}" readonly="state not in ['phase2', 'phase3']" force_save="1">
                                         <list>
                                             <field name="name"/>
                                         </list>
@@ -361,7 +361,7 @@
                                     </field>
                                 </group>
                                 <group string="Constat (s)" invisible="inspection_type == 'levage' and verification_type == 'VP'">
-                                    <field name="constat_adequacy_exam_ids" nolabel="1" context="{'default_prestation_id':active_id, 'default_type': 'adequacy_exam'}" readonly="state not in ['phase2', 'phase3']">
+                                    <field name="constat_adequacy_exam_ids" nolabel="1" context="{'default_prestation_id':id, 'default_type': 'adequacy_exam'}" readonly="state not in ['phase2', 'phase3']">
                                         <list>
                                             <field name="verification_point_id"/>
                                             <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
@@ -422,7 +422,7 @@
                                     <field name="comment_assembly_exam" string="Commentaires" readonly="state not in ['phase2', 'phase3']" force_save="1"/>
                                 </group>
                                 <group string="Constat (s)" invisible="inspection_type == 'levage' and verification_type == 'VP'">
-                                    <field name="constat_assembly_exam_ids" nolabel="1" readonly="state not in ['phase2', 'phase3']" context="{'default_prestation_id':active_id, 'default_type': 'assembly_exam'}">
+                                    <field name="constat_assembly_exam_ids" nolabel="1" readonly="state not in ['phase2', 'phase3']" context="{'default_prestation_id':id, 'default_type': 'assembly_exam'}">
                                         <list>
                                             <field name="verification_point_id" options="{'no_create': True}"/>
                                             <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
@@ -450,7 +450,7 @@
                                 </group>
 
                                 <group string="Constat (s)">
-                                    <field name="constat_conservation_state_exam_ids" nolabel="1" readonly="state not in ['phase2', 'phase3']" context="{'default_prestation_id':active_id, 'default_type': 'conservation_state_exam'}">
+                                    <field name="constat_conservation_state_exam_ids" nolabel="1" readonly="state not in ['phase2', 'phase3']" context="{'default_prestation_id':id, 'default_type': 'conservation_state_exam'}">
                                         <list>
                                             <field name="verification_point_id" options="{'no_create': True}"/>
                                             <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
@@ -477,7 +477,7 @@
                                 </group>
 
                                 <group string="Constat (s)" invisible="inspection_type != 'levage'">
-                                    <field name="constat_good_functioning_exam_ids" nolabel="1" readonly="state not in ['phase2', 'phase3']" context="{'default_prestation_id':active_id, 'default_type': 'good_functioning'}">
+                                    <field name="constat_good_functioning_exam_ids" nolabel="1" readonly="state not in ['phase2', 'phase3']" context="{'default_prestation_id':id, 'default_type': 'good_functioning'}">
                                         <list>
                                             <field name="verification_point_id" options="{'no_create': True}"/>
                                             <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
@@ -506,7 +506,7 @@
                                     
                                 </group>
                                 <group string="Constat (s)" invisible="verification_type not in ['MS', 'RS']">
-                                    <field name="constat_epreuve_statique_ids" nolabel="1" readonly="state not in ['phase2', 'phase3']" context="{'default_prestation_id':active_id, 'default_type': 'epreuve_statique'}">
+                                    <field name="constat_epreuve_statique_ids" nolabel="1" readonly="state not in ['phase2', 'phase3']" context="{'default_prestation_id':id, 'default_type': 'epreuve_statique'}">
                                         <list>
                                             <field name="verification_point_id" options="{'no_create': True}"/>
                                             <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
@@ -530,7 +530,7 @@
                                     
                                 </group>
                                 <group string="Constat (s)" invisible="verification_type not in ['MS', 'RS']">
-                                    <field name="constat_epreuve_dynamique_ids" nolabel="1" readonly="state not in ['phase2', 'phase3']" context="{'default_prestation_id':active_id, 'default_type': 'epreuve_dynamique'}">
+                                    <field name="constat_epreuve_dynamique_ids" nolabel="1" readonly="state not in ['phase2', 'phase3']" context="{'default_prestation_id':id, 'default_type': 'epreuve_dynamique'}">
                                         <list>
                                             <field name="verification_point_id" options="{'no_create': True}"/>
                                             <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
