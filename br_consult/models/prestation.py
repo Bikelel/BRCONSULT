@@ -362,12 +362,13 @@ class Prestation(models.Model):
         return result
         
     @api.model
-    def _read_group_stage_ids(self, stages, domain, order):
+    def _read_group_stage_ids(self, stages, domain):
         stages = self.env['prestation.stage'].search([])
         search_domain = [('id', 'in', stages.ids)]
         # perform search
-        stage_ids = stages._search(search_domain, order=order, access_rights_uid=SUPERUSER_ID)
+        stage_ids = stages._search(search_domain)
         return stages.browse(stage_ids)
+
     
     @api.onchange('inspection_type', 'installation_type', 'verification_type')
     def onchange_label_header(self):

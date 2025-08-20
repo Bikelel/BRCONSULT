@@ -48,8 +48,7 @@
                     </p>
                 </div>
             </field>
-            <field name="report_template" ref="action_report_prestation"/>
-            <field name="report_name">{{ ('Prestation - %s - %s - %s' % (object.name, object.site_address, object.partner_id.name) or '')}}</field>
+            <field name="report_template_ids" eval="[(4, ref('action_report_prestation'))]"/>
 <!--             <field name="lang">{{object.partner_id.lang}}</field> -->
             
             <field name="auto_delete" eval="True"/>
@@ -99,8 +98,9 @@
                     </p>
                 </div>
             </field>
-            <field name="report_template" ref="action_report_prestation"/>
-            <field name="report_name">{{ ('Prestation - %s - %s - %s' % (object.name, object.site_address, object.partner_id.name) or '')}}</field>
+            
+            <field name="report_template_ids" eval="[(4, ref('action_report_prestation'))]"/>
+
 <!--             <field name="lang">{{object.partner_id.lang}}</field> -->
             
             <field name="auto_delete" eval="True"/>
@@ -153,8 +153,8 @@
                     </p>
                 </div>
             </field>
-            <field name="report_template" ref="action_report_prestation"/>
-            <field name="report_name">{{ ('Prestation - %s - %s - %s' % (object.name, object.site_address, object.partner_id.name) or '') }}</field>
+            <field name="report_template_ids" eval="[(4, ref('action_report_prestation'))]"/>
+            <!-- <field name="report_name">{{ ('Prestation - %s - %s - %s' % (object.name, object.site_address, object.partner_id.name) or '') }}</field> -->
 <!--             <field name="lang">{{object.partner_id.lang}}</field> -->
             <field name="auto_delete" eval="True"/>
         </record>
@@ -211,8 +211,7 @@
                     </p>
                 </div>
             </field>
-            <field name="report_template" ref="action_report_prestation"/>
-            <field name="report_name">{{ ('Prestation - %s - %s - %s' % (object.name, object.site_address, object.partner_id.name) or '') }}</field>
+            <field name="report_template_ids" eval="[(4, ref('action_report_prestation'))]"/>
 <!--             <field name="lang">{{object.partner_id.lang}}</field> -->
             <field name="auto_delete" eval="True"/>
         </record>
