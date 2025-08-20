@@ -5,7 +5,7 @@
             <field name="name">prestation.characteristic.list</field>
             <field name="model">prestation.characteristic</field>
             <field name="arch" type="xml">
-                <tree string="Caractéristique" multi_edit="1" editable="top">
+                <list string="Caractéristique" multi_edit="1" editable="top">
                     <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     <field name="is_default"/>
@@ -13,14 +13,14 @@
                     <field name="is_width"/>
                     <field name="is_height"/>
                     <field name="is_surface"/>
-                </tree>
+                </list>
             </field>
         </record>
 
         <record id="action_prestation_characteristic" model="ir.actions.act_window">
             <field name="name">Caractéristique</field>
             <field name="res_model">prestation.characteristic</field>
-            <field name="view_mode">tree</field>
+            <field name="view_mode">list</field>
         </record>
 
         <menuitem name="Caractéristique" 

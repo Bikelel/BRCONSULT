@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
 
@@ -16,21 +16,21 @@
                             <field name="verification_point_id" options="{'no_create': True,  'no_open':False}" domain="[('type', '=', type), ('inspection_type', '=', inspection_type), ('installation_type', '=', installation_type)]"/>
                             
                             <field name="precision"/>
-                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+                            <field name="photo" options="{&quot;size&quot;:[0,90]}" widget="image"/>
 <!--                             <field name="state"/>
                             <field name="date"/> -->
                             
                         </group>
-                        <group string="Observations/réserves" attrs="{'invisible': [('verification_point_id', '=', False)]}">
-                            <field name="constat_observation_ids"  context="{'default_verification_point_id':verification_point_id}" nolabel="1">
-                                <tree  editable='bottom'>
+                        <group string="Observations/réserves" invisible="not verification_point_id">
+                            <field name="constat_observation_ids" context="{'default_verification_point_id':verification_point_id}" nolabel="1">
+                                <list editable="bottom">
                                     <field name="observation_id" domain="[('verification_point_id', '=', verification_point_id)]" context="{'default_verification_point_id':verification_point_id}"/>
-                                    <field name="verification_point_id"  invisible="1"/>
+                                    <field name="verification_point_id" invisible="1"/>
                                     <field name="reserve"/>
                                     <field name="name" invisible="1"/>
                                     
                                     
-                                </tree>
+                                </list>
                             </field>
                              
                         </group>
@@ -61,7 +61,7 @@
             <field name="name">prestation.constat.list</field>
             <field name="model">prestation.constat</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="verification_point_id" decoration-bf="1"/>
                     <field name="prestation_id"/>
                    
@@ -70,9 +70,9 @@
                     <field name="installation_type"/>
                     <field name="verification_type"/>
                     <field name="precision" optional="hide"/>
-                    <field name="photo" optional="hide" options='{"size":[0,90]}' widget='image'/>
+                    <field name="photo" optional="hide" options="{&quot;size&quot;:[0,90]}" widget="image"/>
                    
-                </tree>
+                </list>
             </field>
         </record>
         <record model="ir.ui.view" id="view_prestation_constat_graph">
@@ -91,15 +91,10 @@
             <field name="res_model">prestation.constat</field>
             <field name="context">{'search_default_customer': 1, 'search_default_verifcation_point': 1}</field>
             <field name="domain">[('prestation_id', '!=', False)]</field>
-            <field name="view_mode">graph,tree,form</field>
+            <field name="view_mode">graph,list,form</field>
         </record>
         
-        <menuitem id="br_consult_constat_list_menu"
-        name="Statistiques constat"
-        parent="br_consult_statistiques_menu"
-        action="action_prestation_constat_list"
-        groups="base.group_system"
-        sequence="35"/>
+        <menuitem id="br_consult_constat_list_menu" name="Statistiques constat" parent="br_consult_statistiques_menu" action="action_prestation_constat_list" groups="base.group_system" sequence="35"/>
          
         
 
