@@ -21,14 +21,14 @@
             </div>
             
         </xpath>
-        <xpath expr="//div[@name='company_address']" position="attributes">
+        <!-- <xpath expr="//div[@name='company_address']" position="attributes">
             <attribute name="t-if">1==0</attribute>
-        </xpath>
-        <xpath expr="//div[hasclass('zero_min_height')]" position="attributes">
+        </xpath> -->
+        <xpath expr="//div[hasclass('o_company_tagline')]" position="attributes">
             <attribute name="class">row zero_min_height not-first-page</attribute>
         </xpath>
         
-        <xpath expr="//div[@t-attf-class='footer o_standard_footer o_company_#{company.id}_layout']" position="replace">
+        <!-- <xpath expr="//div[hasclass('footer')]" position="replace">
             <div class="footer">
           <div style="border-top: 1px solid black;">
             <div class="row">
@@ -51,7 +51,7 @@
         </div>
             
             
-        </xpath>
+        </xpath> -->
 
     </template>
 </odoo>

@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
         <record id="view_prestation_report_parameter_list" model="ir.ui.view">
             <field name="name">prestation.report.parameter.list</field>
             <field name="model">prestation.report.parameter</field>
             <field name="arch" type="xml">
-                <tree string="Report parameter">
+                <list string="Report parameter">
                     <field name="name"/>
-                </tree>
+                </list>
             </field>
         </record>
         <record id="view_prestation_report_parameter_form" model="ir.ui.view">
@@ -22,7 +22,7 @@
                             </group>
                             <group>
                                 <field name="inspection_type" required="1"/>
-                                <field name="installation_type" attrs="{'invisible': [('inspection_type', '!=', 'levage')], 'required': [('inspection_type', '=', 'levage')]}"/>
+                                <field name="installation_type" invisible="inspection_type != 'levage'" required="inspection_type == 'levage'"/>
                             </group>
                         </group>
                         
@@ -42,13 +42,13 @@
                             <field name="conservation_state"/>
                         </group>
                         <group>
-                            <field name="good_functionning" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                            <field name="good_functionning" invisible="inspection_type != 'levage'"/>
                         </group>
                         <group>
-                            <field name="epreuve_statique" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                            <field name="epreuve_statique" invisible="inspection_type != 'levage'"/>
                         </group>
                         <group>
-                            <field name="epreuve_dynamique" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                            <field name="epreuve_dynamique" invisible="inspection_type != 'levage'"/>
                         </group>
                         
                         
@@ -61,14 +61,10 @@
         <record id="action_prestation_report_parameter" model="ir.actions.act_window">
             <field name="name">report.parameter</field>
             <field name="res_model">prestation.report.parameter</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
-        <menuitem name="Champs texte du rapport" 
-              id="br_consult_menu_prestation_report_parameter" 
-              parent="br_consult_settings_menu"
-              sequence="30"
-              action="action_prestation_report_parameter"/>
+        <menuitem name="Champs texte du rapport" id="br_consult_menu_prestation_report_parameter" parent="br_consult_settings_menu" sequence="30" action="action_prestation_report_parameter"/>
 
   </data>
 </odoo>

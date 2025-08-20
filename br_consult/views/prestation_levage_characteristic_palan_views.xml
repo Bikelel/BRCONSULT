@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
         <record id="view_prestation_levage_characteristic_palan_list" model="ir.ui.view">
             <field name="name">prestation.levage.characteristic.palan.list</field>
             <field name="model">prestation.levage.characteristic.palan</field>
             <field name="arch" type="xml">
-                <tree string="Caractéristique de l'installation">
+                <list string="Caractéristique de l'installation">
                     <field name="name"/>
-                </tree>
+                </list>
             </field>
         </record>
         <record id="view_prestation_levage_characteristic_palan_form" model="ir.ui.view">
@@ -27,21 +27,21 @@
                             <group>
                                 <field name="palan_access_id"/>
                                 <field name="suspension_mode"/>
-                                <field name="other_suspension_mode" attrs="{'invisible': [('suspension_mode', '!=', 'other')]}"/>
-                                <field name="cote_poutre" attrs="{'invisible': [('suspension_mode', '!=', 'poutre_lestees')]}"/>
-                                <field name="noted_lest" attrs="{'invisible': [('suspension_mode', '!=', 'poutre_lestees')]}"/>
-                                <field name="preconized_lest" attrs="{'invisible': [('suspension_mode', '!=', 'poutre_lestees')]}"/>
-                                <field name="difference_lest" attrs="{'invisible': [('suspension_mode', '!=', 'poutre_lestees')]}"/>
+                                <field name="other_suspension_mode" invisible="suspension_mode != 'other'"/>
+                                <field name="cote_poutre" invisible="suspension_mode != 'poutre_lestees'"/>
+                                <field name="noted_lest" invisible="suspension_mode != 'poutre_lestees'"/>
+                                <field name="preconized_lest" invisible="suspension_mode != 'poutre_lestees'"/>
+                                <field name="difference_lest" invisible="suspension_mode != 'poutre_lestees'"/>
                                 <field name="height"/>
                                 <field name="platform_palan_mark_id"/>
                                 
                                 <field name="modele"/>
                                 <field name="num_fabrication"/>
-                                <field name="fabrication_year" />
+                                <field name="fabrication_year"/>
                                 <field name="circulation_year"/>
                                 <field name="capacity_nominale"/>
                                 <field name="is_taree"/>
-                                <field name="capacity_taree" attrs="{'invisible': [('is_taree', '=', False)]}"/>
+                                <field name="capacity_taree" invisible="not is_taree"/>
                                 <field name="alimentation"/>
                                 <field name="move_speed"/>
                                 <field name="wind_speed_max_id"/>

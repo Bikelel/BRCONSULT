@@ -5,19 +5,19 @@
             <field name="name">prestation.motif.rs.list</field>
             <field name="model">prestation.motif.rs</field>
             <field name="arch" type="xml">
-                <tree string="Motif" multi_edit="1" editable="top">
+                <list string="Motif" multi_edit="1" editable="top">
                     <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     <field name="inspection_type"/>
                     
-                </tree>
+                </list>
             </field>
         </record>
 
         <record id="action_prestation_motif_rs" model="ir.actions.act_window">
             <field name="name">Motif de remise en service</field>
             <field name="res_model">prestation.motif.rs</field>
-            <field name="view_mode">tree</field>
+            <field name="view_mode">list</field>
         </record>
 
         <menuitem name="Motif de remise en service" 

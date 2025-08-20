@@ -5,17 +5,17 @@
             <field name="name">prestation.platform.assembly.mat.list</field>
             <field name="model">prestation.platform.assembly.mat</field>
             <field name="arch" type="xml">
-                <tree string="Assemblage de la plateforme MAT" multi_edit="1" editable="top">
+                <list string="Assemblage de la plateforme MAT" multi_edit="1" editable="top">
                     <field name="sequence" widget="handle"/>
                     <field name="name"/>
-                </tree>
+                </list>
             </field>
         </record>
 
         <record id="action_prestation_platform_assembly_mat" model="ir.actions.act_window">
             <field name="name">Assemblage de la plateforme mat</field>
             <field name="res_model">prestation.platform.assembly.mat</field>
-            <field name="view_mode">tree</field>
+            <field name="view_mode">list</field>
         </record>
 
         <menuitem name="Assemblage de la plateforme MAT" 

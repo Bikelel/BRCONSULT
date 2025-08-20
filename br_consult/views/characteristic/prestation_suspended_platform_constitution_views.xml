@@ -5,18 +5,18 @@
             <field name="name">prestation.suspended.platform.constitution.list</field>
             <field name="model">prestation.suspended.platform.constitution</field>
             <field name="arch" type="xml">
-                <tree string="Constitution de la plateforme suspendue" multi_edit="1" editable="top">
+                <list string="Constitution de la plateforme suspendue" multi_edit="1" editable="top">
                     <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     
-                </tree>
+                </list>
             </field>
         </record>
 
         <record id="action_prestation_suspended_platform_constitution" model="ir.actions.act_window">
             <field name="name">Constitution de la plateforme suspendue</field>
             <field name="res_model">prestation.suspended.platform.constitution</field>
-            <field name="view_mode">tree</field>
+            <field name="view_mode">list</field>
         </record>
 
         <menuitem name="Constitution de la plateforme suspendue" 
