@@ -110,9 +110,9 @@
     'installable': True,
     'auto_install': False,
     'license': 'LGPL-3',
-    "assets": {
-        "web.assets_backend": [
-            "br_consult/static/src/css/backend.less"
-        ]
-    }
+    # "assets": {
+    #     "web.assets_backend": [
+    #         "br_consult/static/src/css/backend.less"
+    #     ]
+    # }
 }
