@@ -24,34 +24,32 @@
         <!-- <xpath expr="//div[@name='company_address']" position="attributes">
             <attribute name="t-if">1==0</attribute>
         </xpath> -->
+        <xpath expr="//div[div[img[hasclass('o_company_logo_small')]]]" position="attributes">
+            <attribute name="t-if">1==0</attribute>
+        </xpath>
         <xpath expr="//div[hasclass('o_company_tagline')]" position="attributes">
             <attribute name="class">row zero_min_height not-first-page</attribute>
         </xpath>
         
-        <!-- <xpath expr="//div[hasclass('footer')]" position="replace">
-            <div class="footer">
-          <div style="border-top: 1px solid black;">
-            <div class="row">
-                <div name="image_logo" style="margin-top:5px;" class="text-center col-1"/>
-                <div name="image_logo" style="margin-top:5px;" class="text-center col-10">
-                    <img src="/br_consult/static/src/img/ISO-9001-1.png" style="max-height: 30px;" alt="iso_9001"/>
-                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 30px; margin-left:10px;" alt="Logo"/>
-                    <img src="br_consult/static/src/img/Logo-Mileezim.png" style="max-height: 30px;" alt="Mileezim"/>
-                </div>
-                <div t-if="report_type == 'pdf'" class="text-right col-1" style="font-size:9px;">
-                    <span class="page"/> / <span class="topage"/>
+        <xpath expr="//div[hasclass('o_footer_content')]" position="replace">
+            <div>
+                <div style="border-top: 1px solid black;">
+                    <div class="row">
+                        <div name="image_logo" style="margin-top:5px;" class="text-center col-1"/>
+                        <div name="image_logo" style="margin-top:5px;" class="text-center col-10">
+                            <img src="/br_consult/static/src/img/ISO-9001-1.png" style="max-height: 30px;" alt="iso_9001"/>
+                            <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 30px; margin-left:10px;" alt="Logo"/>
+                            <img src="br_consult/static/src/img/Logo-Mileezim.png" style="max-height: 30px;" alt="Mileezim"/>
+                        </div>
+                        <div t-if="report_type == 'pdf'" class="text-right col-1" style="font-size:9px;">
+                            <span class="page"/> / <span class="topage"/>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <span t-field="company.report_footer"/>
+                    </div>
                 </div>
             </div>
-            <div class="text-center">
-              <span t-field="company.report_footer"/>
-            </div>
-
-
-          </div>
-        </div>
-            
-            
-        </xpath> -->
-
+        </xpath>
     </template>
 </odoo>
