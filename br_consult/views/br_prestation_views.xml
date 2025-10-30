@@ -33,7 +33,7 @@
                     <filter string="Echafaudage" name="echafaudage" domain="[('inspection_type', '=', 'echafaudage')]"/>
                     <separator/>
                     <filter string="Levage" name="levage" domain="[('inspection_type', '=', 'levage')]"/>
-                    <group expand="0" string="Group By">
+                    <group>
                         <filter string="Phases" name="stage" context="{'group_by': 'stage_id'}"/>
                         <filter string="Inspecteur" name="user" context="{'group_by': 'user_id'}"/>
                         <filter string="Entreprise" name="customer" context="{'group_by': 'partner_id'}"/>
