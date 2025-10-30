@@ -49,7 +49,7 @@
                     <filter string="Echafaudage" name="echafaudage" domain="[('inspection_type', '=', 'echafaudage')]"/>
                     <separator/>
                     <filter string="Levage" name="levage" domain="[('inspection_type', '=', 'levage')]"/>
-                    <group expand="0" string="Group By">
+                    <group>
                         <filter string="Entreprise" name="customer" context="{'group_by': 'partner_id'}"/>
                         <filter string="Point de verification" name="verifcation_point" context="{'group_by': 'verification_point_id'}"/>
 
