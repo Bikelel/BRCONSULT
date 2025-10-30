@@ -31,12 +31,12 @@
     
     'assets': {
         'web.assets_frontend': [
-            'website_brconsult/static/js/Chart1.min.js',
-            'website_brconsult/static/js/jquery-confirm.min.js',
-            'website_brconsult/static/css/jquery-confirm.min.css',
-            'website_brconsult/static/css/style.css',
-            'website_brconsult/static/js/portal_graph.js',
-            'website_brconsult/static/js/portal_signature_brconsult.js',
+            'website_brconsult/static/src/js/Chart1.min.js',
+            'website_brconsult/static/src/js/jquery-confirm.min.js',
+            'website_brconsult/static/src/scss/jquery-confirm.min.css',
+            'website_brconsult/static/src/scss/style.css',
+            # 'website_brconsult/static/src/js/portal_graph.js',
+            # 'website_brconsult/static/src/js/portal_signature_brconsult.js',
         ],
 
 

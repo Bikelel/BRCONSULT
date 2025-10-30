@@ -474,7 +474,7 @@
                                         </list>
                                     </field>
                                 </group>
-                                <h1 class="headding_1">4.3- Examen de l'etat de conservation</h1>
+                                <h1 class="headding_1">4.3- Examen de l'état de conservation</h1>
                                 <group>
                                     <field name="conservation_state_exam_ids" nolabel="1" readonly="state in ['phase1']">
                                         <list editable="bottom" delete="false" create="false">
