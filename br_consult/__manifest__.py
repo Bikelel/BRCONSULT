@@ -112,7 +112,7 @@
     'license': 'LGPL-3',
     "assets": {
         "web.assets_backend": [
-            "br_consult/static/src/css/backend.less"
+            "br_consult/static/src/css/backend.scss"
         ]
     }
 }

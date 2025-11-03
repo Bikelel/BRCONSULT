@@ -227,7 +227,7 @@ La présente mission est réalisée conformément au contrat référencé
                     <t t-else=""> <span t-field="doc.installation_type"/> </t>
                     accessibles en sécurité. 
                     <br/>
-                    <t t-if="doc.verification_type in ['RS', 'VP']">Motif de remise en service: <span t-field="doc.motif_rs_id"/><br/>
+                    <t t-if="doc.verification_type in ['RS']">Motif de remise en service: <span t-field="doc.motif_rs_id"/><br/>
                         <div class="row" t-if="doc.prestation_id or doc.autre_prestation">
                             <div class="col-6">Référence du rapport précédent : <span t-field="doc.prestation_id.name" t-if="doc.prestation_id"/><span t-field="doc.autre_prestation" t-if="not doc.prestation_id and doc.autre_prestation"/>
                                 
@@ -731,6 +731,10 @@ La présente mission est réalisée conformément au contrat référencé
                             <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.num_fabrication"/></td>
                         </tr>
                         <tr>
+                            <td>Année de fabrication</td>
+                            <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.fabrication_year"/></td>
+                        </tr>
+                        <tr>
                             <td>Année de mise en circulation</td>
                             <td t-foreach="doc.characteristic_palan_ids" t-as="charac"><span t-field="charac.circulation_year"/></td>
                         </tr>
@@ -884,7 +888,7 @@ La présente mission est réalisée conformément au contrat référencé
                                         <ol>
                                             <t t-foreach="constat.constat_observation_ids" t-as="observation">
                                                 <li><t t-if="observation.reserve">
-                                                        <span style="font-weight:bold;" t-field="observation.name"/>
+                                                        <span style="font-weight:bold; color:red;" t-field="observation.name"/>
                                                      </t>
                                                     <t t-else=""><span t-field="observation.name"/></t>
                                                 </li>
@@ -1065,7 +1069,7 @@ La présente mission est réalisée conformément au contrat référencé
                                         <ol>
                                             <t t-foreach="constat.constat_observation_ids" t-as="observation">
                                                 <li><t t-if="observation.reserve">
-                                                    <span style="font-weight:bold;" t-field="observation.name"/>
+                                                    <span style="font-weight:bold; color:red;" t-field="observation.name"/>
                                                      </t>
                                                     <t t-else=""><span t-field="observation.name"/></t>
                                                 </li>
@@ -1085,7 +1089,7 @@ La présente mission est réalisée conformément au contrat référencé
                 </div>
                 <div style="page-break-inside: avoid;">
                 <div style="color: #318CE7;" class="bloc_sub_title">
-                   4.3) Examen de l'etat de conservation:
+                   4.3) Examen de l'état de conservation:
                 </div>
                 
                 <div t-if="doc.report_parameter_id and doc.report_parameter_id.conservation_state">
@@ -1127,7 +1131,7 @@ La présente mission est réalisée conformément au contrat référencé
                                     <ol>
                                         <t t-foreach="constat.constat_observation_ids" t-as="observation">
                                             <li><t t-if="observation.reserve">
-                                                    <span style="font-weight:bold;" t-field="observation.name"/>
+                                                    <span style="font-weight:bold;color:red;" t-field="observation.name"/>
                                                  </t>
                                                 <t t-else=""><span t-field="observation.name"/></t>
                                             </li>
@@ -1188,7 +1192,7 @@ La présente mission est réalisée conformément au contrat référencé
                                         <ol>
                                             <t t-foreach="constat.constat_observation_ids" t-as="observation">
                                                 <li><t t-if="observation.reserve">
-                                                        <span style="font-weight:bold;" t-field="observation.name"/>
+                                                        <span style="font-weight:bold;color:red;" t-field="observation.name"/>
                                                      </t>
                                                     <t t-else=""><span t-field="observation.name"/></t>
                                                 </li>
@@ -1270,7 +1274,7 @@ La présente mission est réalisée conformément au contrat référencé
                                         <ol>
                                             <t t-foreach="constat.constat_observation_ids" t-as="observation">
                                                 <li><t t-if="observation.reserve">
-                                                        <span style="font-weight:bold;" t-field="observation.name"/>
+                                                        <span style="font-weight:bold;color:red;" t-field="observation.name"/>
                                                      </t>
                                                     <t t-else=""><span t-field="observation.name"/></t>
                                                 </li>
@@ -1343,7 +1347,7 @@ La présente mission est réalisée conformément au contrat référencé
                                         <ol>
                                             <t t-foreach="constat.constat_observation_ids" t-as="observation">
                                                 <li><t t-if="observation.reserve">
-                                                        <span style="font-weight:bold;" t-field="observation.name"/>
+                                                        <span style="font-weight:bold;color:red;" t-field="observation.name"/>
                                                      </t>
                                                     <t t-else=""><span t-field="observation.name"/></t>
                                                 </li>

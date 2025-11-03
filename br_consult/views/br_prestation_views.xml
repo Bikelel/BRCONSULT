@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
         <record id="view_prestation_prestation_list" model="ir.ui.view">
             <field name="name">prestation.prestation.list</field>
             <field name="model">prestation.prestation</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" decoration-bf="1"/>
                     <field name="user_id" widget="many2one_avatar_user" optional="show"/>
                     <field name="create_date" string="Date de creation" widget="date" optional="hide"/>
@@ -15,7 +15,7 @@
                     <field name="verification_type"/>
                     <field name="partner_id"/>
                     <field name="company_id" invisible="1"/>
-                </tree>
+                </list>
             </field>
         </record>
         <record id="view_prestation_search_form" model="ir.ui.view">
@@ -33,7 +33,7 @@
                     <filter string="Echafaudage" name="echafaudage" domain="[('inspection_type', '=', 'echafaudage')]"/>
                     <separator/>
                     <filter string="Levage" name="levage" domain="[('inspection_type', '=', 'levage')]"/>
-                    <group expand="0" string="Group By">
+                    <group>
                         <filter string="Phases" name="stage" context="{'group_by': 'stage_id'}"/>
                         <filter string="Inspecteur" name="user" context="{'group_by': 'user_id'}"/>
                         <filter string="Entreprise" name="customer" context="{'group_by': 'partner_id'}"/>
@@ -47,33 +47,70 @@
             <field name="model">prestation.prestation</field>
             <field name="priority" eval="100"/>
             <field name="arch" type="xml">
-                <kanban default_group_by="stage_id" class="oe_background_grey o_kanban_dashboard">
+                <kanban
+                    highlight_color="kanban_color"
+                    default_group_by="stage_id"
+                    class="o_kanban_dashboard"
+                    on_create="quick_create"
+                    quick_create_view="br_consult.quick_calendar_form_view_prestation"
+                    default_order="verification_date asc, id desc"
+                >
+                    <!-- Champs préchargés -->
+                    <field name="stage_id"/>
                     <field name="name"/>
                     <field name="partner_id"/>
                     <field name="inspection_type"/>
+                    <field name="site_address"/>
+                    <field name="verification_date"/>
                     <field name="user_id"/>
-                    <field name="kanban_color" invisible="1" force_save="1"/>
+                    <field name="kanban_color" invisible="1"/>
+                    <field name="activity_ids"/>
+        
+                    <!-- Barre de progression par état (tu peux ajuster les classes) -->
+                    <progressbar field="state"
+                        colors='{"phase1":"200", "phase2":"info", "phase3":"warning", "phase4":"success-done"}'/>
+        
                     <templates>
-                        <t t-name="kanban-box">
-                            <div t-attf-class="oe_kanban_content oe_kanban_global_click  oe_kanban_card #{kanban_color(record.kanban_color.raw_value)}">
-                                <div><strong class="o_kanban_record_title"><span> Date de vérification : <field name="verification_date"/></span></strong></div> 
-                                <div><strong class="o_kanban_record_title"><span> Numéro de rapport : <field name="name"/></span></strong></div>
-                                <div><span class="o_kanban_record_subtitle"> <strong> Entreprise : </strong> <field name="partner_id"/></span></div>
-                                <div>
-                                    <span class="o_kanban_record_subtitle"> <strong> Type de prestation : </strong><field     name="inspection_type"/></span>
-                                     <span class="o_kanban_record_subtitle"> <strong> Adresse du chantier : </strong><field name="site_address"/></span>
+                        <!-- Menu contextuel (clic sur les 3 points) -->
+                        <t t-name="menu" t-if="!selection_mode" groups="base.group_user">
+                            <a class="dropdown-item" role="menuitem" type="object" name="copy">Dupliquer</a>
+                            <div role="separator" class="dropdown-divider"></div>
+                            <!-- Color picker lié à ton champ entier kanban_color -->
+                            <field name="kanban_color" widget="kanban_color_picker"/>
+                        </t>
+        
+                        <!-- Carte kanban -->
+                        <t t-name="card">
+                            <main>
+                                <field name="name" class="fw-bold fs-5"/>
+                                <div class="text-muted d-flex flex-column">
+                                    <field name="partner_id"/>
+                                    <field name="site_address"/>
                                 </div>
-                                <div class="o_kanban_record_bottom">
-                                    <div class="oe_kanban_bottom_right">
+        
+                                <div class="mt-1">
+                                    <field name="inspection_type" widget="badge"/>
+                                    <span class="ms-2">
+                                        <strong>Date de vérification :</strong>
+                                        <field name="verification_date"/>
+                                    </span>
+                                </div>
+        
+                                <footer t-if="!selection_mode" class="pt-1 d-flex align-items-center">
+                                    <div class="d-flex align-items-center gap-1">
+                                        <field name="activity_ids" widget="kanban_activity"/>
+                                    </div>
+                                    <div class="d-flex ms-auto">
                                         <field name="user_id" widget="many2one_avatar_user"/>
                                     </div>
-                                </div>
-                            </div>
+                                </footer>
+                            </main>
                         </t>
                     </templates>
                 </kanban>
             </field>
         </record>
+
         <record model="ir.ui.view" id="view_prestation_graph">
             <field name="name">prestation.prestation.graph</field>
             <field name="model">prestation.prestation</field>
@@ -129,81 +166,81 @@
                 <form string="Prestation">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="phase1,phase2,phase3,phase4" force_save="1"/>
-                        <button name="button_send_confirmation_prestation" string="Envoyer la confirmation de planning au client" type="object" attrs="{'invisible': [('state_confirmation_sent', '!=', 'draft')]}" class="btn-primary" />
+                        <button name="button_send_confirmation_prestation" string="Envoyer la confirmation de planning au client" type="object" invisible="state_confirmation_sent != 'draft'" class="btn-primary"/>
                         
-                        <button name="button_phase2" string="Envoyer vers Phase 2" type="object" attrs="{'invisible': [('state', '!=', 'phase1')]}" class="btn-primary" />
-                       <button name="button_phase3" string="Envoyer vers Phase 3" type="object" attrs="{'invisible': [('state', '!=', 'phase2')]}" class="btn-primary" />
-                        <button name="button_phase4" string="Envoyer vers Phase 4" type="object" attrs="{'invisible': [('state', '!=', 'phase3')]}" class="btn-primary"/>
-                        <button name="button_send_report" string="Envoyer le rapport" type="object" attrs="{'invisible': ['|',('state', '!=', 'phase4'), ('is_report_sent', '=', True)]}" class="btn-primary"/>
-                        <button name="button_send_report" string="Envoyer le rapport" type="object" attrs="{'invisible': [('is_report_sent', '=', False)]}" groups="base.group_system"/>
-                        <button name="button_send_alert_end_chantier" string="Envoyer l'alerte manuellement" type="object" attrs="{'invisible': ['|',('sent_alert_end_chantier', '=', True), ('is_report_sent', '=', False)]}" class="btn-primary"/>
-                        <button name="button_send_alert_end_chantier" string="Renvoyer l'alerte manuellement" type="object" attrs="{'invisible': [('sent_alert_end_chantier', '=', False)]}"/>
+                        <button name="button_phase2" string="Envoyer vers Phase 2" type="object" invisible="state != 'phase1'" class="btn-primary"/>
+                       <button name="button_phase3" string="Envoyer vers Phase 3" type="object" invisible="state != 'phase2'" class="btn-primary"/>
+                        <button name="button_phase4" string="Envoyer vers Phase 4" type="object" invisible="state != 'phase3'" class="btn-primary"/>
+                        <button name="button_send_report" string="Envoyer le rapport" type="object" invisible="state != 'phase4' or is_report_sent" class="btn-primary"/>
+                        <button name="button_send_report" string="Envoyer le rapport" type="object" invisible="not is_report_sent" groups="base.group_system"/>
+                        <button name="button_send_alert_end_chantier" string="Envoyer l'alerte manuellement" type="object" invisible="sent_alert_end_chantier or not is_report_sent" class="btn-primary"/>
+                        <button name="button_send_alert_end_chantier" string="Renvoyer l'alerte manuellement" type="object" invisible="not sent_alert_end_chantier"/>
                     </header>
                     <sheet>
                         <div class="prestation_sheet_header">
                             <div class="prestation_sheet_header_fiche">Fiche d'intervention</div>
-                            <div class="prestation_name" attrs="{'invisible': [('title_label', '=', '')]}">
+                            <div class="prestation_name" invisible="title_label == ''">
                                 <field name="title_label" readonly="1" force_save="1"/>
                             </div>
-                            <div class="prestation_sheet_header_reference" attrs="{'invisible': [('message_label', '=', '')]}">
+                            <div class="prestation_sheet_header_reference" invisible="message_label == ''">
                                 <field name="message_label" readonly="1" force_save="1"/>
                             </div>
                         </div>
                         <group>
                             <group>
-                                <field name="inspection_type" required="1" attrs="{'readonly': [('state', '!=', 'phase1')]}"/>
-                                <field name="report_parameter_id" invisible="1" />
-                                <field name="is_report_sent" invisible="1" />
+                                <field name="inspection_type" required="1" readonly="state != 'phase1'"/>
+                                <field name="report_parameter_id" invisible="1"/>
+                                <field name="is_report_sent" invisible="1"/>
                                 <field name="state_confirmation_sent" invisible="1"/>
                             </group>
                             <group>
-                                <field name="installation_type" attrs="{'invisible': [('inspection_type', '!=', 'levage')], 'required': [('inspection_type', '=', 'levage')], 'readonly': [('state', '!=', 'phase1')]}" />
-                                <field name="verification_type" required='1' attrs="{'readonly': [('state', '!=', 'phase1')]}"/>
+                                <field name="installation_type" invisible="inspection_type != 'levage'" required="inspection_type == 'levage'" readonly="state != 'phase1'"/>
+                                <field name="verification_type" required="1" readonly="state != 'phase1'"/>
                             </group>
                         </group>
                         <notebook>
-                            <page name='fiche' string="Fiche" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                            <page name="fiche" string="Fiche" invisible="verification_type not in ['MS', 'RS', 'VP']">
                                 <group>
                                     <group>
                                         <field name="name" readonly="1" force_save="1"/>
                                         <field name="company_id" invisible="1"/>
-                                        <field name="requested_date" attrs="{'readonly': [('state', 'not in', ['phase1'])]}"/>
+                                        <field name="requested_date" readonly="state not in ['phase1']"/>
                                         
-                                        <field name="partner_id" required="1" domain="[('is_company', '=', True)]" options="{'no_create': True}" attrs="{'readonly': [('state', 'not in', ['phase1'])]}"/>
-                                        <field name="partner_contact" attrs="{'readonly': [('state', 'not in', ['phase1'])]}"/>
-                                        <field name="email_partner_ids" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2', 'phase3'])]}" widget="many2many_tags_email" domain="[('parent_id', '=', partner_id)]"/>
-                                        <field name="site_address" required="1" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase3'])]}"/>
+                                        <field name="partner_id" required="1" domain="[('is_company', '=', True)]" options="{'no_create': True}" readonly="state not in ['phase1']"/>
+                                        <field name="partner_contact" readonly="state not in ['phase1']"/>
+                                        <field name="email_partner_ids" readonly="state not in ['phase1', 'phase2', 'phase3']" widget="many2many_tags_email" domain="[('parent_id', '=', partner_id)]"/>
+                                        <field name="site_address" required="1" readonly="state not in ['phase1', 'phase3']"/>
                                         <field name="zip"/>
                                         <field name="department_id"/>
                                         
                                         
                                         <field name="country_id"/>
                                         
-                                        <field name="site_localisation" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2'])]}"/>
+                                        <field name="site_localisation" readonly="state not in ['phase1', 'phase2']"/>
                                     </group>
                                     <group>
-                                        <field name="date" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2'])]}"/>
+                                        <field name="date" readonly="state not in ['phase1', 'phase2']"/>
                                         
-                                        <field name="verification_date" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase3'])]}"/>
+                                        <field name="verification_date" readonly="state not in ['phase1', 'phase3']"/>
                                         <field name="end_date_verification" invisible="1"/>
-                                        <field name="chantier_duration" attrs="{'readonly': [('state', 'not in', ['phase1', 'phase2', 'phase3'])]}"/>
+                                        <field name="chantier_duration" readonly="state not in ['phase1', 'phase2', 'phase3']"/>
                                         <field name="end_date_chantier" invisible="1"/>
                                         <field name="verification_point_ids" widget="many2many_tags" invisible="1"/>
                                         
                                         <field name="sent_alert_end_chantier" invisible="1"/>
                                         
-                                        <field name="user_id" domain="[('is_inspector', '=', True)]" attrs="{'readonly': [('state', 'not in', ['phase1'])]}"/>
-                                        <field name="mentor_id" domain="[('is_mentor', '=', True)]" context="{'default_is_mentor':True}"  attrs="{'readonly': [('state', 'in', ['phase4'])]}"/>
-                                        <field name="prensent_contact" attrs="{'readonly': [('state', 'not in', ['phase3', 'phase2'])]}"/>
-                                        <field name="scaffolding_surface" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')], 'readonly': [('state', 'not in', ['phase1'])]}"/>
-                                        <field name="inspected_scaffolding_surface" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}" widget="integer"/>
-                                        <field name="announced_installation_number" attrs="{'invisible': [('inspection_type', '!=', 'levage')], 'readonly': [('state', 'not in', ['phase1'])]}"/>
-                                        <field name="inspected_installation_number" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                                        <field name="user_id" domain="[('is_inspector', '=', True)]" readonly="state not in ['phase1']"/>
+                                        <field name="mentor_id" domain="[('is_mentor', '=', True)]" context="{'default_is_mentor':True}" readonly="state in ['phase4']"/>
+                                        <field name="prensent_contact" readonly="state not in ['phase3', 'phase2']"/>
+                                        <field name="scaffolding_surface" invisible="inspection_type != 'echafaudage'" readonly="state not in ['phase1']"/>
+                                        <field name="inspected_scaffolding_surface" invisible="inspection_type != 'echafaudage'" widget="integer"/>
+                                        <field name="announced_installation_number" invisible="inspection_type != 'levage'" readonly="state not in ['phase1']"/>
+                                        <field name="inspected_installation_number" invisible="inspection_type != 'levage'"/>
                                     </group>
                                 </group>
                                 <group string="Conformité de l’installation">
 <!--                                     <group> -->
-                                        <field name="opinion" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])], 'required': [('state', 'in', ['phase2', 'phase3'])]}"/>
+                                        <field name="opinion" readonly="state not in ['phase2', 'phase3']" required="state in ['phase2', 'phase3']"/>
                                         
 <!--                                         <field name="favorable_opinion" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
                                         <field name="opinion_with_observation" attrs="{'readonly': [('state', 'not in', [ 'phase2', 'phase3'])]}"/> -->
@@ -214,181 +251,181 @@
 <!--                                     </group> -->
                                 </group>
                                 <group string="Commentaires">
-                                    <field name="comment_observation_fiche" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                    <field name="comment_observation_fiche" nolabel="1" readonly="state not in ['phase2', 'phase3']"/>
                                 </group>
                                 <group string="Visa de l’inspecteur technique">
                                     <group>
-                                        <field name='visa_user' widget='image' options='{"size":[0,180]}'/>
+                                        <field name="visa_user" widget="image" options="{&quot;size&quot;:[0,180]}"/>
                                     </group>
                                 </group>
                             </page>
-                            <page name='scope_mission' string="Périmètre de la mission" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                            <page name="scope_mission" string="Périmètre de la mission" invisible="verification_type not in ['MS', 'RS', 'VP']">
                                 <group>
-                                    <field name="motif_rs_id" attrs="{'invisible': [('verification_type', 'not in', ['RS'])], 'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}" domain="[('inspection_type', '=', inspection_type)]"/>
+                                    <field name="motif_rs_id" invisible="verification_type not in ['RS']" readonly="state not in ['phase1', 'phase2', 'phase3']" domain="[('inspection_type', '=', inspection_type)]"/>
                                     
-                                    <field name="contrat_ref" string="La mission est réalisée conformément au contrat réf" attrs="{'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}"/>
-                                    <field name="prestation_id" attrs="{'invisible': [('verification_type', 'not in', ['RS', 'VP'])], 'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}" domain="[('inspection_type', '=', inspection_type), ('installation_type', '=', installation_type), ('is_report_sent', '=', True)]" options="{'no_create': True}"/>
-                                    <field name="autre_prestation" attrs="{'invisible': ['|', ('prestation_id', '!=', False), ('verification_type', 'not in', ['RS', 'VP'])], 'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}" placeholder="Si le repport n'existe pas dans la base, mentionner manullement une réf ici!!"/>
+                                    <field name="contrat_ref" string="La mission est réalisée conformément au contrat réf" readonly="state not in ['phase1', 'phase2', 'phase3']"/>
+                                    <field name="prestation_id" invisible="verification_type not in ['RS', 'VP']" readonly="state not in ['phase1', 'phase2', 'phase3']" domain="[('inspection_type', '=', inspection_type), ('installation_type', '=', installation_type), ('is_report_sent', '=', True)]" options="{'no_create': True}"/>
+                                    <field name="autre_prestation" invisible="prestation_id or verification_type not in ['RS', 'VP']" readonly="state not in ['phase1', 'phase2', 'phase3']" placeholder="Si le repport n'existe pas dans la base, mentionner manullement une réf ici!!"/>
                                     
                                     
-                                    <field name="scope_mission_date" attrs="{'invisible':[('verification_type', 'not in', ['RS', 'VP'])], 'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}"/>
+                                    <field name="scope_mission_date" invisible="verification_type not in ['RS', 'VP']" readonly="state not in ['phase1', 'phase2', 'phase3']"/>
                                 </group>
                                 <group string="Commentaires">
-                                    <field name="comment_scope_mission" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}"/>
+                                    <field name="comment_scope_mission" nolabel="1" readonly="state not in ['phase1', 'phase2', 'phase3']"/>
                                 </group>
                             </page>
-                            <page name='scaffolding_photographic_location' string="Localisation photographique" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                            <page name="scaffolding_photographic_location" string="Localisation photographique" invisible="verification_type not in ['MS', 'RS', 'VP']">
                                 <group string="Schéma de l’emplacement">
-                                    <field name="location_diagram" nolabel="1" options='{"size":[0,90]}' widget='image' attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                    <field name="location_diagram" nolabel="1" options="{&quot;size&quot;:[0,90]}" widget="image" readonly="state not in ['phase2', 'phase3']"/>
                                 </group>
                                 <group string="Photographies">
 
                                     <group>
-                                        <field name="image1" nolabel="1" options='{"size":[0,90]}' widget='image' attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                        <field name="image1" nolabel="1" options="{&quot;size&quot;:[0,90]}" widget="image" readonly="state not in ['phase2', 'phase3']"/>
                                     </group>
                                     <group>
-                                        <field name="image2" nolabel="1" options='{"size":[0,90]}' widget='image' attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                        <field name="image2" nolabel="1" options="{&quot;size&quot;:[0,90]}" widget="image" readonly="state not in ['phase2', 'phase3']"/>
                                     </group>
                                     <group>
-                                        <field name="image3" nolabel="1" options='{"size":[0,90]}' widget='image' attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                        <field name="image3" nolabel="1" options="{&quot;size&quot;:[0,90]}" widget="image" readonly="state not in ['phase2', 'phase3']"/>
                                     </group>
                                     <group>
-                                        <field name="image4" nolabel="1" options='{"size":[0,90]}' widget='image' attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                        <field name="image4" nolabel="1" options="{&quot;size&quot;:[0,90]}" widget="image" readonly="state not in ['phase2', 'phase3']"/>
                                     </group>
                                     <group>
-                                        <field name="image5" nolabel="1" options='{"size":[0,90]}' widget='image' attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                        <field name="image5" nolabel="1" options="{&quot;size&quot;:[0,90]}" widget="image" readonly="state not in ['phase2', 'phase3']"/>
                                     </group>
                                     <group>
-                                        <field name="image6" nolabel="1" options='{"size":[0,90]}' widget='image' attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                        <field name="image6" nolabel="1" options="{&quot;size&quot;:[0,90]}" widget="image" readonly="state not in ['phase2', 'phase3']"/>
                                     </group>
                                 </group>
                                 <group string="Commentaires">
-                                    <field name="comment_scaffolding_photographic_location" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                    <field name="comment_scaffolding_photographic_location" nolabel="1" readonly="state not in ['phase2', 'phase3']"/>
                                 </group>
                             </page>
-                            <page name='scaffolding_characteristic' string="Caractéristiques de l'échafaudage" attrs="{'invisible': ['|',('verification_type', 'not in', ['MS', 'RS', 'VP']), ('inspection_type', '!=', 'echafaudage')]}">
+                            <page name="scaffolding_characteristic" string="Caractéristiques de l'échafaudage" invisible="verification_type not in ['MS', 'RS', 'VP'] or inspection_type != 'echafaudage'">
                                 <group string="Description générale">
-                                    <field name="scaffolding_mark_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
-                                        <tree editable='bottom'>
+                                    <field name="scaffolding_mark_ids" nolabel="1" readonly="state not in ['phase2', 'phase3']">
+                                        <list editable="bottom">
                                             <field name="mark_id"/>
                                             <field name="type"/>
                                             <field name="height"/>
                                             <field name="height_max"/>
                                             <field name="linear"/>
                                             <field name="inspected_surface" sum="Total"/>
-                                        </tree>
+                                        </list>
                                     </field>
                                 </group>
-                                <group string="Spécificité de l’échafaudage" />
-                                    <field name="scaffolding_characteristic_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" force_save="1">
-                                        <tree editable='bottom'>
+                                <group string="Spécificité de l’échafaudage"/>
+                                    <field name="scaffolding_characteristic_ids" nolabel="1" readonly="state not in ['phase2', 'phase3']" force_save="1">
+                                        <list editable="bottom">
                                             <field name="characteristic_id"/>
                                             <field name="is_presence"/>
-                                            <field name="length" attrs="{'readonly': ['|',('is_length', '=', False), ('is_presence', '=', 'no')]}" force_save="1"/>
-                                            <field name="width" attrs="{'readonly': ['|',('is_width', '=', False),('is_presence', '=', 'no')]}" force_save="1"/>
-                                            <field name="height" attrs="{'readonly': ['|',('is_height', '=', False),('is_presence', '=', 'no')]}" force_save="1"/>
-                                            <field name="surface" attrs="{'readonly': ['|', ('is_surface', '=', False), ('is_presence', '=', 'no')]}" force_save="1"/>
+                                            <field name="length" readonly="not is_length or is_presence == 'no'" force_save="1"/>
+                                            <field name="width" readonly="not is_width or is_presence == 'no'" force_save="1"/>
+                                            <field name="height" readonly="not is_height or is_presence == 'no'" force_save="1"/>
+                                            <field name="surface" readonly="not is_surface or is_presence == 'no'" force_save="1"/>
                                             <field name="localisation_id"/>
                                             <field name="is_length" invisible="1"/>
                                             <field name="is_width" invisible="1"/>
                                             <field name="is_height" invisible="1"/>
                                             <field name="is_surface" invisible="1"/>
-                                        </tree>
+                                        </list>
                                     </field>
                                 <group string="Commentaires">
-                                    <field name="comment_scaffolding_characteristic" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                    <field name="comment_scaffolding_characteristic" nolabel="1" readonly="state not in ['phase2', 'phase3']"/>
                                 </group>
                             </page>
-                            <page name='characteristic_suspended_platform' string="Caractéristiques de levage" attrs="{'invisible': ['|',('verification_type', 'not in', ['MS', 'RS', 'VP']), ('inspection_type', '!=', 'levage')]}">
-                                <group attrs="{'invisible': [('installation_type', 'not in', ['PSM', 'PSE'])]}">
-                                    <field name="characteristic_suspended_platform_ids" nolabel="1" context="{'default_prestation_id':active_id}" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" force_save="1">
-                                        <tree>
+                            <page name="characteristic_suspended_platform" string="Caractéristiques de levage" invisible="verification_type not in ['MS', 'RS', 'VP'] or inspection_type != 'levage'">
+                                <group invisible="installation_type not in ['PSM', 'PSE']">
+                                    <field name="characteristic_suspended_platform_ids" nolabel="1" context="{'default_prestation_id':id}" readonly="state not in ['phase2', 'phase3']" force_save="1">
+                                        <list>
                                             <field name="name"/>
-                                        </tree>
+                                        </list>
                                     </field>
                                 </group>
-                                <group attrs="{'invisible': [('installation_type', 'not in', ['PWM', 'ASC', 'PTR', 'MMA'])]}">
-                                    <field name="characteristic_platform_ids" nolabel="1" context="{'default_prestation_id':active_id}" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" force_save="1">
-                                        <tree>
+                                <group invisible="installation_type not in ['PWM', 'ASC', 'PTR', 'MMA']">
+                                    <field name="characteristic_platform_ids" nolabel="1" context="{'default_prestation_id':id}" readonly="state not in ['phase2', 'phase3']" force_save="1">
+                                        <list>
                                             <field name="name"/>
-                                        </tree>
+                                        </list>
                                     </field>
                                 </group>
-                                <group attrs="{'invisible': [('installation_type', 'not in', ['TRE', 'PAE', 'PAM'])]}">
-                                    <field name="characteristic_palan_ids" nolabel="1" context="{'default_prestation_id':active_id}" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" force_save="1">
-                                        <tree>
+                                <group invisible="installation_type not in ['TRE', 'PAE', 'PAM']">
+                                    <field name="characteristic_palan_ids" nolabel="1" context="{'default_prestation_id':id}" readonly="state not in ['phase2', 'phase3']" force_save="1">
+                                        <list>
                                             <field name="name"/>
-                                        </tree>
+                                        </list>
                                     </field>
                                 </group>
                                 
                                 <group string="Commentaires">
-                                    <field name="comment_levage_characteristic" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                    <field name="comment_levage_characteristic" nolabel="1" readonly="state not in ['phase2', 'phase3']"/>
                                 </group>
                             </page>
                             
-                            <page name='exams' string="Examens" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS', 'VP'])]}">
+                            <page name="exams" string="Examens" invisible="verification_type not in ['MS', 'RS', 'VP']">
                                 <h1 class="headding_1">4.1- Examen d'adéquation</h1>
                                 <group>
                                     
-                                    <field name="adequacy_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase1','phase2', 'phase3'])]}">
-                                        <tree editable='bottom'>
+                                    <field name="adequacy_exam_ids" nolabel="1" readonly="state not in ['phase1', 'phase2', 'phase3']">
+                                        <list editable="bottom">
                                             <field name="works_nature_id"/>
                                             <field name="precision"/>
                                             <field name="is_examined"/>
-                                        </tree>
+                                        </list>
                                     </field>
                                 </group>
-                                <group string="Dispositif de protection" >
-                                    <field name="is_pare_gravats" attrs="{'invisible':[('inspection_type', '!=', 'echafaudage')], 'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
-                                    <field name="is_other_device" attrs="{'invisible':[('inspection_type', '!=', 'echafaudage')], 'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
-                                    <field name="other_device_id" attrs="{'invisible':[('is_other_device', '!=', 'yes')], 'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" domain="[('inspection_type', '=', inspection_type)]"/>
-                                    <field name="protection_dispositif" attrs="{'invisible':[('inspection_type', '!=', 'levage')], 'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
-                                    <field name="levage_protection_dispositif" attrs="{'invisible':[('protection_dispositif', '!=', 'yes')], 'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" string="Dispositif de protection" domain="[('inspection_type', '=', inspection_type)]" context = "{'default_inspection_type':inspection_type}"/>
+                                <group string="Dispositif de protection">
+                                    <field name="is_pare_gravats" invisible="inspection_type != 'echafaudage'" readonly="state not in ['phase2', 'phase3']"/>
+                                    <field name="is_other_device" invisible="inspection_type != 'echafaudage'" readonly="state not in ['phase2', 'phase3']"/>
+                                    <field name="other_device_id" invisible="is_other_device != 'yes'" readonly="state not in ['phase2', 'phase3']" domain="[('inspection_type', '=', inspection_type)]"/>
+                                    <field name="protection_dispositif" invisible="inspection_type != 'levage'" readonly="state not in ['phase2', 'phase3']"/>
+                                    <field name="levage_protection_dispositif" invisible="protection_dispositif != 'yes'" readonly="state not in ['phase2', 'phase3']" string="Dispositif de protection" domain="[('inspection_type', '=', inspection_type)]" context="{'default_inspection_type':inspection_type}"/>
                                 </group>
-                                <group attrs="{'invisible': [('installation_type', 'not in', [ 'ASC', 'PTR', 'MMA', 'TRE', 'PAE', 'PAM'])]}">
-                                    <field name="installation_use_id" domain="[('installation_type', '=', installation_type)]" context = "{'default_installation_type':installation_type}" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                <group invisible="installation_type not in ['ASC', 'PTR', 'MMA', 'TRE', 'PAE', 'PAM']">
+                                    <field name="installation_use_id" domain="[('installation_type', '=', installation_type)]" context="{'default_installation_type':installation_type}" readonly="state not in ['phase2', 'phase3']"/>
                                     
                                 </group>
-                                <group string="Charge d'exploitation de l'échafaudage par défaut" attrs="{'invisible':[('inspection_type', '!=', 'echafaudage')]}">
-                                    <field name="scaffolding_operating_load_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
-                                        <tree editable='bottom'>
+                                <group string="Charge d'exploitation de l'échafaudage par défaut" invisible="inspection_type != 'echafaudage'">
+                                    <field name="scaffolding_operating_load_ids" nolabel="1" readonly="state not in ['phase2', 'phase3']">
+                                        <list editable="bottom">
                                             <field name="scaffolding_class_id" options="{'no_create': True}"/>
                                             <field name="operating_overload"/>
                                             <field name="precision"/>
                                             
-                                        </tree>
+                                        </list>
                                     </field>
                                 </group>
-                                <group string="Constat (s)" attrs="{'invisible': [('inspection_type', '=', 'levage'), ('verification_type', '=', 'VP')]}">
-                                    <field name="constat_adequacy_exam_ids" nolabel="1" context="{'default_prestation_id':active_id, 'default_type': 'adequacy_exam'}" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}">
-                                        <tree>
-                                            <field name="verification_point_id" />
+                                <group string="Constat (s)" invisible="inspection_type == 'levage' and verification_type == 'VP'">
+                                    <field name="constat_adequacy_exam_ids" nolabel="1" context="{'default_prestation_id':id, 'default_type': 'adequacy_exam'}" readonly="state not in ['phase2', 'phase3']">
+                                        <list>
+                                            <field name="verification_point_id"/>
                                             <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="inspection_type" invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
                                             <field name="precision"/>
-                                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+                                            <field name="photo" options="{&quot;size&quot;:[0,90]}" widget="image"/>
                                             <field name="state" invisible="1"/>
                                             <field name="date" invisible="1"/>
-                                            <button name="action_show_details" string="Edit" type="object" />
+                                            <button name="action_show_details" string="Edit" type="object"/>
 
-                                        </tree>
+                                        </list>
                                     </field>
                                 </group>
-                                <h1 class="headding_1" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}">4.2- Examen de montage et d'exploitation</h1>
-                                <h1 class="headding_1" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">4.2- Examen de montage et d'installation</h1>
+                                <h1 class="headding_1" invisible="inspection_type != 'echafaudage'">4.2- Examen de montage et d'exploitation</h1>
+                                <h1 class="headding_1" invisible="inspection_type != 'levage'">4.2- Examen de montage et d'installation</h1>
                                 <group>
-                                    <field name="security_register" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                    <field name="security_register" readonly="state not in ['phase2', 'phase3']"/>
                                 </group>
                                 <group string="Présentation du dossier du montage">
-                                    <field name="assembly_file" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                    <field name="assembly_file" readonly="state not in ['phase2', 'phase3']"/>
                                     
-                                    <field name="notice_constructeur" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
-                                    <field name="execution_plan" attrs="{'invisible': [('assembly_file', '!=', 'yes')], 'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
-                                    <field name="calculation_notice" attrs="{'invisible': [('assembly_file', '!=', 'yes')], 'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                    <field name="notice_constructeur" readonly="state not in ['phase2', 'phase3']"/>
+                                    <field name="execution_plan" invisible="assembly_file != 'yes'" readonly="state not in ['phase2', 'phase3']"/>
+                                    <field name="calculation_notice" invisible="assembly_file != 'yes'" readonly="state not in ['phase2', 'phase3']"/>
                                     
-                                    <field name="maintenance_log" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                    <field name="maintenance_log" readonly="state not in ['phase2', 'phase3']"/>
                                     
                                     
                                     <field name="manufacturer_instructions" invisible="1"/>
@@ -396,162 +433,158 @@
                                 </group>
                                 <group string="Données relatives au sol ou au support d'implantation">
                                 
-                                    <field name="soil_support_data_ids" string="Choix" widget="many2many_tags" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                    <field name="soil_support_data_ids" string="Choix" widget="many2many_tags" readonly="state not in ['phase2', 'phase3']"/>
                                 </group>
                                 <group string="Données relatives à la nature d’ancrage">
-                                    <field name="anchor_support_data_ids" string="Choix" widget="many2many_tags" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                    <field name="anchor_support_data_ids" string="Choix" widget="many2many_tags" readonly="state not in ['phase2', 'phase3']"/>
                                     
                                 </group>
-                                <group string="Données aux ancrages" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}">
-                                    <field name="anchor_type_id" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
-                                    <field name="ankles_type" attrs="{'invisible':[('anchor_type_id', '!=', 1)]}"/>
-                                    <field name="anchor_data_number" widget='integer' attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
-                                    <field name="anchor_data_theoretical_number" widget='integer' attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
-                                    <field name="anchor_data_difference_number" widget='integer' attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                <group string="Données aux ancrages" invisible="inspection_type != 'echafaudage'">
+                                    <field name="anchor_type_id" readonly="state not in ['phase2', 'phase3']"/>
+                                    <field name="ankles_type" invisible="anchor_type_id != 1"/>
+                                    <field name="anchor_data_number" widget="integer" readonly="state not in ['phase2', 'phase3']"/>
+                                    <field name="anchor_data_theoretical_number" widget="integer" readonly="state not in ['phase2', 'phase3']"/>
+                                    <field name="anchor_data_difference_number" widget="integer" readonly="state not in ['phase2', 'phase3']"/>
                                 </group>
-                                <group string="Données relatives aux réactions d'appuis au sol ou au support d’accueil" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}">
-                                    <field name="ground_support_data" string="Choix" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                <group string="Données relatives aux réactions d'appuis au sol ou au support d’accueil" invisible="inspection_type != 'echafaudage'">
+                                    <field name="ground_support_data" string="Choix" readonly="state not in ['phase2', 'phase3']"/>
                                 </group>
-                                <group string="Données relatives aux charges climatiques" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}">
-                                    <field name="climatic_data" string="Valeur" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                <group string="Données relatives aux charges climatiques" invisible="inspection_type != 'echafaudage'">
+                                    <field name="climatic_data" string="Valeur" readonly="state not in ['phase2', 'phase3']"/>
                                 </group>
-                                <group string="Données relatives à la nature du bâchage éventuel" attrs="{'invisible': [('inspection_type', '!=', 'echafaudage')]}">
-                                    <field name="covering_nature_data" string="Choix" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
+                                <group string="Données relatives à la nature du bâchage éventuel" invisible="inspection_type != 'echafaudage'">
+                                    <field name="covering_nature_data" string="Choix" readonly="state not in ['phase2', 'phase3']"/>
                                 </group>
-                                <group string="Commentaire" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
-                                    <field name="comment_assembly_exam" string="Commentaires" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" force_save="1"/>
+                                <group string="Commentaire" invisible="inspection_type != 'levage'">
+                                    <field name="comment_assembly_exam" string="Commentaires" readonly="state not in ['phase2', 'phase3']" force_save="1"/>
                                 </group>
-                                <group string="Constat (s)" attrs="{'invisible': [('inspection_type', '=', 'levage'), ('verification_type', '=', 'VP')]}">
-                                    <field name="constat_assembly_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'assembly_exam'}">
-                                        <tree>
+                                <group string="Constat (s)" invisible="inspection_type == 'levage' and verification_type == 'VP'">
+                                    <field name="constat_assembly_exam_ids" nolabel="1" readonly="state not in ['phase2', 'phase3']" context="{'default_prestation_id':id, 'default_type': 'assembly_exam'}">
+                                        <list>
                                             <field name="verification_point_id" options="{'no_create': True}"/>
                                             <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
-                                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
-                                            <field name="state" invisible="1"/>
-                                            <field name="date" invisible="1"/>
-                                            <field name='inspection_type' invisible="1"/>
-                                            <field name="installation_type" invisible="1"/>
-                                            <button name="action_show_details" string="Edit" type="object" />
-
-                                        </tree>
-                                    </field>
-                                </group>
-                                <h1 class="headding_1">4.3- Examen de l'etat de conservation</h1>
-                                <group>
-                                    <field name="conservation_state_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'in', ['phase1'])]}">
-                                        <tree editable="bottom" delete="false" create="false">
-                                            <field name="conservation_state_id" invisible="1"/>
-                                            <field name="name" readonly="1" widget="html"/>
-                                            <field name="opinion" force_save="1"/>
-                                            
-                                        </tree>
-                                    </field>
-                                </group>
-
-                                <group string="Constat (s)">
-                                    <field name="constat_conservation_state_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'conservation_state_exam'}">
-                                        <tree>
-                                            <field name="verification_point_id" options="{'no_create': True}" />
-                                            <field name="constat_observation_ids" widget="many2many_tags"  options="{'color_field': 'color'}"/>
-                                            <field name="precision"/>
-                                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+                                            <field name="photo" options="{&quot;size&quot;:[0,90]}" widget="image"/>
                                             <field name="state" invisible="1"/>
                                             <field name="date" invisible="1"/>
                                             <field name="inspection_type" invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
-                                            <button name="action_show_details" string="Edit" type="object" />
-                                        </tree>
+                                            <button name="action_show_details" string="Edit" type="object"/>
+
+                                        </list>
                                     </field>
                                 </group>
-                                <h1 class="headding_1" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">4.4- Examen du bon fonctionnement</h1>
-                                <group attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
-                                    <field name="good_functioning_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'in', ['phase1'])]}">
-                                        <tree editable="bottom" delete="false" create="false">
-                                            <field name="good_functioning_id" invisible="1"/>
-                                            <field name="name" readonly="1" widget='html'/>
+                                <h1 class="headding_1">4.3- Examen de l'état de conservation</h1>
+                                <group>
+                                    <field name="conservation_state_exam_ids" nolabel="1" readonly="state in ['phase1']">
+                                        <list editable="bottom" delete="false" create="false">
+                                            <field name="conservation_state_id" invisible="1"/>
+                                            <field name="name" readonly="1" widget="html"/>
                                             <field name="opinion" force_save="1"/>
                                             
-                                        </tree>
+                                        </list>
                                     </field>
                                 </group>
 
-                                <group string="Constat (s)" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}">
-                                    <field name="constat_good_functioning_exam_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'good_functioning'}">
-                                        <tree>
+                                <group string="Constat (s)">
+                                    <field name="constat_conservation_state_exam_ids" nolabel="1" readonly="state not in ['phase2', 'phase3']" context="{'default_prestation_id':id, 'default_type': 'conservation_state_exam'}">
+                                        <list>
                                             <field name="verification_point_id" options="{'no_create': True}"/>
-                                            <field name="constat_observation_ids" widget="many2many_tags"  options="{'color_field': 'color'}"/>
+                                            <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
-                                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+                                            <field name="photo" options="{&quot;size&quot;:[0,90]}" widget="image"/>
+                                            <field name="state" invisible="1"/>
+                                            <field name="date" invisible="1"/>
+                                            <field name="inspection_type" invisible="1"/>
+                                            <field name="installation_type" invisible="1"/>
+                                            <button name="action_show_details" string="Edit" type="object"/>
+                                        </list>
+                                    </field>
+                                </group>
+                                <h1 class="headding_1" invisible="inspection_type != 'levage'">4.4- Examen du bon fonctionnement</h1>
+                                <group invisible="inspection_type != 'levage'">
+                                    <field name="good_functioning_exam_ids" nolabel="1" readonly="state in ['phase1']">
+                                        <list editable="bottom" delete="false" create="false">
+                                            <field name="good_functioning_id" invisible="1"/>
+                                            <field name="name" readonly="1" widget="html"/>
+                                            <field name="opinion" force_save="1"/>
+                                            
+                                        </list>
+                                    </field>
+                                </group>
+
+                                <group string="Constat (s)" invisible="inspection_type != 'levage'">
+                                    <field name="constat_good_functioning_exam_ids" nolabel="1" readonly="state not in ['phase2', 'phase3']" context="{'default_prestation_id':id, 'default_type': 'good_functioning'}">
+                                        <list>
+                                            <field name="verification_point_id" options="{'no_create': True}"/>
+                                            <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                            <field name="precision"/>
+                                            <field name="photo" options="{&quot;size&quot;:[0,90]}" widget="image"/>
                                             <field name="state" invisible="1"/>
                                             <field name="date" invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
-                                            <button name="action_show_details" string="Edit" type="object" />
-                                        </tree>
+                                            <button name="action_show_details" string="Edit" type="object"/>
+                                        </list>
                                     </field>
                                 </group>
                                 
                             </page>
-                            <page name='epreuve' string="Epreuves" attrs="{'invisible': ['|',('verification_type', 'not in', ['MS', 'RS', 'VP']), ('inspection_type', '!=', 'levage')]}">
+                            <page name="epreuve" string="Epreuves" invisible="verification_type not in ['MS', 'RS', 'VP'] or inspection_type != 'levage'">
                                 
                                 <h1 class="headding_1">5.1- Epreuve statique</h1>
                                 <group>
-                                    <field name="coefficient_statique" string="Coefficient" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" force_save="1"/>
-                                    <field name="autorised_cmu_statique" string="CMU Autorisée" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
-                                    <field name="theoretical_test_load_statique" string="Charge d'épreuve théorique (en KG)" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
-                                    <field name="reel_test_load_statique" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])], 'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" string="Charge d'épreuve réelle (en KG)"/>
-                                    <field name="test_duration_statique" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])], 'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" widget="float_time" />
-                                    <field name="elevation_height_statique" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])], 'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" />
-                                    <field name="comment_epreuve_statique" string="Commentaire" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" force_save="1"/>
+                                    <field name="coefficient_statique" string="Coefficient" readonly="state not in ['phase2', 'phase3']" force_save="1"/>
+                                    <field name="autorised_cmu_statique" string="CMU Autorisée" readonly="state not in ['phase2', 'phase3']"/>
+                                    <field name="theoretical_test_load_statique" string="Charge d'épreuve théorique (en KG)" readonly="state not in ['phase2', 'phase3']"/>
+                                    <field name="reel_test_load_statique" invisible="verification_type not in ['MS', 'RS']" readonly="state not in ['phase2', 'phase3']" string="Charge d'épreuve réelle (en KG)"/>
+                                    <field name="test_duration_statique" invisible="verification_type not in ['MS', 'RS']" readonly="state not in ['phase2', 'phase3']" widget="float_time"/>
+                                    <field name="elevation_height_statique" invisible="verification_type not in ['MS', 'RS']" readonly="state not in ['phase2', 'phase3']"/>
+                                    <field name="comment_epreuve_statique" string="Commentaire" readonly="state not in ['phase2', 'phase3']" force_save="1"/>
                                     
                                 </group>
-                                <group string="Constat (s)" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}">
-                                    <field name="constat_epreuve_statique_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'epreuve_statique'}">
-                                        <tree>
-                                            <field name="verification_point_id" options="{'no_create': True}" />
-                                            <field name="constat_observation_ids"  widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                <group string="Constat (s)" invisible="verification_type not in ['MS', 'RS']">
+                                    <field name="constat_epreuve_statique_ids" nolabel="1" readonly="state not in ['phase2', 'phase3']" context="{'default_prestation_id':id, 'default_type': 'epreuve_statique'}">
+                                        <list>
+                                            <field name="verification_point_id" options="{'no_create': True}"/>
+                                            <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
-                                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+                                            <field name="photo" options="{&quot;size&quot;:[0,90]}" widget="image"/>
                                             <field name="state" invisible="1"/>
                                             <field name="date" invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
-                                            <button name="action_show_details" string="Edit" type="object" />
-                                        </tree>
+                                            <button name="action_show_details" string="Edit" type="object"/>
+                                        </list>
                                     </field>
                                 </group>
                                 <h1 class="headding_1">5.2- Epreuve dynamique</h1>
                                 <group>
-                                    <field name="coefficient_dynamique" string="Coefficient" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" force_save="1"/>
-                                    <field name="autorised_cmu_dynamique" string="CMU Autorisée" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
-                                    <field name="theoretical_test_load_dynamique" string="Charge d'épreuve théorique (en KG)" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}"/>
-                                    <field name="reel_test_load_dynamique" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])], 'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" string="Charge d'épreuve réelle (en KG)"/>
+                                    <field name="coefficient_dynamique" string="Coefficient" readonly="state not in ['phase2', 'phase3']" force_save="1"/>
+                                    <field name="autorised_cmu_dynamique" string="CMU Autorisée" readonly="state not in ['phase2', 'phase3']"/>
+                                    <field name="theoretical_test_load_dynamique" string="Charge d'épreuve théorique (en KG)" readonly="state not in ['phase2', 'phase3']"/>
+                                    <field name="reel_test_load_dynamique" invisible="verification_type not in ['MS', 'RS']" readonly="state not in ['phase2', 'phase3']" string="Charge d'épreuve réelle (en KG)"/>
                                     
-                                    <field name="comment_epreuve_dynamique" string="Commentaire" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" force_save="1"/>
+                                    <field name="comment_epreuve_dynamique" string="Commentaire" readonly="state not in ['phase2', 'phase3']" force_save="1"/>
                                     
                                 </group>
-                                <group string="Constat (s)" attrs="{'invisible': [('verification_type', 'not in', ['MS', 'RS'])]}">
-                                    <field name="constat_epreuve_dynamique_ids" nolabel="1" attrs="{'readonly': [('state', 'not in', ['phase2', 'phase3'])]}" context="{'default_prestation_id':active_id, 'default_type': 'epreuve_dynamique'}">
-                                        <tree>
-                                            <field name="verification_point_id" options="{'no_create': True}" />
-                                            <field name="constat_observation_ids"  widget="many2many_tags"  options="{'color_field': 'color'}"/>
+                                <group string="Constat (s)" invisible="verification_type not in ['MS', 'RS']">
+                                    <field name="constat_epreuve_dynamique_ids" nolabel="1" readonly="state not in ['phase2', 'phase3']" context="{'default_prestation_id':id, 'default_type': 'epreuve_dynamique'}">
+                                        <list>
+                                            <field name="verification_point_id" options="{'no_create': True}"/>
+                                            <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
-                                            <field name="photo" options='{"size":[0,90]}' widget='image'/>
+                                            <field name="photo" options="{&quot;size&quot;:[0,90]}" widget="image"/>
                                             <field name="state" invisible="1"/>
                                             <field name="date" invisible="1"/>
                                             <field name="installation_type" invisible="1"/>
-                                            <button name="action_show_details" string="Edit" type="object" />
-                                        </tree>
+                                            <button name="action_show_details" string="Edit" type="object"/>
+                                        </list>
                                     </field>
                                 </group>
                             </page>
                             
                         </notebook>
                     </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids"/>
-                        <field name="activity_ids"/>
-                        <field name="message_ids"/>
-                    </div>
+                    <chatter/>
                 </form>
             </field>
         </record>
@@ -561,13 +594,10 @@
         <field name="res_model">prestation.prestation</field>
         <field name="context">{}</field>
         <field name="domain">[('is_report_sent', '=', False)]</field>
-        <field name="view_mode">kanban,tree,form,graph,calendar</field>
+        <field name="view_mode">kanban,list,form,graph,calendar</field>
     </record>
 
-    <menuitem name="Prestation" 
-              id="prestation_consult_menu_prestation" 
-              parent="br_consult_menu_root"
-              action="action_prestation_prestation"/>
+    <menuitem name="Prestation" id="prestation_consult_menu_prestation" parent="br_consult_menu_root" action="action_prestation_prestation"/>
     
     <record id="action_prestation_prestation_planning" model="ir.actions.act_window">
         <field name="name">Prestation</field>
@@ -578,11 +608,7 @@
         <field name="view_mode">calendar</field>
     </record>
     
-    <menuitem id="br_consult_planning_menu"
-        name="Mon planning"
-        parent="br_consult_menu_root"
-        action="action_prestation_prestation_planning"
-        sequence="30"/>
+    <menuitem id="br_consult_planning_menu" name="Mon planning" parent="br_consult_menu_root" action="action_prestation_prestation_planning" sequence="30"/>
     
     <record id="action_prestation_prestation_planning_all_team" model="ir.actions.act_window">
         <field name="name">Prestation</field>
@@ -593,41 +619,27 @@
         <field name="view_mode">calendar</field>
     </record>
     
-    <menuitem id="br_consult_planning_all_team_menu"
-        name="Planning des inspecteurs"
-        parent="br_consult_menu_root"
-        action="action_prestation_prestation_planning_all_team"
-        groups="base.group_system"
-        sequence="33"/>
+    <menuitem id="br_consult_planning_all_team_menu" name="Planning des inspecteurs" parent="br_consult_menu_root" action="action_prestation_prestation_planning_all_team" groups="base.group_system" sequence="33"/>
     
     <record id="action_prestation_prestation_stat" model="ir.actions.act_window">
         <field name="name">Prestation</field>
         <field name="res_model">prestation.prestation</field>
         <field name="context">{}</field>
         <field name="domain">[]</field>
-        <field name="view_mode">graph,tree</field>
+        <field name="view_mode">graph,list</field>
     </record>
     
-    <menuitem id="br_consult_stat_menu"
-        name="Statistique"
-        parent="br_consult_statistiques_menu"
-        action="action_prestation_prestation_stat"
-        groups="base.group_system"
-        sequence="35"/>
+    <menuitem id="br_consult_stat_menu" name="Statistique" parent="br_consult_statistiques_menu" action="action_prestation_prestation_stat" groups="base.group_system" sequence="35"/>
     
     <record id="action_prestation_prestation_archive" model="ir.actions.act_window">
         <field name="name">Prestations archivées</field>
         <field name="res_model">prestation.prestation</field>
         <field name="context">{}</field>
         <field name="domain">[('is_report_sent', '=', True)]</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     
-    <menuitem id="br_consult_archive_menu"
-        name="Archive"
-        parent="br_consult_menu_root"
-        action="action_prestation_prestation_archive"
-        sequence="40"/>
+    <menuitem id="br_consult_archive_menu" name="Archive" parent="br_consult_menu_root" action="action_prestation_prestation_archive" sequence="40"/>
 
   </data>
 </odoo>

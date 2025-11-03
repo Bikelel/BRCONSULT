@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 from collections import OrderedDict
 from odoo.osv.expression import OR, AND
-from operator import itemgetter
 from odoo import fields, http, SUPERUSER_ID, _
 from odoo.exceptions import AccessError, MissingError, ValidationError
 from odoo.http import request
 from odoo.addons.portal.controllers import portal
 from odoo.addons.portal.controllers.portal import pager as portal_pager, get_records_pager
-from odoo.addons.http_routing.models.ir_http import slug, unslug
-from odoo.addons.portal.controllers.mail import _message_post_helper
 import datetime
 import base64
 import json
@@ -284,9 +281,8 @@ class CustomerPortal(portal.CustomerPortal):
        
         return request.redirect(prestation_id.get_portal_url())
     
-    @http.route(['/update_mentor/<prestation_id>'], auth='user', website=True)
+    @http.route(['/update_mentor/<int:prestation_id>'], auth='user', website=True)
     def update_mentor_form(self, prestation_id, **kw):
-        _, prestation_id = unslug(prestation_id)
         user = request.env.user
         partner = request.env.user.partner_id
         mentors = request.env['res.partner'].sudo().search([('is_mentor', '=', True)])
@@ -323,9 +319,8 @@ class CustomerPortal(portal.CustomerPortal):
             template.sudo().send_mail(prestation_id.id, force_send=True, email_values=email_values)
         return request.redirect(prestation_id.get_portal_url())
     
-    @http.route(['/create_mentor/<prestation_id>'], auth='user', website=True)
+    @http.route(['/create_mentor/<int:prestation_id>'], auth='user', website=True)
     def create_mentor_form(self, prestation_id, **kw):
-        _, prestation_id = unslug(prestation_id)
         user = request.env.user
         partner = request.env.user.partner_id
         mentors = request.env['res.partner'].sudo().search([('is_mentor', '=', True)])
@@ -370,9 +365,8 @@ class CustomerPortal(portal.CustomerPortal):
             template.sudo().send_mail(prestation_id.id, force_send=True, email_values=email_values)
         return request.redirect(prestation_id.get_portal_url())
     
-    @http.route(['/update_constat_line/<constat_id>'], auth='user', website=True)
+    @http.route(['/update_constat_line/<int:constat_id>'], auth='user', website=True)
     def update_constat_line_form(self, constat_id, **kw):
-        _, constat_id = unslug(constat_id)
         user = request.env.user
         partner = request.env.user.partner_id
         relaod_vals = {}
@@ -457,10 +451,15 @@ class CustomerPortal(portal.CustomerPortal):
             return {'error': _('Invalid signature data.')}
 
         pdf = request.env.ref('br_consult.action_report_reserve').with_user(SUPERUSER_ID)._render_qweb_pdf([prestation_sudo.id])[0]
-        _message_post_helper(
-            'prestation.prestation', prestation_sudo.id, _('Prestation signé par %s') % (name,),
+        prestation_sudo.message_post(
+            body=_('Prestation signée par %s') % (name,),
+            message_type='comment',              # message public (visible portail)
+            subtype_xmlid='mail.mt_comment',     # flux de commentaires
+            email_layout_xmlid='mail.mail_notification_light',  # (optionnel) layout notif
             attachments=[('%s.pdf' % prestation_sudo.name, pdf)],
-            **({'token': access_token} if access_token else {}))
+            author_id=request.env.user.partner_id.id,  # (optionnel) pour forcer l’auteur
+            partner_ids=[prestation_sudo.partner_id.id],  # (optionnel) notifier le client
+        )
         query_string = '&message=sign_ok'
         template = request.env.ref('website_brconsult.email_notification_validation_mentor')
         if partner.email and prestation_sudo.mentor_id and prestation_sudo.mentor_id.email and partner.is_mentor:

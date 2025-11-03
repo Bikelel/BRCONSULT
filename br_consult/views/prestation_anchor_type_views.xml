@@ -5,17 +5,17 @@
             <field name="name">prestation.anchor.type.list</field>
             <field name="model">prestation.anchor.type</field>
             <field name="arch" type="xml">
-                <tree string="Type d'ancrage" multi_edit="1" editable="top">
+                <list string="Type d'ancrage" multi_edit="1" editable="top">
                     <field name="sequence" widget="handle"/>
                     <field name="name"/>
-                </tree>
+                </list>
             </field>
         </record>
 
         <record id="action_prestation_anchor_type" model="ir.actions.act_window">
             <field name="name">Type d'ancrage</field>
             <field name="res_model">prestation.anchor.type</field>
-            <field name="view_mode">tree</field>
+            <field name="view_mode">list</field>
         </record>
 
         <menuitem name="Type d'ancrage" 

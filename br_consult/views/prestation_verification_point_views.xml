@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
         <record id="view_prestation_verification_point_list" model="ir.ui.view">
             <field name="name">prestation.verification.point.list</field>
             <field name="model">prestation.verification.point</field>
             <field name="arch" type="xml">
-                <tree string="Point de vérification">
+                <list string="Point de vérification">
                     <field name="name"/>
                     <field name="inspection_type"/>
                     <field name="installation_type"/>
                     <field name="type"/>
                     <field name="observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
-                </tree>
+                </list>
             </field>
         </record>
         <record id="view_prestation_verification_point_form" model="ir.ui.view">
@@ -23,18 +23,18 @@
                         <group>
                             <field name="name"/>
                             <field name="inspection_type"/>
-                            <field name="installation_type" attrs="{'invisible': [('inspection_type', '!=', 'levage')]}"/>
+                            <field name="installation_type" invisible="inspection_type != 'levage'"/>
                             <field name="type"/>
                             
                             
                         </group>
                         <group string="Observations">
                             <field name="observation_ids" nolabel="1">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="name"/>
                                     <field name="reserve"/>
                                     
-                                </tree>
+                                </list>
                             </field>
                         </group>
                     </sheet>
@@ -48,14 +48,10 @@
         <record id="action_prestation_verification_point" model="ir.actions.act_window">
             <field name="name">Point de vérification</field>
             <field name="res_model">prestation.verification.point</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
-        <menuitem name="Point de vérification" 
-              id="br_consult_menu_prestation_verification_point" 
-              parent="br_consult_settings_menu"
-              sequence="35"
-              action="action_prestation_verification_point"/>
+        <menuitem name="Point de vérification" id="br_consult_menu_prestation_verification_point" parent="br_consult_settings_menu" sequence="35" action="action_prestation_verification_point"/>
 
   </data>
 </odoo>

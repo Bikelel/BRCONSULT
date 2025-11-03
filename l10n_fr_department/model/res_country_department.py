@@ -11,19 +11,16 @@ class ResCountryDepartment(models.Model):
     _description = "Department"
     _name = "res.country.department"
     _order = "country_id, code"
+    _rec_names_search = ["name", "code"]
 
     state_id = fields.Many2one(
         "res.country.state",
-        string="State",
         required=True,
-        help="State related to the current department",
     )
     country_id = fields.Many2one(
         "res.country",
         related="state_id.country_id",
-        string="Country",
         store=True,
-        help="Country of the related state",
     )
     name = fields.Char(string="Department Name", size=128, required=True)
     code = fields.Char(
@@ -35,16 +32,13 @@ class ResCountryDepartment(models.Model):
 
     _sql_constraints = [
         (
-            "code_uniq",
-            "unique (code)",
-            "You cannot have two departments with the same code!",
+            "code_country_uniq",
+            "unique (code, country_id)",
+            "You cannot have two departments with the same code in the same country!",
         )
     ]
 
     @api.depends("name", "code")
-    def name_get(self):
-        res = []
+    def _compute_display_name(self):
         for rec in self:
-            dname = "{} ({})".format(rec.name, rec.code)
-            res.append((rec.id, dname))
-        return res
+            rec.display_name = f"{rec.name} ({rec.code})"

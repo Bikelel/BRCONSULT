@@ -5,19 +5,19 @@
             <field name="name">prestation.other.device.list</field>
             <field name="model">prestation.other.device</field>
             <field name="arch" type="xml">
-                <tree string="Motif" multi_edit="1" editable="top">
+                <list string="Motif" multi_edit="1" editable="top">
                     <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     <field name="inspection_type"/>
                     
-                </tree>
+                </list>
             </field>
         </record>
 
         <record id="action_prestation_other_device" model="ir.actions.act_window">
             <field name="name">Autre dispositif</field>
             <field name="res_model">prestation.other.device</field>
-            <field name="view_mode">tree</field>
+            <field name="view_mode">list</field>
         </record>
 
         <menuitem name="Autre dispositif" 

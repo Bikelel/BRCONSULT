@@ -9,9 +9,7 @@
             <field name="code">model.cron_send_report_prestation()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
-            <field name="numbercall">-1</field>
             <field name="active">True</field>
-            <field eval="False" name="doall" />
         </record>
         <record  id="cron_alert_end_chantier" model="ir.cron">
             <field name="name">Alert Fin chantier</field>
@@ -21,9 +19,7 @@
             <field name="code">model.cron_send_alert_end_chantier()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
-            <field name="numbercall">-1</field>
             <field name="active">False</field>
-            <field eval="False" name="doall" />
         </record>
     </data>
 </odoo>
