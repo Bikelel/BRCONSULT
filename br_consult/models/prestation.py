@@ -233,78 +233,82 @@ class Prestation(models.Model):
             presta.scope_mission_date = presta.prestation_id.verification_date
             
 
-    @api.model
-    def create(self, vals):
-        
-        if 'company_id' in vals:
-            self = self.with_company(vals['company_id'])
-        if vals.get('partner_id'):
-            partner = self.env['res.partner'].browse(vals.get('partner_id'))
-            
-            if partner.ref:
-                partner_ref = partner.ref
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = self.env[self._name]
+        for vals in vals_list:
+            if 'company_id' in vals:
+                self = self.with_company(vals['company_id'])
+            if vals.get('partner_id'):
+                partner = self.env['res.partner'].browse(vals.get('partner_id'))
+                partner_ref = partner.ref or ''
             else:
                 partner_ref = ''
-            
-        #if vals.get('name') == 'New':
-        if vals.get('name', _('New')) == _('New'):
-            seq_date = None
-            if 'date' in vals:
-                seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(vals['date']))
-                
+    
+            # Génération du nom
+            if vals.get('name', _('New')) == _('New'):
+                seq_date = None
+                if 'date' in vals:
+                    seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(vals['date']))
+    
                 if vals.get('inspection_type') == 'echafaudage':
                     code_installation_type = 'TUB'
                 elif vals.get('inspection_type') == 'levage':
-                    if vals.get('installation_type'):
-                        code_installation_type = vals.get('installation_type')
+                    code_installation_type = vals.get('installation_type') or ''
                 else:
                     code_installation_type = ''
-                if vals.get('verification_type'):
-                    code_verification_type = vals.get('verification_type')
-                else:
-                    code_verification_type = ''
-                vals['name'] = partner_ref + '-' +code_installation_type+ '-' + code_verification_type + '-' + self.env['ir.sequence'].next_by_code('prestation.prestation') or _('New')
-        
-        attributes_good_functioning = None
-        if vals.get('inspection_type') == 'echafaudage':
-            attributes_conservation_state = self.env['prestation.conservation.state'].search([('inspection_type', '=', 'echafaudage')])
-        elif vals.get('inspection_type') == 'levage' and vals.get('installation_type'):
-            attributes_conservation_state = self.env['prestation.conservation.state'].search([('inspection_type', '=', 'levage'), ('installation_type', '=', vals.get('installation_type'))])
-
-            attributes_good_functioning = self.env['prestation.good.functioning'].search([('inspection_type', '=', 'levage'), ('installation_type', '=', vals.get('installation_type'))])
-
-        else:
-            attributes_conservation_state = None
-
-        if attributes_conservation_state and not self.conservation_state_exam_ids:
-            lines = []
-            for line in attributes_conservation_state:
-                lines.append((0, 0, {'conservation_state_id': line.id,
-                                     'name': line.name}))
-
-            vals.update({'conservation_state_exam_ids': lines})
-        if attributes_good_functioning and not self.good_functioning_exam_ids:
-            lines = []
-            for line in attributes_good_functioning:
-                lines.append((0, 0, {'good_functioning_id': line.id,
-                                     'name': line.name}))
-
-            vals.update({'good_functioning_exam_ids': lines})
-        
-        if vals.get('announced_installation_number') > 0 and vals.get('inspection_type') == 'levage':
-            i = 0
-            lines = []
-            while i < vals.get('announced_installation_number'):
-                i += 1
-                lines.append((0, 0, {'name': i}))
-            if vals.get('installation_type') in ['PSE', 'PSM']:
-                vals.update({'characteristic_suspended_platform_ids': lines})
-            elif vals.get('installation_type') in ['PWM', 'ASC', 'PTR', 'MMA']:
-                vals.update({'characteristic_platform_ids': lines})
+    
+                code_verification_type = vals.get('verification_type') or ''
+    
+                vals['name'] = (
+                    partner_ref + '-' + code_installation_type + '-' + code_verification_type + '-' +
+                    (self.env['ir.sequence'].next_by_code('prestation.prestation') or _('New'))
+                )
+    
+            # Gestion des états de conservation et bon fonctionnement
+            attributes_good_functioning = None
+            if vals.get('inspection_type') == 'echafaudage':
+                attributes_conservation_state = self.env['prestation.conservation.state'].search([
+                    ('inspection_type', '=', 'echafaudage')
+                ])
+            elif vals.get('inspection_type') == 'levage' and vals.get('installation_type'):
+                attributes_conservation_state = self.env['prestation.conservation.state'].search([
+                    ('inspection_type', '=', 'levage'),
+                    ('installation_type', '=', vals.get('installation_type'))
+                ])
+                attributes_good_functioning = self.env['prestation.good.functioning'].search([
+                    ('inspection_type', '=', 'levage'),
+                    ('installation_type', '=', vals.get('installation_type'))
+                ])
             else:
-                vals.update({'characteristic_palan_ids': lines})
-        result = super(Prestation, self).create(vals)
-        return result
+                attributes_conservation_state = None
+    
+            if attributes_conservation_state and not vals.get('conservation_state_exam_ids'):
+                lines = [(0, 0, {'conservation_state_id': line.id, 'name': line.name}) for line in attributes_conservation_state]
+                vals.update({'conservation_state_exam_ids': lines})
+    
+            if attributes_good_functioning and not vals.get('good_functioning_exam_ids'):
+                lines = [(0, 0, {'good_functioning_id': line.id, 'name': line.name}) for line in attributes_good_functioning]
+                vals.update({'good_functioning_exam_ids': lines})
+    
+            # Gestion des lignes caractéristiques selon le type d’installation
+            if vals.get('announced_installation_number') and vals.get('announced_installation_number') > 0 and vals.get('inspection_type') == 'levage':
+                i = 0
+                lines = []
+                while i < vals.get('announced_installation_number'):
+                    i += 1
+                    lines.append((0, 0, {'name': i}))
+                if vals.get('installation_type') in ['PSE', 'PSM']:
+                    vals.update({'characteristic_suspended_platform_ids': lines})
+                elif vals.get('installation_type') in ['PWM', 'ASC', 'PTR', 'MMA']:
+                    vals.update({'characteristic_platform_ids': lines})
+                else:
+                    vals.update({'characteristic_palan_ids': lines})
+    
+        # Appel super avec la liste complète
+        records = super(Prestation, self).create(vals_list)
+        return records
+
     
     def copy_data(self, default=None):
         if default is None:
