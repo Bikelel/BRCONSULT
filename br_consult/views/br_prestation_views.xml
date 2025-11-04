@@ -251,7 +251,7 @@
 <!--                                     </group> -->
                                 </group>
                                 <group string="Commentaires">
-                                    <field name="comment_observation_fiche" nolabel="1" readonly="state not in ['phase2', 'phase3']"/>
+                                    <field name="comment_observation_fiche"  readonly="state not in ['phase2', 'phase3']" nolabel="0"  type="html" options="{'collaborative': true}" placeholder="Comment..."/>
                                 </group>
                                 <group string="Visa de l’inspecteur technique">
                                     <group>
@@ -271,7 +271,7 @@
                                     <field name="scope_mission_date" invisible="verification_type not in ['RS', 'VP']" readonly="state not in ['phase1', 'phase2', 'phase3']"/>
                                 </group>
                                 <group string="Commentaires">
-                                    <field name="comment_scope_mission" nolabel="1" readonly="state not in ['phase1', 'phase2', 'phase3']"/>
+                                    <field name="comment_scope_mission" nolabel="0" readonly="state not in ['phase1', 'phase2', 'phase3']"  type="html" options="{'collaborative': true}" placeholder="Comment..."/>
                                 </group>
                             </page>
                             <page name="scaffolding_photographic_location" string="Localisation photographique" invisible="verification_type not in ['MS', 'RS', 'VP']">
@@ -300,7 +300,7 @@
                                     </group>
                                 </group>
                                 <group string="Commentaires">
-                                    <field name="comment_scaffolding_photographic_location" nolabel="1" readonly="state not in ['phase2', 'phase3']"/>
+                                    <field name="comment_scaffolding_photographic_location" readonly="state not in ['phase2', 'phase3']" nolabel="0"  type="html" options="{'collaborative': true}" placeholder="Comment..."/>
                                 </group>
                             </page>
                             <page name="scaffolding_characteristic" string="Caractéristiques de l'échafaudage" invisible="verification_type not in ['MS', 'RS', 'VP'] or inspection_type != 'echafaudage'">
@@ -333,7 +333,7 @@
                                         </list>
                                     </field>
                                 <group string="Commentaires">
-                                    <field name="comment_scaffolding_characteristic" nolabel="1" readonly="state not in ['phase2', 'phase3']"/>
+                                    <field name="comment_scaffolding_characteristic" nolabel="0" readonly="state not in ['phase2', 'phase3']" type="html" options="{'collaborative': true}" placeholder="Comment..."/>
                                 </group>
                             </page>
                             <page name="characteristic_suspended_platform" string="Caractéristiques de levage" invisible="verification_type not in ['MS', 'RS', 'VP'] or inspection_type != 'levage'">
@@ -360,7 +360,7 @@
                                 </group>
                                 
                                 <group string="Commentaires">
-                                    <field name="comment_levage_characteristic" nolabel="1"/>
+                                    <field name="comment_levage_characteristic" nolabel="0" readonly="state not in ['phase2', 'phase3']" type="html" options="{'collaborative': true}" placeholder="Comment..."/>
                                 </group>
                             </page>
                             
