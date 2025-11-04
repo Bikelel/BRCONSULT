@@ -14,7 +14,7 @@
                     <field name="installation_type"/>
                     <field name="verification_type"/>
                     <field name="partner_id"/>
-                    <field name="company_id" invisible="1"/>
+                    <field name="company_id" column_invisible="1"/>
                 </list>
             </field>
         </record>
@@ -326,10 +326,10 @@
                                             <field name="height" readonly="not is_height or is_presence == 'no'" force_save="1"/>
                                             <field name="surface" readonly="not is_surface or is_presence == 'no'" force_save="1"/>
                                             <field name="localisation_id"/>
-                                            <field name="is_length" invisible="1"/>
-                                            <field name="is_width" invisible="1"/>
-                                            <field name="is_height" invisible="1"/>
-                                            <field name="is_surface" invisible="1"/>
+                                            <field name="is_length" column_invisible="1"/>
+                                            <field name="is_width" column_invisible="1"/>
+                                            <field name="is_height" column_invisible="1"/>
+                                            <field name="is_surface" column_invisible="1"/>
                                         </list>
                                     </field>
                                 <group string="Commentaires">
@@ -360,7 +360,7 @@
                                 </group>
                                 
                                 <group string="Commentaires">
-                                    <field name="comment_levage_characteristic" nolabel="1" readonly="state not in ['phase2', 'phase3']"/>
+                                    <field name="comment_levage_characteristic" nolabel="1"/>
                                 </group>
                             </page>
                             
@@ -406,8 +406,8 @@
                                             <field name="installation_type" invisible="1"/>
                                             <field name="precision"/>
                                             <field name="photo" options="{&quot;size&quot;:[0,90]}" widget="image"/>
-                                            <field name="state" invisible="1"/>
-                                            <field name="date" invisible="1"/>
+                                            <field name="state" column_invisible="1"/>
+                                            <field name="date" column_invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object"/>
 
                                         </list>
@@ -442,9 +442,9 @@
                                 <group string="Données aux ancrages" invisible="inspection_type != 'echafaudage'">
                                     <field name="anchor_type_id" readonly="state not in ['phase2', 'phase3']"/>
                                     <field name="ankles_type" invisible="anchor_type_id != 1"/>
-                                    <field name="anchor_data_number" widget="integer" readonly="state not in ['phase2', 'phase3']"/>
-                                    <field name="anchor_data_theoretical_number" widget="integer" readonly="state not in ['phase2', 'phase3']"/>
-                                    <field name="anchor_data_difference_number" widget="integer" readonly="state not in ['phase2', 'phase3']"/>
+                                    <field name="anchor_data_number"  readonly="state not in ['phase2', 'phase3']" widget="integer"/>
+                                    <field name="anchor_data_theoretical_number"  readonly="state not in ['phase2', 'phase3']" widget="integer"/>
+                                    <field name="anchor_data_difference_number" readonly="state not in ['phase2', 'phase3']" widget="integer"/>
                                 </group>
                                 <group string="Données relatives aux réactions d'appuis au sol ou au support d’accueil" invisible="inspection_type != 'echafaudage'">
                                     <field name="ground_support_data" string="Choix" readonly="state not in ['phase2', 'phase3']"/>
@@ -465,10 +465,10 @@
                                             <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options="{&quot;size&quot;:[0,90]}" widget="image"/>
-                                            <field name="state" invisible="1"/>
-                                            <field name="date" invisible="1"/>
-                                            <field name="inspection_type" invisible="1"/>
-                                            <field name="installation_type" invisible="1"/>
+                                            <field name="state" column_invisible="1"/>
+                                            <field name="date" column_invisible="1"/>
+                                            <field name="inspection_type" column_invisible="1"/>
+                                            <field name="installation_type" column_invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object"/>
 
                                         </list>
@@ -479,7 +479,7 @@
                                     <field name="conservation_state_exam_ids" nolabel="1" readonly="state in ['phase1']">
                                         <list editable="bottom" delete="false" create="false">
                                             <field name="conservation_state_id" invisible="1"/>
-                                            <field name="name" readonly="1" widget="html"/>
+                                            <field name="name" readonly="1"/>
                                             <field name="opinion" force_save="1"/>
                                             
                                         </list>
@@ -493,10 +493,10 @@
                                             <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options="{&quot;size&quot;:[0,90]}" widget="image"/>
-                                            <field name="state" invisible="1"/>
-                                            <field name="date" invisible="1"/>
-                                            <field name="inspection_type" invisible="1"/>
-                                            <field name="installation_type" invisible="1"/>
+                                            <field name="state" column_invisible="1"/>
+                                            <field name="date" column_invisible="1"/>
+                                            <field name="inspection_type" column_invisible="1"/>
+                                            <field name="installation_type" column_invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object"/>
                                         </list>
                                     </field>
@@ -520,9 +520,9 @@
                                             <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options="{&quot;size&quot;:[0,90]}" widget="image"/>
-                                            <field name="state" invisible="1"/>
-                                            <field name="date" invisible="1"/>
-                                            <field name="installation_type" invisible="1"/>
+                                            <field name="state" column_invisible="1"/>
+                                            <field name="date" column_invisible="1"/>
+                                            <field name="installation_type" column_invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object"/>
                                         </list>
                                     </field>
@@ -549,9 +549,9 @@
                                             <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options="{&quot;size&quot;:[0,90]}" widget="image"/>
-                                            <field name="state" invisible="1"/>
-                                            <field name="date" invisible="1"/>
-                                            <field name="installation_type" invisible="1"/>
+                                            <field name="state" column_invisible="1"/>
+                                            <field name="date" column_invisible="1"/>
+                                            <field name="installation_type" column_invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object"/>
                                         </list>
                                     </field>
@@ -573,9 +573,9 @@
                                             <field name="constat_observation_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                             <field name="precision"/>
                                             <field name="photo" options="{&quot;size&quot;:[0,90]}" widget="image"/>
-                                            <field name="state" invisible="1"/>
-                                            <field name="date" invisible="1"/>
-                                            <field name="installation_type" invisible="1"/>
+                                            <field name="state" column_invisible="1"/>
+                                            <field name="date" column_invisible="1"/>
+                                            <field name="installation_type" column_invisible="1"/>
                                             <button name="action_show_details" string="Edit" type="object"/>
                                         </list>
                                     </field>
