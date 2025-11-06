@@ -14,6 +14,7 @@ from markupsafe import Markup
 from odoo.tools import date_utils
 from dateutil.relativedelta import relativedelta
 from odoo.tools import groupby as groupbyelem
+from odoo import _
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -281,20 +282,45 @@ class CustomerPortal(portal.CustomerPortal):
        
         return request.redirect(prestation_id.get_portal_url())
     
+    # @http.route(['/update_mentor/<int:prestation_id>'], auth='user', website=True)
+    # def update_mentor_form(self, prestation_id, **kw):
+    #     user = request.env.user
+    #     partner = request.env.user.partner_id
+    #     mentors = request.env['res.partner'].sudo().search([('is_mentor', '=', True)])
+    #     relaod_vals = {}
+    #     prestation_id = request.env['prestation.prestation'].sudo().browse(prestation_id)
+    #     if prestation_id.mentor_id:
+    #         relaod_vals.update({'mentor_id': prestation_id.mentor_id})
+    #     values = {'partner': partner,
+    #               'mentors': mentors,
+    #               'prestation': prestation_id,
+    #              }
+    #     values['reload'] = relaod_vals
+    #     return request.render("website_brconsult.update_mentor_page", values)
+    
     @http.route(['/update_mentor/<int:prestation_id>'], auth='user', website=True)
     def update_mentor_form(self, prestation_id, **kw):
+        try:
+            prestation = request.env['prestation.prestation']\
+                .sudo().browse(prestation_id)
+            if not prestation.exists():
+                raise MissingError()
+        except (AccessError, MissingError):
+            return request.not_found()
+
         user = request.env.user
-        partner = request.env.user.partner_id
         mentors = request.env['res.partner'].sudo().search([('is_mentor', '=', True)])
-        relaod_vals = {}
-        prestation_id = request.env['prestation.prestation'].sudo().browse(prestation_id)
-        if prestation_id.mentor_id:
-            relaod_vals.update({'mentor_id': prestation_id.mentor_id})
-        values = {'partner': partner,
-                  'mentors': mentors,
-                  'prestation': prestation_id,
-                 }
-        values['reload'] = relaod_vals
+
+        reload_vals = {}
+        if prestation.mentor_id:
+            reload_vals['mentor_id'] = prestation.mentor_id.id  # ⚠️ int
+
+        values = {
+            'partner': user.partner_id,
+            'mentors': mentors,
+            'prestation': prestation,
+            'reload': reload_vals,
+        }
         return request.render("website_brconsult.update_mentor_page", values)
     
     @http.route(['/update_mentor/confirm'], type='http', auth="user", website=True, methods=['POST'])
@@ -425,21 +451,20 @@ class CustomerPortal(portal.CustomerPortal):
     @http.route(['/my/prestation/<int:prestation_id>/accept'], type='json', auth="user", website=True)
     def portal_report_accept(self, prestation_id, access_token=None, name=None, signature=None, comment_mentor=None, **kw):
         user = request.env.user
-        partner = request.env.user.partner_id
-        # get from query string if not on json param
+        partner = user.partner_id
+    
+        # récupérer le token si manquant
         access_token = access_token or request.httprequest.args.get('access_token')
-        #comment_mentor = kw.get('comment_mentor')
-        data_request = request.httprequest.args
-        
-                
+    
         try:
             prestation_sudo = self._document_check_access('prestation.prestation', prestation_id, access_token=access_token)
         except (AccessError, MissingError):
-            return {'error': _('Invalide prestation.')}
-
+            return {'error': _('Prestation invalide.')}
+    
         if not signature:
-            return {'error': _('Signature is missing.')}
-
+            return {'error': _('Signature manquante.')}
+    
+        # ✅ Enregistrer la signature
         try:
             prestation_sudo.write({
                 'signed_by': name,
@@ -447,57 +472,83 @@ class CustomerPortal(portal.CustomerPortal):
                 'signature': signature,
             })
             request.env.cr.commit()
-        except (TypeError, binascii.Error) as e:
-            return {'error': _('Invalid signature data.')}
+        except (TypeError, binascii.Error):
+            return {'error': _('Signature invalide.')}
+    
+        # ✅ Génération du PDF — version Odoo 19
+        report_sudo = request.env['ir.actions.report']._get_report_from_name('br_consult.action_report_reserve')
+        pdf_content, _ = report_sudo._render('br_consult.action_report_reserve', [prestation_sudo.id])
 
-        pdf = request.env.ref('br_consult.action_report_reserve').with_user(SUPERUSER_ID)._render_qweb_pdf([prestation_sudo.id])[0]
+    
+        # ✅ Poster un message avec le PDF en pièce jointe
         prestation_sudo.message_post(
-            body=_('Prestation signée par %s') % (name,),
-            message_type='comment',              # message public (visible portail)
-            subtype_xmlid='mail.mt_comment',     # flux de commentaires
-            email_layout_xmlid='mail.mail_notification_light',  # (optionnel) layout notif
-            attachments=[('%s.pdf' % prestation_sudo.name, pdf)],
-            author_id=request.env.user.partner_id.id,  # (optionnel) pour forcer l’auteur
-            partner_ids=[prestation_sudo.partner_id.id],  # (optionnel) notifier le client
+            body='Prestation signée par %s' % (name),
+            message_type='comment',
+            subtype_xmlid='mail.mt_comment',
+            email_layout_xmlid='mail.mail_notification_light',
+            attachments=[('%s.pdf' % prestation_sudo.name, pdf_content)],
+            author_id=partner.id,
+            partner_ids=[prestation_sudo.partner_id.id],
         )
+    
+        # ✅ Notification par email
         query_string = '&message=sign_ok'
-        template = request.env.ref('website_brconsult.email_notification_validation_mentor')
-        if partner.email and prestation_sudo.mentor_id and prestation_sudo.mentor_id.email and partner.is_mentor:
+        template = request.env.ref('website_brconsult.email_notification_validation_mentor', raise_if_not_found=False)
+        if template and prestation_sudo.mentor_id and prestation_sudo.mentor_id.email and partner.is_mentor:
             email_values = {
                 'email_from': prestation_sudo.mentor_id.email,
                 'email_to': prestation_sudo.partner_id.email,
-                #'email_cc': 'controlebr@brconsult.fr',
                 'auto_delete': True,
                 'recipient_ids': [],
                 'partner_ids': [],
-                'scheduled_date': False,}
+                'scheduled_date': False,
+            }
             template.sudo().send_mail(prestation_sudo.id, force_send=True, email_values=email_values)
+    
         return {
             'force_refresh': True,
             'redirect_url': prestation_sudo.get_portal_url(query_string=query_string),
         }
-    
-    @http.route(['/prestation/<int:prestation_id>/get_report_monteur'], type='http', auth='user', methods=['GET'], website=True)
-    def get_report_monteur(self, prestation_id, **kw):     
-        user = request.env.user
+
+    # @http.route(['/prestation/<int:prestation_id>/get_report_monteur'], type='http', auth='user', methods=['GET'], website=True)
+    # def get_report_monteur(self, prestation_id, **kw):     
+    #     user = request.env.user
+    #     prestation = request.env['prestation.prestation'].sudo().browse(prestation_id)
+    #     if prestation:
+    #         report_sudo = request.env.ref('br_consult.action_report_reserve').sudo()
+    #         report = report_sudo._render_qweb_pdf([prestation.id])[0]
+    #         #report = report_sudo.render_qweb_pdf([prestation.id])[0]
+    #         pdfhttpheaders = [('Content-Type', 'application/pdf'), ('Content-Length', u'%s' % len(report))]
+    #         return request.make_response(report, headers=pdfhttpheaders)
+
+    @http.route(
+        ['/prestation/<int:prestation_id>/get_report_monteur'],
+        type='http', auth='user', methods=['GET'], website=True
+    )
+    def get_report_monteur(self, prestation_id, **kw):
         prestation = request.env['prestation.prestation'].sudo().browse(prestation_id)
-        if prestation:
+        if prestation.exists():
             report_sudo = request.env.ref('br_consult.action_report_reserve').sudo()
-            report = report_sudo._render_qweb_pdf([prestation.id])[0]
-            #report = report_sudo.render_qweb_pdf([prestation.id])[0]
-            pdfhttpheaders = [('Content-Type', 'application/pdf'), ('Content-Length', u'%s' % len(report))]
-            return request.make_response(report, headers=pdfhttpheaders)
-    
-    @http.route(['/prestation/<int:prestation_id>/archive_report'], type='http', auth='user', methods=['GET'], website=True)
-    def archive_report_monteur(self, prestation_id, **kw):      
-        user = request.env.user
-        prestation = request.env['prestation.prestation'].sudo().browse(prestation_id)
-        if user.partner_id.is_mentor:
-            prestation.update({'mentor_archive': True})
-        else:
-            prestation.update({'partner_archive': True})
-            
-        return request.redirect("/my/prestations")
+
+            pdf_content, _ = report_sudo._render(None, prestation.ids)
+
+            headers = [
+                ('Content-Type', 'application/pdf'),
+                ('Content-Length', str(len(pdf_content))),
+            ]
+            return request.make_response(pdf_content, headers=headers)
+        return request.not_found()
+        
+        @http.route(['/prestation/<int:prestation_id>/archive_report'], type='http', auth='user', methods=['GET'], website=True)
+        def archive_report_monteur(self, prestation_id, **kw):      
+            user = request.env.user
+            prestation = request.env['prestation.prestation'].sudo().browse(prestation_id)
+            if user.partner_id.is_mentor:
+                prestation.update({'mentor_archive': True})
+            else:
+                prestation.update({'partner_archive': True})
+                
+            return request.redirect("/my/prestations")
     
     @http.route(['/prestation/<int:prestation_id>/unarchive_report'], type='http', auth='user', methods=['GET'], website=True)
     def unarchive_report_monteur(self, prestation_id, **kw):      
