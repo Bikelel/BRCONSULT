@@ -1,6 +1,6 @@
 <odoo>
     <data>
-
+        
         
         <template id="portal_my_home_menu_prestation" name="Portal layout : prestations" inherit_id="portal.portal_breadcrumbs" priority="20">
             <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
@@ -15,7 +15,7 @@
         </template>
 
         <template id="portal_my_home_prestation" name="Afficher Prestations" customize_show="True" inherit_id="portal.portal_my_home" priority="20">
-            <xpath expr="//div[@id='portal_client_category']" position="inside">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
                 <t t-call="portal.portal_docs_entry">
                     <t t-set="icon" t-value="'/website_brconsult/static/src/img/prestation.svg'"/>
                     <t t-set="title">Prestations</t>
@@ -85,10 +85,19 @@
                             <td><span t-attf-class="o_status rounded-circle bg-success" t-if="prestation.signature"/></td>
                             <td><a t-att-href="prestation.get_portal_url()"><t t-esc="prestation.name"/></a></td>
                             <td>
-                                <span t-if="prestation.opinion == 'favorable_opinion'" class="badge badge-pill badge-success"><i class="fa fa-fw fa-check"/> Avis favorable</span>
-                                <span t-if="prestation.opinion == 'opinion_with_observation'" class="badge badge-pill badge-warning"><i class="fa fa-fw fa-clock-o"/> Favorable avec observation(s)</span>
-                                <span t-if="prestation.opinion == 'defavorable_opinion'" class="badge badge-pill badge-danger"><i class="fa fa-fw fa-remove"/> Avis defavorable</span>
-                                <span t-if="prestation.opinion == 'mixte'" class="badge badge-pill badge-danger"><i class="fa fa-fw fa-remove"/> Avis defavorable</span>
+                                            <span t-if="prestation.opinion == 'favorable_opinion'" class="badge bg-success text-white">
+                <i class="fa fa-check"/> Avis favorable
+            </span>
+            <span t-if="prestation.opinion == 'opinion_with_observation'" class="badge bg-warning text-dark">
+                <i class="fa fa-clock"/> Favorable avec observation(s)
+            </span>
+            <span t-if="prestation.opinion == 'defavorable_opinion'" class="badge bg-danger text-white">
+                <i class="fa fa-times"/> Avis défavorable
+            </span>
+            <span t-if="prestation.opinion == 'mixte'" class="badge bg-danger text-white">
+                <i class="fa fa-times"/> Avis défavorable
+            </span>
+
                             </td>
                             <td><span t-field="prestation.site_address"/></td>
                             <td><span t-field="prestation.verification_date" t-options='{"widget": "date"}'/></td>
