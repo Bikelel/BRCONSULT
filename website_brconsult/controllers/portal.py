@@ -530,7 +530,9 @@ class CustomerPortal(portal.CustomerPortal):
         if prestation.exists():
             report_sudo = request.env.ref('br_consult.action_report_reserve').sudo()
 
-            pdf_content, _ = report_sudo._render(None, prestation.ids)
+            report_sudo = request.env['ir.actions.report']._get_report_from_name('br_consult.action_report_reserve')
+            pdf_content, _ = report_sudo._render('br_consult.action_report_reserve', [prestation.id])
+
 
             headers = [
                 ('Content-Type', 'application/pdf'),
