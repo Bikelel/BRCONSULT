@@ -1,0 +1,4 @@
+[submodule "arthur-clmt/space-addons"]
+	path = arthur-clmt/space-addons
+	url = git@github.com:arthur-clmt/space-addons.git
+	branch = 19.0
