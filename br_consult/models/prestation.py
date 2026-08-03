@@ -226,6 +226,79 @@ class Prestation(models.Model):
     signed_by = fields.Char("Signé par", copy=False)
     signed_on = fields.Datetime("Signé à", copy=False)
     signature = fields.Image('Signature', help='Signature received through the portal.', copy=False, max_width=1024, max_height=1024)
+    date_envoi_report = fields.Date(
+        string="Date d'envoi du rapport",
+        compute='_compute_date_envoi_report',
+        store=True,
+        index=True,
+        help="First date the report reached the stage 'Phase IV - Envoi', "
+             "read from the chatter tracking values.",
+    )
+
+    @api.depends('stage_id')
+    def _compute_date_envoi_report(self):
+        today = fields.Date.today()
+        for prestation in self:
+            if prestation.stage_id.state == 'phase4':
+                prestation.date_envoi_report = today
+            else:
+                prestation.date_envoi_report = False
+
+    @api.model
+    def cron_backfill_date_envoi_report(self, limit=55500):
+        """Fill date_envoi_report for records already in phase IV.
+ 
+        The compute only runs on a stage change, so old records stay empty.
+        This reads the original transition date from the chatter tracking
+        values. Written values are not overwritten afterwards, since the
+        compute is only triggered by a new stage_id change.
+        """
+        stage_ids = self.env['prestation.stage'].sudo().search(
+            [('state', '=', 'phase4')]).ids or [4]
+ 
+        prestations = self.search([
+            # ('date_envoi_report', '=', False),
+            ('stage_id', 'in', stage_ids),
+        ], limit=limit, order='id asc')
+        if not prestations:
+            return
+ 
+        tracking_model = self.env['mail.tracking.value'].sudo()
+        # 'field' was renamed to 'field_id' in Odoo 17.0.
+        field_fname = 'field_id' if 'field_id' in tracking_model._fields else 'field'
+ 
+        trackings = tracking_model.search([
+            ('%s.model' % field_fname, '=', self._name),
+            ('%s.name' % field_fname, '=', 'stage_id'),
+            ('new_value_integer', 'in', stage_ids),
+            ('mail_message_id.model', '=', self._name),
+            ('mail_message_id.res_id', 'in', prestations.ids),
+        ])
+ 
+        # Keep the FIRST transition to phase IV for each record.
+        dates_by_res_id = {}
+        for tracking in trackings:
+            message = tracking.mail_message_id
+            current = dates_by_res_id.get(message.res_id)
+            if not current or message.date < current:
+                dates_by_res_id[message.res_id] = message.date
+ 
+        updated = 0
+        for prestation in prestations:
+            transition_date = dates_by_res_id.get(prestation.id)
+            # No tracking value: stage set at creation or by SQL, fall back on
+            # the last write so the field never stays empty.
+            source = transition_date or prestation.write_date
+            prestation.with_context(tracking_disable=True).write({
+                'date_envoi_report': source.date(),
+            })
+            updated += 1
+ 
+        _logger.info(
+            "cron_backfill_date_envoi_report: %d prestation(s) updated "
+            "(%d from chatter)", updated, len(dates_by_res_id))
+ 
+       
 
     @api.onchange('prestation_id')
     def onchange_prestation(self):
